@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://homemarbletemple.com/sitemap.xml

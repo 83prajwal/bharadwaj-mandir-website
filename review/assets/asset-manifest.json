@@ -1,0 +1,5235 @@
+[
+  {
+    "assetId": "asset-b5681e5aa902",
+    "originalFilename": "20260513-185019-w2000.webp",
+    "finalFilename": "20260513-185019-w2000.webp",
+    "currentPath": "/assets/optimized/designs/20260513-185019-w2000.webp",
+    "finalPath": "/assets/optimized/designs/20260513-185019-w2000.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 630518,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185019-w900.webp",
+      "/assets/optimized/designs/20260513-185019-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": "360CA88D3F31",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185019.jpg",
+      "finalPath": "/assets/optimized/designs/20260513-185019-w2000.webp"
+    }
+  },
+  {
+    "assetId": "asset-d35f64e7efd6",
+    "originalFilename": "20260513-185019-w900.webp",
+    "finalFilename": "20260513-185019-w900.webp",
+    "currentPath": "/assets/optimized/designs/20260513-185019-w900.webp",
+    "finalPath": "/assets/optimized/designs/20260513-185019-w900.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 675,
+      "height": 900
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 129988,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185019-w900.webp",
+      "/assets/optimized/designs/20260513-185019-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185019.jpg",
+      "finalPath": "/assets/optimized/designs/20260513-185019-w900.webp"
+    }
+  },
+  {
+    "assetId": "asset-cf15bd14bc24",
+    "originalFilename": "20260513-185019.webp",
+    "finalFilename": "20260513-185019.webp",
+    "currentPath": "/assets/optimized/designs/20260513-185019.webp",
+    "finalPath": "/assets/optimized/designs/20260513-185019.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 630518,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185019-w900.webp",
+      "/assets/optimized/designs/20260513-185019-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": "360CA88D3F31",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185019.jpg",
+      "finalPath": "/assets/optimized/designs/20260513-185019.webp"
+    }
+  },
+  {
+    "assetId": "asset-3dd5d2c814a0",
+    "originalFilename": "20260513-185029-w2000.webp",
+    "finalFilename": "20260513-185029-w2000.webp",
+    "currentPath": "/assets/optimized/designs/20260513-185029-w2000.webp",
+    "finalPath": "/assets/optimized/designs/20260513-185029-w2000.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 327164,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185029-w900.webp",
+      "/assets/optimized/designs/20260513-185029-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": "CFDB08EA33DC",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185029.jpg",
+      "finalPath": "/assets/optimized/designs/20260513-185029-w2000.webp"
+    }
+  },
+  {
+    "assetId": "asset-d6f7865d1a49",
+    "originalFilename": "20260513-185029-w900.webp",
+    "finalFilename": "20260513-185029-w900.webp",
+    "currentPath": "/assets/optimized/designs/20260513-185029-w900.webp",
+    "finalPath": "/assets/optimized/designs/20260513-185029-w900.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 675,
+      "height": 900
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 69528,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185029-w900.webp",
+      "/assets/optimized/designs/20260513-185029-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185029.jpg",
+      "finalPath": "/assets/optimized/designs/20260513-185029-w900.webp"
+    }
+  },
+  {
+    "assetId": "asset-79690e0cd7f3",
+    "originalFilename": "20260513-185029.webp",
+    "finalFilename": "20260513-185029.webp",
+    "currentPath": "/assets/optimized/designs/20260513-185029.webp",
+    "finalPath": "/assets/optimized/designs/20260513-185029.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 327164,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185029-w900.webp",
+      "/assets/optimized/designs/20260513-185029-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": "CFDB08EA33DC",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185029.jpg",
+      "finalPath": "/assets/optimized/designs/20260513-185029.webp"
+    }
+  },
+  {
+    "assetId": "asset-93b93cb9435e",
+    "originalFilename": "20260513-185035-w2000.webp",
+    "finalFilename": "20260513-185035-w2000.webp",
+    "currentPath": "/assets/optimized/designs/20260513-185035-w2000.webp",
+    "finalPath": "/assets/optimized/designs/20260513-185035-w2000.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 302874,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185035-w900.webp",
+      "/assets/optimized/designs/20260513-185035-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": "97FFA1666677",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185035.jpg",
+      "finalPath": "/assets/optimized/designs/20260513-185035-w2000.webp"
+    }
+  },
+  {
+    "assetId": "asset-95209b426f46",
+    "originalFilename": "20260513-185035-w900.webp",
+    "finalFilename": "20260513-185035-w900.webp",
+    "currentPath": "/assets/optimized/designs/20260513-185035-w900.webp",
+    "finalPath": "/assets/optimized/designs/20260513-185035-w900.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 675,
+      "height": 900
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 67304,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185035-w900.webp",
+      "/assets/optimized/designs/20260513-185035-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185035.jpg",
+      "finalPath": "/assets/optimized/designs/20260513-185035-w900.webp"
+    }
+  },
+  {
+    "assetId": "asset-e50ce9506e42",
+    "originalFilename": "20260513-185035.webp",
+    "finalFilename": "20260513-185035.webp",
+    "currentPath": "/assets/optimized/designs/20260513-185035.webp",
+    "finalPath": "/assets/optimized/designs/20260513-185035.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 302874,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185035-w900.webp",
+      "/assets/optimized/designs/20260513-185035-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": "97FFA1666677",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185035.jpg",
+      "finalPath": "/assets/optimized/designs/20260513-185035.webp"
+    }
+  },
+  {
+    "assetId": "asset-79236822d065",
+    "originalFilename": "20260513-185039-w2000.webp",
+    "finalFilename": "20260513-185039-w2000.webp",
+    "currentPath": "/assets/optimized/designs/20260513-185039-w2000.webp",
+    "finalPath": "/assets/optimized/designs/20260513-185039-w2000.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 266866,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185039-w900.webp",
+      "/assets/optimized/designs/20260513-185039-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": "4DAC2032E04C",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185039.jpg",
+      "finalPath": "/assets/optimized/designs/20260513-185039-w2000.webp"
+    }
+  },
+  {
+    "assetId": "asset-9d42b92f6017",
+    "originalFilename": "20260513-185039-w900.webp",
+    "finalFilename": "20260513-185039-w900.webp",
+    "currentPath": "/assets/optimized/designs/20260513-185039-w900.webp",
+    "finalPath": "/assets/optimized/designs/20260513-185039-w900.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 675,
+      "height": 900
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 56636,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185039-w900.webp",
+      "/assets/optimized/designs/20260513-185039-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185039.jpg",
+      "finalPath": "/assets/optimized/designs/20260513-185039-w900.webp"
+    }
+  },
+  {
+    "assetId": "asset-28fb88c263db",
+    "originalFilename": "20260513-185039.webp",
+    "finalFilename": "20260513-185039.webp",
+    "currentPath": "/assets/optimized/designs/20260513-185039.webp",
+    "finalPath": "/assets/optimized/designs/20260513-185039.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 266866,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185039-w900.webp",
+      "/assets/optimized/designs/20260513-185039-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": "4DAC2032E04C",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185039.jpg",
+      "finalPath": "/assets/optimized/designs/20260513-185039.webp"
+    }
+  },
+  {
+    "assetId": "asset-5ade4c198787",
+    "originalFilename": "20260513-185042-w2000.webp",
+    "finalFilename": "20260513-185042-w2000.webp",
+    "currentPath": "/assets/optimized/designs/20260513-185042-w2000.webp",
+    "finalPath": "/assets/optimized/designs/20260513-185042-w2000.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 295590,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185042-w900.webp",
+      "/assets/optimized/designs/20260513-185042-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": "5AC3945FED39",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185042.jpg",
+      "finalPath": "/assets/optimized/designs/20260513-185042-w2000.webp"
+    }
+  },
+  {
+    "assetId": "asset-79efb76a6270",
+    "originalFilename": "20260513-185042-w900.webp",
+    "finalFilename": "20260513-185042-w900.webp",
+    "currentPath": "/assets/optimized/designs/20260513-185042-w900.webp",
+    "finalPath": "/assets/optimized/designs/20260513-185042-w900.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 675,
+      "height": 900
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 61720,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185042-w900.webp",
+      "/assets/optimized/designs/20260513-185042-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185042.jpg",
+      "finalPath": "/assets/optimized/designs/20260513-185042-w900.webp"
+    }
+  },
+  {
+    "assetId": "asset-57ca1433d52d",
+    "originalFilename": "20260513-185042.webp",
+    "finalFilename": "20260513-185042.webp",
+    "currentPath": "/assets/optimized/designs/20260513-185042.webp",
+    "finalPath": "/assets/optimized/designs/20260513-185042.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 295590,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185042-w900.webp",
+      "/assets/optimized/designs/20260513-185042-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": "5AC3945FED39",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185042.jpg",
+      "finalPath": "/assets/optimized/designs/20260513-185042.webp"
+    }
+  },
+  {
+    "assetId": "asset-9080166cb1c4",
+    "originalFilename": "20260513-185059-w2000.webp",
+    "finalFilename": "20260513-185059-w2000.webp",
+    "currentPath": "/assets/optimized/designs/20260513-185059-w2000.webp",
+    "finalPath": "/assets/optimized/designs/20260513-185059-w2000.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 164746,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185059-w900.webp",
+      "/assets/optimized/designs/20260513-185059-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": "9C765ABAA5C5",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185059.jpg",
+      "finalPath": "/assets/optimized/designs/20260513-185059-w2000.webp"
+    }
+  },
+  {
+    "assetId": "asset-8e4031a16d4f",
+    "originalFilename": "20260513-185059-w900.webp",
+    "finalFilename": "20260513-185059-w900.webp",
+    "currentPath": "/assets/optimized/designs/20260513-185059-w900.webp",
+    "finalPath": "/assets/optimized/designs/20260513-185059-w900.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 675,
+      "height": 900
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 51868,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185059-w900.webp",
+      "/assets/optimized/designs/20260513-185059-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185059.jpg",
+      "finalPath": "/assets/optimized/designs/20260513-185059-w900.webp"
+    }
+  },
+  {
+    "assetId": "asset-bf81fd16e6c9",
+    "originalFilename": "20260513-185059.webp",
+    "finalFilename": "20260513-185059.webp",
+    "currentPath": "/assets/optimized/designs/20260513-185059.webp",
+    "finalPath": "/assets/optimized/designs/20260513-185059.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 164746,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185059-w900.webp",
+      "/assets/optimized/designs/20260513-185059-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": "9C765ABAA5C5",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185059.jpg",
+      "finalPath": "/assets/optimized/designs/20260513-185059.webp"
+    }
+  },
+  {
+    "assetId": "asset-dd48652393fa",
+    "originalFilename": "20260513-185108-w2000.webp",
+    "finalFilename": "20260513-185108-w2000.webp",
+    "currentPath": "/assets/optimized/designs/20260513-185108-w2000.webp",
+    "finalPath": "/assets/optimized/designs/20260513-185108-w2000.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 183632,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185108-w900.webp",
+      "/assets/optimized/designs/20260513-185108-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": "DD2C2DCD0980",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185108.jpg",
+      "finalPath": "/assets/optimized/designs/20260513-185108-w2000.webp"
+    }
+  },
+  {
+    "assetId": "asset-7acb17d5c308",
+    "originalFilename": "20260513-185108-w900.webp",
+    "finalFilename": "20260513-185108-w900.webp",
+    "currentPath": "/assets/optimized/designs/20260513-185108-w900.webp",
+    "finalPath": "/assets/optimized/designs/20260513-185108-w900.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 675,
+      "height": 900
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 48892,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185108-w900.webp",
+      "/assets/optimized/designs/20260513-185108-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185108.jpg",
+      "finalPath": "/assets/optimized/designs/20260513-185108-w900.webp"
+    }
+  },
+  {
+    "assetId": "asset-4b52d668d393",
+    "originalFilename": "20260513-185108.webp",
+    "finalFilename": "20260513-185108.webp",
+    "currentPath": "/assets/optimized/designs/20260513-185108.webp",
+    "finalPath": "/assets/optimized/designs/20260513-185108.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 183632,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185108-w900.webp",
+      "/assets/optimized/designs/20260513-185108-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": "DD2C2DCD0980",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185108.jpg",
+      "finalPath": "/assets/optimized/designs/20260513-185108.webp"
+    }
+  },
+  {
+    "assetId": "asset-08437ad7123d",
+    "originalFilename": "img-20260327-wa0076-w2000.webp",
+    "finalFilename": "img-20260327-wa0076-w2000.webp",
+    "currentPath": "/assets/optimized/designs/img-20260327-wa0076-w2000.webp",
+    "finalPath": "/assets/optimized/designs/img-20260327-wa0076-w2000.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 2000,
+      "height": 1500
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 308682,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0076-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0076-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": "EEA3F6B593B7",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0076.jpg",
+      "finalPath": "/assets/optimized/designs/img-20260327-wa0076-w2000.webp"
+    }
+  },
+  {
+    "assetId": "asset-41e95571ceb1",
+    "originalFilename": "img-20260327-wa0076-w900.webp",
+    "finalFilename": "img-20260327-wa0076-w900.webp",
+    "currentPath": "/assets/optimized/designs/img-20260327-wa0076-w900.webp",
+    "finalPath": "/assets/optimized/designs/img-20260327-wa0076-w900.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 900,
+      "height": 675
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 99028,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0076-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0076-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0076.jpg",
+      "finalPath": "/assets/optimized/designs/img-20260327-wa0076-w900.webp"
+    }
+  },
+  {
+    "assetId": "asset-75c2c5d10832",
+    "originalFilename": "img-20260327-wa0076.webp",
+    "finalFilename": "img-20260327-wa0076.webp",
+    "currentPath": "/assets/optimized/designs/img-20260327-wa0076.webp",
+    "finalPath": "/assets/optimized/designs/img-20260327-wa0076.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 2000,
+      "height": 1500
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 308682,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0076-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0076-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": "EEA3F6B593B7",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0076.jpg",
+      "finalPath": "/assets/optimized/designs/img-20260327-wa0076.webp"
+    }
+  },
+  {
+    "assetId": "asset-26ea19281b39",
+    "originalFilename": "img-20260327-wa0080-w2000.webp",
+    "finalFilename": "img-20260327-wa0080-w2000.webp",
+    "currentPath": "/assets/optimized/designs/img-20260327-wa0080-w2000.webp",
+    "finalPath": "/assets/optimized/designs/img-20260327-wa0080-w2000.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 2000,
+      "height": 1500
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 287980,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0080-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0080-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": "A44742FA7F45",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0080.jpg",
+      "finalPath": "/assets/optimized/designs/img-20260327-wa0080-w2000.webp"
+    }
+  },
+  {
+    "assetId": "asset-70180f86f26a",
+    "originalFilename": "img-20260327-wa0080-w900.webp",
+    "finalFilename": "img-20260327-wa0080-w900.webp",
+    "currentPath": "/assets/optimized/designs/img-20260327-wa0080-w900.webp",
+    "finalPath": "/assets/optimized/designs/img-20260327-wa0080-w900.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 900,
+      "height": 675
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 73646,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0080-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0080-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0080.jpg",
+      "finalPath": "/assets/optimized/designs/img-20260327-wa0080-w900.webp"
+    }
+  },
+  {
+    "assetId": "asset-b19a99a71939",
+    "originalFilename": "img-20260327-wa0080.webp",
+    "finalFilename": "img-20260327-wa0080.webp",
+    "currentPath": "/assets/optimized/designs/img-20260327-wa0080.webp",
+    "finalPath": "/assets/optimized/designs/img-20260327-wa0080.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 2000,
+      "height": 1500
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 287980,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0080-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0080-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": "A44742FA7F45",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0080.jpg",
+      "finalPath": "/assets/optimized/designs/img-20260327-wa0080.webp"
+    }
+  },
+  {
+    "assetId": "asset-5fea209833cc",
+    "originalFilename": "img-20260327-wa0082-w2000.webp",
+    "finalFilename": "img-20260327-wa0082-w2000.webp",
+    "currentPath": "/assets/optimized/designs/img-20260327-wa0082-w2000.webp",
+    "finalPath": "/assets/optimized/designs/img-20260327-wa0082-w2000.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 2000,
+      "height": 1500
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 281962,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0082-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0082-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": "1F5E2967973A",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0082.jpg",
+      "finalPath": "/assets/optimized/designs/img-20260327-wa0082-w2000.webp"
+    }
+  },
+  {
+    "assetId": "asset-1edd5ac3cbf1",
+    "originalFilename": "img-20260327-wa0082-w900.webp",
+    "finalFilename": "img-20260327-wa0082-w900.webp",
+    "currentPath": "/assets/optimized/designs/img-20260327-wa0082-w900.webp",
+    "finalPath": "/assets/optimized/designs/img-20260327-wa0082-w900.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 900,
+      "height": 675
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 88020,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0082-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0082-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0082.jpg",
+      "finalPath": "/assets/optimized/designs/img-20260327-wa0082-w900.webp"
+    }
+  },
+  {
+    "assetId": "asset-3aef8e4d83e3",
+    "originalFilename": "img-20260327-wa0082.webp",
+    "finalFilename": "img-20260327-wa0082.webp",
+    "currentPath": "/assets/optimized/designs/img-20260327-wa0082.webp",
+    "finalPath": "/assets/optimized/designs/img-20260327-wa0082.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 2000,
+      "height": 1500
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 281962,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0082-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0082-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": "1F5E2967973A",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0082.jpg",
+      "finalPath": "/assets/optimized/designs/img-20260327-wa0082.webp"
+    }
+  },
+  {
+    "assetId": "asset-7b2d917b66a7",
+    "originalFilename": "img-20260327-wa0084-w2000.webp",
+    "finalFilename": "img-20260327-wa0084-w2000.webp",
+    "currentPath": "/assets/optimized/designs/img-20260327-wa0084-w2000.webp",
+    "finalPath": "/assets/optimized/designs/img-20260327-wa0084-w2000.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 339274,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0084-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0084-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": "85C9B5F8D712",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0084.jpg",
+      "finalPath": "/assets/optimized/designs/img-20260327-wa0084-w2000.webp"
+    }
+  },
+  {
+    "assetId": "asset-68aef3f58047",
+    "originalFilename": "img-20260327-wa0084-w900.webp",
+    "finalFilename": "img-20260327-wa0084-w900.webp",
+    "currentPath": "/assets/optimized/designs/img-20260327-wa0084-w900.webp",
+    "finalPath": "/assets/optimized/designs/img-20260327-wa0084-w900.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 675,
+      "height": 900
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 86812,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0084-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0084-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0084.jpg",
+      "finalPath": "/assets/optimized/designs/img-20260327-wa0084-w900.webp"
+    }
+  },
+  {
+    "assetId": "asset-ae4a1b453621",
+    "originalFilename": "img-20260327-wa0084.webp",
+    "finalFilename": "img-20260327-wa0084.webp",
+    "currentPath": "/assets/optimized/designs/img-20260327-wa0084.webp",
+    "finalPath": "/assets/optimized/designs/img-20260327-wa0084.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 339274,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0084-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0084-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": "85C9B5F8D712",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0084.jpg",
+      "finalPath": "/assets/optimized/designs/img-20260327-wa0084.webp"
+    }
+  },
+  {
+    "assetId": "asset-79162bd602b1",
+    "originalFilename": "img-20260327-wa0086-w2000.webp",
+    "finalFilename": "img-20260327-wa0086-w2000.webp",
+    "currentPath": "/assets/optimized/designs/img-20260327-wa0086-w2000.webp",
+    "finalPath": "/assets/optimized/designs/img-20260327-wa0086-w2000.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 2000,
+      "height": 1500
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 412672,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0086-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0086-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": "29FECA98655B",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0086.jpg",
+      "finalPath": "/assets/optimized/designs/img-20260327-wa0086-w2000.webp"
+    }
+  },
+  {
+    "assetId": "asset-13c5d739ce8c",
+    "originalFilename": "img-20260327-wa0086-w900.webp",
+    "finalFilename": "img-20260327-wa0086-w900.webp",
+    "currentPath": "/assets/optimized/designs/img-20260327-wa0086-w900.webp",
+    "finalPath": "/assets/optimized/designs/img-20260327-wa0086-w900.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 900,
+      "height": 675
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 99704,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0086-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0086-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0086.jpg",
+      "finalPath": "/assets/optimized/designs/img-20260327-wa0086-w900.webp"
+    }
+  },
+  {
+    "assetId": "asset-3c3cf328a71d",
+    "originalFilename": "img-20260327-wa0086.webp",
+    "finalFilename": "img-20260327-wa0086.webp",
+    "currentPath": "/assets/optimized/designs/img-20260327-wa0086.webp",
+    "finalPath": "/assets/optimized/designs/img-20260327-wa0086.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 2000,
+      "height": 1500
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 412672,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0086-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0086-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": "29FECA98655B",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0086.jpg",
+      "finalPath": "/assets/optimized/designs/img-20260327-wa0086.webp"
+    }
+  },
+  {
+    "assetId": "asset-282de4ff860a",
+    "originalFilename": "img-20260327-wa0087-w2000.webp",
+    "finalFilename": "img-20260327-wa0087-w2000.webp",
+    "currentPath": "/assets/optimized/designs/img-20260327-wa0087-w2000.webp",
+    "finalPath": "/assets/optimized/designs/img-20260327-wa0087-w2000.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 300064,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0087-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0087-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": "E55112181AE5",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0087.jpg",
+      "finalPath": "/assets/optimized/designs/img-20260327-wa0087-w2000.webp"
+    }
+  },
+  {
+    "assetId": "asset-8c753aae28ad",
+    "originalFilename": "img-20260327-wa0087-w900.webp",
+    "finalFilename": "img-20260327-wa0087-w900.webp",
+    "currentPath": "/assets/optimized/designs/img-20260327-wa0087-w900.webp",
+    "finalPath": "/assets/optimized/designs/img-20260327-wa0087-w900.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 675,
+      "height": 900
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 71924,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0087-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0087-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0087.jpg",
+      "finalPath": "/assets/optimized/designs/img-20260327-wa0087-w900.webp"
+    }
+  },
+  {
+    "assetId": "asset-cba329ff0cd0",
+    "originalFilename": "img-20260327-wa0087.webp",
+    "finalFilename": "img-20260327-wa0087.webp",
+    "currentPath": "/assets/optimized/designs/img-20260327-wa0087.webp",
+    "finalPath": "/assets/optimized/designs/img-20260327-wa0087.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 300064,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0087-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0087-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": "E55112181AE5",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0087.jpg",
+      "finalPath": "/assets/optimized/designs/img-20260327-wa0087.webp"
+    }
+  },
+  {
+    "assetId": "asset-a6a0e24bcea4",
+    "originalFilename": "img-20260327-wa0088-w2000.webp",
+    "finalFilename": "img-20260327-wa0088-w2000.webp",
+    "currentPath": "/assets/optimized/designs/img-20260327-wa0088-w2000.webp",
+    "finalPath": "/assets/optimized/designs/img-20260327-wa0088-w2000.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 298992,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0088-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0088-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": "CB1D088D66B6",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0088.jpg",
+      "finalPath": "/assets/optimized/designs/img-20260327-wa0088-w2000.webp"
+    }
+  },
+  {
+    "assetId": "asset-319c1e37c7df",
+    "originalFilename": "img-20260327-wa0088-w900.webp",
+    "finalFilename": "img-20260327-wa0088-w900.webp",
+    "currentPath": "/assets/optimized/designs/img-20260327-wa0088-w900.webp",
+    "finalPath": "/assets/optimized/designs/img-20260327-wa0088-w900.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 675,
+      "height": 900
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 76292,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0088-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0088-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0088.jpg",
+      "finalPath": "/assets/optimized/designs/img-20260327-wa0088-w900.webp"
+    }
+  },
+  {
+    "assetId": "asset-f02616e5bd9f",
+    "originalFilename": "img-20260327-wa0088.webp",
+    "finalFilename": "img-20260327-wa0088.webp",
+    "currentPath": "/assets/optimized/designs/img-20260327-wa0088.webp",
+    "finalPath": "/assets/optimized/designs/img-20260327-wa0088.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 298992,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0088-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0088-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": "CB1D088D66B6",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0088.jpg",
+      "finalPath": "/assets/optimized/designs/img-20260327-wa0088.webp"
+    }
+  },
+  {
+    "assetId": "asset-c6fdf33a1b96",
+    "originalFilename": "img-20260327-wa0089-w2000.webp",
+    "finalFilename": "img-20260327-wa0089-w2000.webp",
+    "currentPath": "/assets/optimized/designs/img-20260327-wa0089-w2000.webp",
+    "finalPath": "/assets/optimized/designs/img-20260327-wa0089-w2000.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 293504,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0089-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0089-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": "3EBD7CA42D10",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0089.jpg",
+      "finalPath": "/assets/optimized/designs/img-20260327-wa0089-w2000.webp"
+    }
+  },
+  {
+    "assetId": "asset-8be158a54b50",
+    "originalFilename": "img-20260327-wa0089-w900.webp",
+    "finalFilename": "img-20260327-wa0089-w900.webp",
+    "currentPath": "/assets/optimized/designs/img-20260327-wa0089-w900.webp",
+    "finalPath": "/assets/optimized/designs/img-20260327-wa0089-w900.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 675,
+      "height": 900
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 76262,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0089-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0089-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0089.jpg",
+      "finalPath": "/assets/optimized/designs/img-20260327-wa0089-w900.webp"
+    }
+  },
+  {
+    "assetId": "asset-f009d5f282c1",
+    "originalFilename": "img-20260327-wa0089.webp",
+    "finalFilename": "img-20260327-wa0089.webp",
+    "currentPath": "/assets/optimized/designs/img-20260327-wa0089.webp",
+    "finalPath": "/assets/optimized/designs/img-20260327-wa0089.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "design_or_detail",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 293504,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0089-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0089-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": "3EBD7CA42D10",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0089.jpg",
+      "finalPath": "/assets/optimized/designs/img-20260327-wa0089.webp"
+    }
+  },
+  {
+    "assetId": "asset-00b69ae6108f",
+    "originalFilename": "mandir-product-0022-w900.webp",
+    "finalFilename": "mandir-product-0022-w900.webp",
+    "currentPath": "/assets/optimized/finished/mandir-product-0022-w900.webp",
+    "finalPath": "/assets/optimized/finished/mandir-product-0022-w900.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "mandir",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 600,
+      "height": 900
+    },
+    "aspectRatio": 0.667,
+    "originalSizeBytes": 54440,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/finished/mandir-product-0022-w900.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\components\\Hero.jsx"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260224-WA0022.jpg",
+      "finalPath": "/assets/optimized/finished/mandir-product-0022-w900.webp"
+    }
+  },
+  {
+    "assetId": "asset-8ed175bca82b",
+    "originalFilename": "20260422-145455-w2000.webp",
+    "finalFilename": "20260422-145455-w2000.webp",
+    "currentPath": "/assets/optimized/workshop/20260422-145455-w2000.webp",
+    "finalPath": "/assets/optimized/workshop/20260422-145455-w2000.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "workshop_or_product_view",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 150288,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/workshop/20260422-145455-w900.webp",
+      "/assets/optimized/workshop/20260422-145455-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": "31774A32D84C",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/20260422_145455.jpg",
+      "finalPath": "/assets/optimized/workshop/20260422-145455-w2000.webp"
+    }
+  },
+  {
+    "assetId": "asset-54390be9e43e",
+    "originalFilename": "20260422-145455-w900.webp",
+    "finalFilename": "20260422-145455-w900.webp",
+    "currentPath": "/assets/optimized/workshop/20260422-145455-w900.webp",
+    "finalPath": "/assets/optimized/workshop/20260422-145455-w900.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "workshop_or_product_view",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 675,
+      "height": 900
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 45464,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/workshop/20260422-145455-w900.webp",
+      "/assets/optimized/workshop/20260422-145455-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/20260422_145455.jpg",
+      "finalPath": "/assets/optimized/workshop/20260422-145455-w900.webp"
+    }
+  },
+  {
+    "assetId": "asset-70c893c51a32",
+    "originalFilename": "20260422-145455.webp",
+    "finalFilename": "20260422-145455.webp",
+    "currentPath": "/assets/optimized/workshop/20260422-145455.webp",
+    "finalPath": "/assets/optimized/workshop/20260422-145455.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "workshop_or_product_view",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 150288,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/workshop/20260422-145455-w900.webp",
+      "/assets/optimized/workshop/20260422-145455-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": "31774A32D84C",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/20260422_145455.jpg",
+      "finalPath": "/assets/optimized/workshop/20260422-145455.webp"
+    }
+  },
+  {
+    "assetId": "asset-d4aa5ca5345c",
+    "originalFilename": "img-20260426-wa0031-w2000.webp",
+    "finalFilename": "img-20260426-wa0031-w2000.webp",
+    "currentPath": "/assets/optimized/workshop/img-20260426-wa0031-w2000.webp",
+    "finalPath": "/assets/optimized/workshop/img-20260426-wa0031-w2000.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "workshop_or_product_view",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 2000,
+      "height": 1500
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 482036,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/workshop/img-20260426-wa0031-w900.webp",
+      "/assets/optimized/workshop/img-20260426-wa0031-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": "7BEA0645EC50",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260426-WA0031.jpg",
+      "finalPath": "/assets/optimized/workshop/img-20260426-wa0031-w2000.webp"
+    }
+  },
+  {
+    "assetId": "asset-5cb597da8fae",
+    "originalFilename": "img-20260426-wa0031-w900.webp",
+    "finalFilename": "img-20260426-wa0031-w900.webp",
+    "currentPath": "/assets/optimized/workshop/img-20260426-wa0031-w900.webp",
+    "finalPath": "/assets/optimized/workshop/img-20260426-wa0031-w900.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "workshop_or_product_view",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 900,
+      "height": 675
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 109200,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/workshop/img-20260426-wa0031-w900.webp",
+      "/assets/optimized/workshop/img-20260426-wa0031-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260426-WA0031.jpg",
+      "finalPath": "/assets/optimized/workshop/img-20260426-wa0031-w900.webp"
+    }
+  },
+  {
+    "assetId": "asset-f092bbceb071",
+    "originalFilename": "img-20260426-wa0031.webp",
+    "finalFilename": "img-20260426-wa0031.webp",
+    "currentPath": "/assets/optimized/workshop/img-20260426-wa0031.webp",
+    "finalPath": "/assets/optimized/workshop/img-20260426-wa0031.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "workshop_or_product_view",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 2000,
+      "height": 1500
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 482036,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/workshop/img-20260426-wa0031-w900.webp",
+      "/assets/optimized/workshop/img-20260426-wa0031-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": "7BEA0645EC50",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260426-WA0031.jpg",
+      "finalPath": "/assets/optimized/workshop/img-20260426-wa0031.webp"
+    }
+  },
+  {
+    "assetId": "asset-24cb9165b548",
+    "originalFilename": "img-20260426-wa0035-w2000.webp",
+    "finalFilename": "img-20260426-wa0035-w2000.webp",
+    "currentPath": "/assets/optimized/workshop/img-20260426-wa0035-w2000.webp",
+    "finalPath": "/assets/optimized/workshop/img-20260426-wa0035-w2000.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "workshop_or_product_view",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 450730,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/workshop/img-20260426-wa0035-w900.webp",
+      "/assets/optimized/workshop/img-20260426-wa0035-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": "F1C7F58FEE20",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260426-WA0035.jpg",
+      "finalPath": "/assets/optimized/workshop/img-20260426-wa0035-w2000.webp"
+    }
+  },
+  {
+    "assetId": "asset-7ce718e957da",
+    "originalFilename": "img-20260426-wa0035-w900.webp",
+    "finalFilename": "img-20260426-wa0035-w900.webp",
+    "currentPath": "/assets/optimized/workshop/img-20260426-wa0035-w900.webp",
+    "finalPath": "/assets/optimized/workshop/img-20260426-wa0035-w900.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "workshop_or_product_view",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 675,
+      "height": 900
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 114872,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/workshop/img-20260426-wa0035-w900.webp",
+      "/assets/optimized/workshop/img-20260426-wa0035-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260426-WA0035.jpg",
+      "finalPath": "/assets/optimized/workshop/img-20260426-wa0035-w900.webp"
+    }
+  },
+  {
+    "assetId": "asset-56b7f1d11eda",
+    "originalFilename": "img-20260426-wa0035.webp",
+    "finalFilename": "img-20260426-wa0035.webp",
+    "currentPath": "/assets/optimized/workshop/img-20260426-wa0035.webp",
+    "finalPath": "/assets/optimized/workshop/img-20260426-wa0035.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "workshop_or_product_view",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 450730,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/workshop/img-20260426-wa0035-w900.webp",
+      "/assets/optimized/workshop/img-20260426-wa0035-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": "F1C7F58FEE20",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260426-WA0035.jpg",
+      "finalPath": "/assets/optimized/workshop/img-20260426-wa0035.webp"
+    }
+  },
+  {
+    "assetId": "asset-8ddbc3852c37",
+    "originalFilename": "img-20260426-wa0038-w2000.webp",
+    "finalFilename": "img-20260426-wa0038-w2000.webp",
+    "currentPath": "/assets/optimized/workshop/img-20260426-wa0038-w2000.webp",
+    "finalPath": "/assets/optimized/workshop/img-20260426-wa0038-w2000.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "workshop_or_product_view",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 368524,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/workshop/img-20260426-wa0038-w900.webp",
+      "/assets/optimized/workshop/img-20260426-wa0038-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": "260C6FDDC1CA",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260426-WA0038.jpg",
+      "finalPath": "/assets/optimized/workshop/img-20260426-wa0038-w2000.webp"
+    }
+  },
+  {
+    "assetId": "asset-096ac8b44de5",
+    "originalFilename": "img-20260426-wa0038-w900.webp",
+    "finalFilename": "img-20260426-wa0038-w900.webp",
+    "currentPath": "/assets/optimized/workshop/img-20260426-wa0038-w900.webp",
+    "finalPath": "/assets/optimized/workshop/img-20260426-wa0038-w900.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "workshop_or_product_view",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 675,
+      "height": 900
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 102696,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/workshop/img-20260426-wa0038-w900.webp",
+      "/assets/optimized/workshop/img-20260426-wa0038-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260426-WA0038.jpg",
+      "finalPath": "/assets/optimized/workshop/img-20260426-wa0038-w900.webp"
+    }
+  },
+  {
+    "assetId": "asset-4fdef79eb4d5",
+    "originalFilename": "img-20260426-wa0038.webp",
+    "finalFilename": "img-20260426-wa0038.webp",
+    "currentPath": "/assets/optimized/workshop/img-20260426-wa0038.webp",
+    "finalPath": "/assets/optimized/workshop/img-20260426-wa0038.webp",
+    "fileType": "image",
+    "extension": ".webp",
+    "category": "workshop_or_product_view",
+    "subject": "Optimized web derivative; inspect source image for subject",
+    "dimensions": {
+      "width": 1500,
+      "height": 2000
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 368524,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [
+      "/assets/optimized/workshop/img-20260426-wa0038-w900.webp",
+      "/assets/optimized/workshop/img-20260426-wa0038-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": "260C6FDDC1CA",
+    "status": "Duplicate candidate; exact bytes match another file",
+    "classificationConfidence": "High",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260426-WA0038.jpg",
+      "finalPath": "/assets/optimized/workshop/img-20260426-wa0038.webp"
+    }
+  },
+  {
+    "assetId": "asset-77265bc78dbf",
+    "originalFilename": "20260513_185019.jpg",
+    "finalFilename": "20260513_185019.jpg",
+    "currentPath": "/images/designs/20260513_185019.jpg",
+    "finalPath": "/images/designs/20260513_185019.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "design_or_detail",
+    "subject": "Carving, design detail, concept, or drawing; see contact sheet",
+    "dimensions": {
+      "width": 4000,
+      "height": 3000
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 3711883,
+    "optimizedSizeBytes": 760506,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185019-w900.webp",
+      "/assets/optimized/designs/20260513-185019-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Suitable after optimization",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185019.jpg",
+      "finalPath": "/images/designs/20260513_185019.jpg"
+    }
+  },
+  {
+    "assetId": "asset-5082fe85afd7",
+    "originalFilename": "20260513_185029.jpg",
+    "finalFilename": "20260513_185029.jpg",
+    "currentPath": "/images/designs/20260513_185029.jpg",
+    "finalPath": "/images/designs/20260513_185029.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "design_or_detail",
+    "subject": "Carving, design detail, concept, or drawing; see contact sheet",
+    "dimensions": {
+      "width": 4000,
+      "height": 3000
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 3541277,
+    "optimizedSizeBytes": 396692,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185029-w900.webp",
+      "/assets/optimized/designs/20260513-185029-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Suitable after optimization",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185029.jpg",
+      "finalPath": "/images/designs/20260513_185029.jpg"
+    }
+  },
+  {
+    "assetId": "asset-a7dc1a7b2bf0",
+    "originalFilename": "20260513_185035.jpg",
+    "finalFilename": "20260513_185035.jpg",
+    "currentPath": "/images/designs/20260513_185035.jpg",
+    "finalPath": "/images/designs/20260513_185035.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "design_or_detail",
+    "subject": "Carving, design detail, concept, or drawing; see contact sheet",
+    "dimensions": {
+      "width": 4000,
+      "height": 3000
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 3441150,
+    "optimizedSizeBytes": 370178,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185035-w900.webp",
+      "/assets/optimized/designs/20260513-185035-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Suitable after optimization",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185035.jpg",
+      "finalPath": "/images/designs/20260513_185035.jpg"
+    }
+  },
+  {
+    "assetId": "asset-b295491146be",
+    "originalFilename": "20260513_185039.jpg",
+    "finalFilename": "20260513_185039.jpg",
+    "currentPath": "/images/designs/20260513_185039.jpg",
+    "finalPath": "/images/designs/20260513_185039.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "design_or_detail",
+    "subject": "Carving, design detail, concept, or drawing; see contact sheet",
+    "dimensions": {
+      "width": 4000,
+      "height": 3000
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 3232202,
+    "optimizedSizeBytes": 323502,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185039-w900.webp",
+      "/assets/optimized/designs/20260513-185039-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Suitable after optimization",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185039.jpg",
+      "finalPath": "/images/designs/20260513_185039.jpg"
+    }
+  },
+  {
+    "assetId": "asset-bd3618882520",
+    "originalFilename": "20260513_185042.jpg",
+    "finalFilename": "20260513_185042.jpg",
+    "currentPath": "/images/designs/20260513_185042.jpg",
+    "finalPath": "/images/designs/20260513_185042.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "design_or_detail",
+    "subject": "Carving, design detail, concept, or drawing; see contact sheet",
+    "dimensions": {
+      "width": 4000,
+      "height": 3000
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 3341784,
+    "optimizedSizeBytes": 357310,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185042-w900.webp",
+      "/assets/optimized/designs/20260513-185042-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Suitable after optimization",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185042.jpg",
+      "finalPath": "/images/designs/20260513_185042.jpg"
+    }
+  },
+  {
+    "assetId": "asset-4934d84b2d9e",
+    "originalFilename": "20260513_185059.jpg",
+    "finalFilename": "20260513_185059.jpg",
+    "currentPath": "/images/designs/20260513_185059.jpg",
+    "finalPath": "/images/designs/20260513_185059.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "design_or_detail",
+    "subject": "Carving, design detail, concept, or drawing; see contact sheet",
+    "dimensions": {
+      "width": 4000,
+      "height": 3000
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 2303129,
+    "optimizedSizeBytes": 216614,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185059-w900.webp",
+      "/assets/optimized/designs/20260513-185059-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Suitable after optimization",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185059.jpg",
+      "finalPath": "/images/designs/20260513_185059.jpg"
+    }
+  },
+  {
+    "assetId": "asset-481edaefef9a",
+    "originalFilename": "20260513_185108.jpg",
+    "finalFilename": "20260513_185108.jpg",
+    "currentPath": "/images/designs/20260513_185108.jpg",
+    "finalPath": "/images/designs/20260513_185108.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "design_or_detail",
+    "subject": "Carving, design detail, concept, or drawing; see contact sheet",
+    "dimensions": {
+      "width": 4000,
+      "height": 3000
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 2457513,
+    "optimizedSizeBytes": 232524,
+    "optimizedVariants": [
+      "/assets/optimized/designs/20260513-185108-w900.webp",
+      "/assets/optimized/designs/20260513-185108-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Suitable after optimization",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/20260513_185108.jpg",
+      "finalPath": "/images/designs/20260513_185108.jpg"
+    }
+  },
+  {
+    "assetId": "asset-e8c1ff095a31",
+    "originalFilename": "custom-white-marble-elephant-fountain-shree-yantra.jpg",
+    "finalFilename": "custom-white-marble-elephant-fountain-shree-yantra.jpg",
+    "currentPath": "/images/designs/custom-white-marble-elephant-fountain-shree-yantra.jpg",
+    "finalPath": "/images/designs/custom-white-marble-elephant-fountain-shree-yantra.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "design_or_detail",
+    "subject": "Carving, design detail, concept, or drawing; see contact sheet",
+    "dimensions": {
+      "width": 1402,
+      "height": 1122
+    },
+    "aspectRatio": 1.25,
+    "originalSizeBytes": 198797,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\products.js"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/custom-white-marble-elephant-fountain-shree-yantra.jpg",
+      "finalPath": "/images/designs/custom-white-marble-elephant-fountain-shree-yantra.jpg"
+    }
+  },
+  {
+    "assetId": "asset-d3a7c02f0b2a",
+    "originalFilename": "IMG-20260327-WA0076.jpg",
+    "finalFilename": "IMG-20260327-WA0076.jpg",
+    "currentPath": "/images/designs/IMG-20260327-WA0076.jpg",
+    "finalPath": "/images/designs/IMG-20260327-WA0076.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "design_or_detail",
+    "subject": "Carving, design detail, concept, or drawing; see contact sheet",
+    "dimensions": {
+      "width": 4032,
+      "height": 3024
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 1116078,
+    "optimizedSizeBytes": 407710,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0076-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0076-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Suitable after optimization",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0076.jpg",
+      "finalPath": "/images/designs/IMG-20260327-WA0076.jpg"
+    }
+  },
+  {
+    "assetId": "asset-8e350c172b52",
+    "originalFilename": "IMG-20260327-WA0080.jpg",
+    "finalFilename": "IMG-20260327-WA0080.jpg",
+    "currentPath": "/images/designs/IMG-20260327-WA0080.jpg",
+    "finalPath": "/images/designs/IMG-20260327-WA0080.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "design_or_detail",
+    "subject": "Carving, design detail, concept, or drawing; see contact sheet",
+    "dimensions": {
+      "width": 4160,
+      "height": 3120
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 1112689,
+    "optimizedSizeBytes": 361626,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0080-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0080-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Suitable after optimization",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0080.jpg",
+      "finalPath": "/images/designs/IMG-20260327-WA0080.jpg"
+    }
+  },
+  {
+    "assetId": "asset-3e03156ca378",
+    "originalFilename": "IMG-20260327-WA0082.jpg",
+    "finalFilename": "IMG-20260327-WA0082.jpg",
+    "currentPath": "/images/designs/IMG-20260327-WA0082.jpg",
+    "finalPath": "/images/designs/IMG-20260327-WA0082.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "design_or_detail",
+    "subject": "Carving, design detail, concept, or drawing; see contact sheet",
+    "dimensions": {
+      "width": 4032,
+      "height": 3024
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 1039886,
+    "optimizedSizeBytes": 369982,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0082-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0082-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Suitable after optimization",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0082.jpg",
+      "finalPath": "/images/designs/IMG-20260327-WA0082.jpg"
+    }
+  },
+  {
+    "assetId": "asset-da4c675dbe06",
+    "originalFilename": "IMG-20260327-WA0084.jpg",
+    "finalFilename": "IMG-20260327-WA0084.jpg",
+    "currentPath": "/images/designs/IMG-20260327-WA0084.jpg",
+    "finalPath": "/images/designs/IMG-20260327-WA0084.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "design_or_detail",
+    "subject": "Carving, design detail, concept, or drawing; see contact sheet",
+    "dimensions": {
+      "width": 3120,
+      "height": 4160
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 1223804,
+    "optimizedSizeBytes": 426086,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0084-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0084-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Suitable after optimization",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0084.jpg",
+      "finalPath": "/images/designs/IMG-20260327-WA0084.jpg"
+    }
+  },
+  {
+    "assetId": "asset-39eb9bd8867b",
+    "originalFilename": "IMG-20260327-WA0086.jpg",
+    "finalFilename": "IMG-20260327-WA0086.jpg",
+    "currentPath": "/images/designs/IMG-20260327-WA0086.jpg",
+    "finalPath": "/images/designs/IMG-20260327-WA0086.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "design_or_detail",
+    "subject": "Carving, design detail, concept, or drawing; see contact sheet",
+    "dimensions": {
+      "width": 4160,
+      "height": 3120
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 1392882,
+    "optimizedSizeBytes": 512376,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0086-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0086-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Suitable after optimization",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0086.jpg",
+      "finalPath": "/images/designs/IMG-20260327-WA0086.jpg"
+    }
+  },
+  {
+    "assetId": "asset-a2f15708f0ce",
+    "originalFilename": "IMG-20260327-WA0087.jpg",
+    "finalFilename": "IMG-20260327-WA0087.jpg",
+    "currentPath": "/images/designs/IMG-20260327-WA0087.jpg",
+    "finalPath": "/images/designs/IMG-20260327-WA0087.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "design_or_detail",
+    "subject": "Carving, design detail, concept, or drawing; see contact sheet",
+    "dimensions": {
+      "width": 3120,
+      "height": 4160
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 1162916,
+    "optimizedSizeBytes": 371988,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0087-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0087-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Suitable after optimization",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0087.jpg",
+      "finalPath": "/images/designs/IMG-20260327-WA0087.jpg"
+    }
+  },
+  {
+    "assetId": "asset-c47daad04cc4",
+    "originalFilename": "IMG-20260327-WA0088.jpg",
+    "finalFilename": "IMG-20260327-WA0088.jpg",
+    "currentPath": "/images/designs/IMG-20260327-WA0088.jpg",
+    "finalPath": "/images/designs/IMG-20260327-WA0088.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "design_or_detail",
+    "subject": "Carving, design detail, concept, or drawing; see contact sheet",
+    "dimensions": {
+      "width": 3120,
+      "height": 4160
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 1165848,
+    "optimizedSizeBytes": 375284,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0088-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0088-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Suitable after optimization",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0088.jpg",
+      "finalPath": "/images/designs/IMG-20260327-WA0088.jpg"
+    }
+  },
+  {
+    "assetId": "asset-baa644e1dc19",
+    "originalFilename": "IMG-20260327-WA0089.jpg",
+    "finalFilename": "IMG-20260327-WA0089.jpg",
+    "currentPath": "/images/designs/IMG-20260327-WA0089.jpg",
+    "finalPath": "/images/designs/IMG-20260327-WA0089.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "design_or_detail",
+    "subject": "Carving, design detail, concept, or drawing; see contact sheet",
+    "dimensions": {
+      "width": 3120,
+      "height": 4160
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 1161104,
+    "optimizedSizeBytes": 369766,
+    "optimizedVariants": [
+      "/assets/optimized/designs/img-20260327-wa0089-w900.webp",
+      "/assets/optimized/designs/img-20260327-wa0089-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Suitable after optimization",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260327-WA0089.jpg",
+      "finalPath": "/images/designs/IMG-20260327-WA0089.jpg"
+    }
+  },
+  {
+    "assetId": "asset-326b32edce37",
+    "originalFilename": "IMG-20260430-WA0017.jpg",
+    "finalFilename": "IMG-20260430-WA0017.jpg",
+    "currentPath": "/images/designs/IMG-20260430-WA0017.jpg",
+    "finalPath": "/images/designs/IMG-20260430-WA0017.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "design_or_detail",
+    "subject": "Carving, design detail, concept, or drawing; see contact sheet",
+    "dimensions": {
+      "width": 960,
+      "height": 1280
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 134114,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Needs manual review",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260430-WA0017.jpg",
+      "finalPath": "/images/designs/IMG-20260430-WA0017.jpg"
+    }
+  },
+  {
+    "assetId": "asset-da4069ced636",
+    "originalFilename": "IMG-20260514-WA0021.jpg",
+    "finalFilename": "IMG-20260514-WA0021.jpg",
+    "currentPath": "/images/designs/IMG-20260514-WA0021.jpg",
+    "finalPath": "/images/designs/IMG-20260514-WA0021.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "design_or_detail",
+    "subject": "Carving, design detail, concept, or drawing; see contact sheet",
+    "dimensions": {
+      "width": 1402,
+      "height": 1122
+    },
+    "aspectRatio": 1.25,
+    "originalSizeBytes": 187046,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/designs/IMG-20260514-WA0021.jpg",
+      "finalPath": "/images/designs/IMG-20260514-WA0021.jpg"
+    }
+  },
+  {
+    "assetId": "asset-738170a239b3",
+    "originalFilename": "floral-design-mandir.jpg",
+    "finalFilename": "floral-design-mandir.jpg",
+    "currentPath": "/images/finished/floral-design-mandir.jpg",
+    "finalPath": "/images/finished/floral-design-mandir.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 116009,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": "floral-design-mandir",
+    "references": [
+      "src\\data\\products.js"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/floral-design-mandir.jpg",
+      "finalPath": "/images/finished/floral-design-mandir.jpg"
+    }
+  },
+  {
+    "assetId": "asset-e12841b377cc",
+    "originalFilename": "IMG-20260224-WA0017.jpg",
+    "finalFilename": "IMG-20260224-WA0017.jpg",
+    "currentPath": "/images/finished/IMG-20260224-WA0017.jpg",
+    "finalPath": "/images/finished/IMG-20260224-WA0017.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 960,
+      "height": 1280
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 196909,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260224-WA0017.jpg",
+      "finalPath": "/images/finished/IMG-20260224-WA0017.jpg"
+    }
+  },
+  {
+    "assetId": "asset-1341982ca076",
+    "originalFilename": "IMG-20260224-WA0018.jpg",
+    "finalFilename": "IMG-20260224-WA0018.jpg",
+    "currentPath": "/images/finished/IMG-20260224-WA0018.jpg",
+    "finalPath": "/images/finished/IMG-20260224-WA0018.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 960,
+      "height": 1280
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 153170,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260224-WA0018.jpg",
+      "finalPath": "/images/finished/IMG-20260224-WA0018.jpg"
+    }
+  },
+  {
+    "assetId": "asset-036eb589e6ad",
+    "originalFilename": "IMG-20260224-WA0019.jpg",
+    "finalFilename": "IMG-20260224-WA0019.jpg",
+    "currentPath": "/images/finished/IMG-20260224-WA0019.jpg",
+    "finalPath": "/images/finished/IMG-20260224-WA0019.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 720,
+      "height": 779
+    },
+    "aspectRatio": 0.924,
+    "originalSizeBytes": 52594,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260224-WA0019.jpg",
+      "finalPath": "/images/finished/IMG-20260224-WA0019.jpg"
+    }
+  },
+  {
+    "assetId": "asset-7ac8e6d8cb56",
+    "originalFilename": "IMG-20260224-WA0020.jpg",
+    "finalFilename": "IMG-20260224-WA0020.jpg",
+    "currentPath": "/images/finished/IMG-20260224-WA0020.jpg",
+    "finalPath": "/images/finished/IMG-20260224-WA0020.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 963,
+      "height": 1280
+    },
+    "aspectRatio": 0.752,
+    "originalSizeBytes": 126274,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260224-WA0020.jpg",
+      "finalPath": "/images/finished/IMG-20260224-WA0020.jpg"
+    }
+  },
+  {
+    "assetId": "asset-2407ab8b87b5",
+    "originalFilename": "IMG-20260224-WA0021.jpg",
+    "finalFilename": "IMG-20260224-WA0021.jpg",
+    "currentPath": "/images/finished/IMG-20260224-WA0021.jpg",
+    "finalPath": "/images/finished/IMG-20260224-WA0021.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 468,
+      "height": 1040
+    },
+    "aspectRatio": 0.45,
+    "originalSizeBytes": 52081,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260224-WA0021.jpg",
+      "finalPath": "/images/finished/IMG-20260224-WA0021.jpg"
+    }
+  },
+  {
+    "assetId": "asset-e33470821c20",
+    "originalFilename": "IMG-20260224-WA0022.jpg",
+    "finalFilename": "IMG-20260224-WA0022.jpg",
+    "currentPath": "/images/finished/IMG-20260224-WA0022.jpg",
+    "finalPath": "/images/finished/IMG-20260224-WA0022.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 1024,
+      "height": 1536
+    },
+    "aspectRatio": 0.667,
+    "originalSizeBytes": 153855,
+    "optimizedSizeBytes": 54440,
+    "optimizedVariants": [
+      "/assets/optimized/finished/mandir-product-0022-w900.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260224-WA0022.jpg",
+      "finalPath": "/images/finished/IMG-20260224-WA0022.jpg"
+    }
+  },
+  {
+    "assetId": "asset-d1a4207f3734",
+    "originalFilename": "IMG-20260224-WA0023.jpg",
+    "finalFilename": "IMG-20260224-WA0023.jpg",
+    "currentPath": "/images/finished/IMG-20260224-WA0023.jpg",
+    "finalPath": "/images/finished/IMG-20260224-WA0023.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 877,
+      "height": 836
+    },
+    "aspectRatio": 1.049,
+    "originalSizeBytes": 70719,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260224-WA0023.jpg",
+      "finalPath": "/images/finished/IMG-20260224-WA0023.jpg"
+    }
+  },
+  {
+    "assetId": "asset-548ecd66a5ec",
+    "originalFilename": "IMG-20260224-WA0025.jpg",
+    "finalFilename": "IMG-20260224-WA0025.jpg",
+    "currentPath": "/images/finished/IMG-20260224-WA0025.jpg",
+    "finalPath": "/images/finished/IMG-20260224-WA0025.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 640,
+      "height": 1280
+    },
+    "aspectRatio": 0.5,
+    "originalSizeBytes": 135154,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260224-WA0025.jpg",
+      "finalPath": "/images/finished/IMG-20260224-WA0025.jpg"
+    }
+  },
+  {
+    "assetId": "asset-e3f79974d53e",
+    "originalFilename": "IMG-20260224-WA0026.jpg",
+    "finalFilename": "IMG-20260224-WA0026.jpg",
+    "currentPath": "/images/finished/IMG-20260224-WA0026.jpg",
+    "finalPath": "/images/finished/IMG-20260224-WA0026.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 720,
+      "height": 503
+    },
+    "aspectRatio": 1.431,
+    "originalSizeBytes": 43323,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260224-WA0026.jpg",
+      "finalPath": "/images/finished/IMG-20260224-WA0026.jpg"
+    }
+  },
+  {
+    "assetId": "asset-a9df6f5242ab",
+    "originalFilename": "IMG-20260224-WA0027.jpg",
+    "finalFilename": "IMG-20260224-WA0027.jpg",
+    "currentPath": "/images/finished/IMG-20260224-WA0027.jpg",
+    "finalPath": "/images/finished/IMG-20260224-WA0027.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 735,
+      "height": 636
+    },
+    "aspectRatio": 1.156,
+    "originalSizeBytes": 52554,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Needs manual review",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260224-WA0027.jpg",
+      "finalPath": "/images/finished/IMG-20260224-WA0027.jpg"
+    }
+  },
+  {
+    "assetId": "asset-c624cf1c68a4",
+    "originalFilename": "IMG-20260224-WA0028.jpg",
+    "finalFilename": "IMG-20260224-WA0028.jpg",
+    "currentPath": "/images/finished/IMG-20260224-WA0028.jpg",
+    "finalPath": "/images/finished/IMG-20260224-WA0028.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 1600,
+      "height": 1200
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 186510,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260224-WA0028.jpg",
+      "finalPath": "/images/finished/IMG-20260224-WA0028.jpg"
+    }
+  },
+  {
+    "assetId": "asset-fbb1436d5c45",
+    "originalFilename": "IMG-20260224-WA0029.jpg",
+    "finalFilename": "IMG-20260224-WA0029.jpg",
+    "currentPath": "/images/finished/IMG-20260224-WA0029.jpg",
+    "finalPath": "/images/finished/IMG-20260224-WA0029.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 1179,
+      "height": 1200
+    },
+    "aspectRatio": 0.982,
+    "originalSizeBytes": 111224,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260224-WA0029.jpg",
+      "finalPath": "/images/finished/IMG-20260224-WA0029.jpg"
+    }
+  },
+  {
+    "assetId": "asset-32241df9ecfa",
+    "originalFilename": "IMG-20260224-WA0030.jpg",
+    "finalFilename": "IMG-20260224-WA0030.jpg",
+    "currentPath": "/images/finished/IMG-20260224-WA0030.jpg",
+    "finalPath": "/images/finished/IMG-20260224-WA0030.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 622,
+      "height": 1280
+    },
+    "aspectRatio": 0.486,
+    "originalSizeBytes": 132149,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260224-WA0030.jpg",
+      "finalPath": "/images/finished/IMG-20260224-WA0030.jpg"
+    }
+  },
+  {
+    "assetId": "asset-501b0b19e72d",
+    "originalFilename": "IMG-20260303-WA0019.jpg",
+    "finalFilename": "IMG-20260303-WA0019.jpg",
+    "currentPath": "/images/finished/IMG-20260303-WA0019.jpg",
+    "finalPath": "/images/finished/IMG-20260303-WA0019.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 122752,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Needs manual review",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260303-WA0019.jpg",
+      "finalPath": "/images/finished/IMG-20260303-WA0019.jpg"
+    }
+  },
+  {
+    "assetId": "asset-150b8b72d537",
+    "originalFilename": "IMG-20260303-WA0020.jpg",
+    "finalFilename": "IMG-20260303-WA0020.jpg",
+    "currentPath": "/images/finished/IMG-20260303-WA0020.jpg",
+    "finalPath": "/images/finished/IMG-20260303-WA0020.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 532,
+      "height": 1152
+    },
+    "aspectRatio": 0.462,
+    "originalSizeBytes": 55629,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260303-WA0020.jpg",
+      "finalPath": "/images/finished/IMG-20260303-WA0020.jpg"
+    }
+  },
+  {
+    "assetId": "asset-ef43180a6d95",
+    "originalFilename": "IMG-20260303-WA0021.jpg",
+    "finalFilename": "IMG-20260303-WA0021.jpg",
+    "currentPath": "/images/finished/IMG-20260303-WA0021.jpg",
+    "finalPath": "/images/finished/IMG-20260303-WA0021.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 540,
+      "height": 960
+    },
+    "aspectRatio": 0.562,
+    "originalSizeBytes": 31070,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260303-WA0021.jpg",
+      "finalPath": "/images/finished/IMG-20260303-WA0021.jpg"
+    }
+  },
+  {
+    "assetId": "asset-d23eb507d90a",
+    "originalFilename": "IMG-20260313-WA0022.jpg",
+    "finalFilename": "IMG-20260313-WA0022.jpg",
+    "currentPath": "/images/finished/IMG-20260313-WA0022.jpg",
+    "finalPath": "/images/finished/IMG-20260313-WA0022.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 575,
+      "height": 1280
+    },
+    "aspectRatio": 0.449,
+    "originalSizeBytes": 55453,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260313-WA0022.jpg",
+      "finalPath": "/images/finished/IMG-20260313-WA0022.jpg"
+    }
+  },
+  {
+    "assetId": "asset-12cfd81b859c",
+    "originalFilename": "IMG-20260319-WA0016.jpg",
+    "finalFilename": "IMG-20260319-WA0016.jpg",
+    "currentPath": "/images/finished/IMG-20260319-WA0016.jpg",
+    "finalPath": "/images/finished/IMG-20260319-WA0016.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 250146,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260319-WA0016.jpg",
+      "finalPath": "/images/finished/IMG-20260319-WA0016.jpg"
+    }
+  },
+  {
+    "assetId": "asset-e76dac7bb3fb",
+    "originalFilename": "IMG-20260320-WA0027.jpg",
+    "finalFilename": "IMG-20260320-WA0027.jpg",
+    "currentPath": "/images/finished/IMG-20260320-WA0027.jpg",
+    "finalPath": "/images/finished/IMG-20260320-WA0027.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 1600,
+      "height": 1200
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 151146,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260320-WA0027.jpg",
+      "finalPath": "/images/finished/IMG-20260320-WA0027.jpg"
+    }
+  },
+  {
+    "assetId": "asset-32e34c5e21ec",
+    "originalFilename": "IMG-20260322-WA0027.jpg",
+    "finalFilename": "IMG-20260322-WA0027.jpg",
+    "currentPath": "/images/finished/IMG-20260322-WA0027.jpg",
+    "finalPath": "/images/finished/IMG-20260322-WA0027.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 1197,
+      "height": 1599
+    },
+    "aspectRatio": 0.749,
+    "originalSizeBytes": 136637,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260322-WA0027.jpg",
+      "finalPath": "/images/finished/IMG-20260322-WA0027.jpg"
+    }
+  },
+  {
+    "assetId": "asset-fe90b4398bcc",
+    "originalFilename": "IMG-20260322-WA0028.jpg",
+    "finalFilename": "IMG-20260322-WA0028.jpg",
+    "currentPath": "/images/finished/IMG-20260322-WA0028.jpg",
+    "finalPath": "/images/finished/IMG-20260322-WA0028.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 1599,
+      "height": 899
+    },
+    "aspectRatio": 1.779,
+    "originalSizeBytes": 188324,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260322-WA0028.jpg",
+      "finalPath": "/images/finished/IMG-20260322-WA0028.jpg"
+    }
+  },
+  {
+    "assetId": "asset-518d33101e8c",
+    "originalFilename": "IMG-20260327-WA0055.jpg",
+    "finalFilename": "IMG-20260327-WA0055.jpg",
+    "currentPath": "/images/finished/IMG-20260327-WA0055.jpg",
+    "finalPath": "/images/finished/IMG-20260327-WA0055.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 923,
+      "height": 1600
+    },
+    "aspectRatio": 0.577,
+    "originalSizeBytes": 173956,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Unsuitable for customer-facing use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260327-WA0055.jpg",
+      "finalPath": "/images/finished/IMG-20260327-WA0055.jpg"
+    }
+  },
+  {
+    "assetId": "asset-9dbceec88e16",
+    "originalFilename": "IMG-20260411-WA0067.jpg",
+    "finalFilename": "IMG-20260411-WA0067.jpg",
+    "currentPath": "/images/finished/IMG-20260411-WA0067.jpg",
+    "finalPath": "/images/finished/IMG-20260411-WA0067.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 738,
+      "height": 1600
+    },
+    "aspectRatio": 0.461,
+    "originalSizeBytes": 101850,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260411-WA0067.jpg",
+      "finalPath": "/images/finished/IMG-20260411-WA0067.jpg"
+    }
+  },
+  {
+    "assetId": "asset-dd3e08dbd8ac",
+    "originalFilename": "IMG-20260421-WA0013.jpg",
+    "finalFilename": "IMG-20260421-WA0013.jpg",
+    "currentPath": "/images/finished/IMG-20260421-WA0013.jpg",
+    "finalPath": "/images/finished/IMG-20260421-WA0013.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 867,
+      "height": 1156
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 70477,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260421-WA0013.jpg",
+      "finalPath": "/images/finished/IMG-20260421-WA0013.jpg"
+    }
+  },
+  {
+    "assetId": "asset-980c55be12c4",
+    "originalFilename": "IMG-20260422-WA0001.jpg",
+    "finalFilename": "IMG-20260422-WA0001.jpg",
+    "currentPath": "/images/finished/IMG-20260422-WA0001.jpg",
+    "finalPath": "/images/finished/IMG-20260422-WA0001.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 867,
+      "height": 1156
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 84194,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260422-WA0001.jpg",
+      "finalPath": "/images/finished/IMG-20260422-WA0001.jpg"
+    }
+  },
+  {
+    "assetId": "asset-2bbc9dcaef67",
+    "originalFilename": "IMG-20260422-WA0004.jpg",
+    "finalFilename": "IMG-20260422-WA0004.jpg",
+    "currentPath": "/images/finished/IMG-20260422-WA0004.jpg",
+    "finalPath": "/images/finished/IMG-20260422-WA0004.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 1156,
+      "height": 867
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 103300,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260422-WA0004.jpg",
+      "finalPath": "/images/finished/IMG-20260422-WA0004.jpg"
+    }
+  },
+  {
+    "assetId": "asset-4f5724d2d6ba",
+    "originalFilename": "IMG-20260422-WA0005.jpg",
+    "finalFilename": "IMG-20260422-WA0005.jpg",
+    "currentPath": "/images/finished/IMG-20260422-WA0005.jpg",
+    "finalPath": "/images/finished/IMG-20260422-WA0005.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 1066,
+      "height": 1280
+    },
+    "aspectRatio": 0.833,
+    "originalSizeBytes": 150171,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260422-WA0005.jpg",
+      "finalPath": "/images/finished/IMG-20260422-WA0005.jpg"
+    }
+  },
+  {
+    "assetId": "asset-8b031a98a4d6",
+    "originalFilename": "IMG-20260507-WA0051.jpg",
+    "finalFilename": "IMG-20260507-WA0051.jpg",
+    "currentPath": "/images/finished/IMG-20260507-WA0051.jpg",
+    "finalPath": "/images/finished/IMG-20260507-WA0051.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 1080,
+      "height": 1600
+    },
+    "aspectRatio": 0.675,
+    "originalSizeBytes": 197382,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260507-WA0051.jpg",
+      "finalPath": "/images/finished/IMG-20260507-WA0051.jpg"
+    }
+  },
+  {
+    "assetId": "asset-abe9ae848001",
+    "originalFilename": "IMG-20260509-WA0043.jpg",
+    "finalFilename": "IMG-20260509-WA0043.jpg",
+    "currentPath": "/images/finished/IMG-20260509-WA0043.jpg",
+    "finalPath": "/images/finished/IMG-20260509-WA0043.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 1324,
+      "height": 1188
+    },
+    "aspectRatio": 1.114,
+    "originalSizeBytes": 179512,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Needs manual review",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260509-WA0043.jpg",
+      "finalPath": "/images/finished/IMG-20260509-WA0043.jpg"
+    }
+  },
+  {
+    "assetId": "asset-2294354031d9",
+    "originalFilename": "IMG-20260509-WA0055.jpg",
+    "finalFilename": "IMG-20260509-WA0055.jpg",
+    "currentPath": "/images/finished/IMG-20260509-WA0055.jpg",
+    "finalPath": "/images/finished/IMG-20260509-WA0055.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 853,
+      "height": 1280
+    },
+    "aspectRatio": 0.666,
+    "originalSizeBytes": 135717,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Needs manual review",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/finished/IMG-20260509-WA0055.jpg",
+      "finalPath": "/images/finished/IMG-20260509-WA0055.jpg"
+    }
+  },
+  {
+    "assetId": "asset-58db46d512fd",
+    "originalFilename": "ornate-mandir.jpg",
+    "finalFilename": "ornate-mandir.jpg",
+    "currentPath": "/images/finished/ornate-mandir.jpg",
+    "finalPath": "/images/finished/ornate-mandir.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 960,
+      "height": 1280
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 160880,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": "ornate-traditional-mandir",
+    "references": [
+      "src\\data\\products.js"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/ornate-mandir.jpg",
+      "finalPath": "/images/finished/ornate-mandir.jpg"
+    }
+  },
+  {
+    "assetId": "asset-f8782163f147",
+    "originalFilename": "peacock-design-mandir.jpg",
+    "finalFilename": "peacock-design-mandir.jpg",
+    "currentPath": "/images/finished/peacock-design-mandir.jpg",
+    "finalPath": "/images/finished/peacock-design-mandir.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 877,
+      "height": 836
+    },
+    "aspectRatio": 1.049,
+    "originalSizeBytes": 64710,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": "peacock-design-mandir",
+    "references": [
+      "src\\data\\products.js"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/peacock-design-mandir.jpg",
+      "finalPath": "/images/finished/peacock-design-mandir.jpg"
+    }
+  },
+  {
+    "assetId": "asset-471ff4fe226e",
+    "originalFilename": "white-marble-mandir.jpg",
+    "finalFilename": "white-marble-mandir.jpg",
+    "currentPath": "/images/finished/white-marble-mandir.jpg",
+    "finalPath": "/images/finished/white-marble-mandir.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "mandir",
+    "subject": "Mandir/product photograph; completion or installation status not independently confirmed",
+    "dimensions": {
+      "width": 720,
+      "height": 503
+    },
+    "aspectRatio": 1.431,
+    "originalSizeBytes": 45067,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": "white-marble-mandir",
+    "references": [
+      "src\\data\\products.js"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/finished/white-marble-mandir.jpg",
+      "finalPath": "/images/finished/white-marble-mandir.jpg"
+    }
+  },
+  {
+    "assetId": "asset-8a090a34e452",
+    "originalFilename": "20260422_145455.jpg",
+    "finalFilename": "20260422_145455.jpg",
+    "currentPath": "/images/workshop/20260422_145455.jpg",
+    "finalPath": "/images/workshop/20260422_145455.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 4000,
+      "height": 3000
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 6974618,
+    "optimizedSizeBytes": 195752,
+    "optimizedVariants": [
+      "/assets/optimized/workshop/20260422-145455-w900.webp",
+      "/assets/optimized/workshop/20260422-145455-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [
+      "src\\pages\\About.jsx"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/20260422_145455.jpg",
+      "finalPath": "/images/workshop/20260422_145455.jpg"
+    }
+  },
+  {
+    "assetId": "asset-d63c4970dd1e",
+    "originalFilename": "carved-panel-detail.jpg",
+    "finalFilename": "carved-panel-detail.jpg",
+    "currentPath": "/images/workshop/carved-panel-detail.jpg",
+    "finalPath": "/images/workshop/carved-panel-detail.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 238071,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\products.js"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/carved-panel-detail.jpg",
+      "finalPath": "/images/workshop/carved-panel-detail.jpg"
+    }
+  },
+  {
+    "assetId": "asset-314a0fd9b042",
+    "originalFilename": "carved-panel-in-progress.jpg",
+    "finalFilename": "carved-panel-in-progress.jpg",
+    "currentPath": "/images/workshop/carved-panel-in-progress.jpg",
+    "finalPath": "/images/workshop/carved-panel-in-progress.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 441907,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\products.js"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/carved-panel-in-progress.jpg",
+      "finalPath": "/images/workshop/carved-panel-in-progress.jpg"
+    }
+  },
+  {
+    "assetId": "asset-7e4c61494a8c",
+    "originalFilename": "carved-panel-workshop.jpg",
+    "finalFilename": "carved-panel-workshop.jpg",
+    "currentPath": "/images/workshop/carved-panel-workshop.jpg",
+    "finalPath": "/images/workshop/carved-panel-workshop.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 150127,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Unused but potentially useful",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/carved-panel-workshop.jpg",
+      "finalPath": "/images/workshop/carved-panel-workshop.jpg"
+    }
+  },
+  {
+    "assetId": "asset-89e34d48bd23",
+    "originalFilename": "decorative-finishing.jpg",
+    "finalFilename": "decorative-finishing.jpg",
+    "currentPath": "/images/workshop/decorative-finishing.jpg",
+    "finalPath": "/images/workshop/decorative-finishing.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 188246,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\products.js"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/decorative-finishing.jpg",
+      "finalPath": "/images/workshop/decorative-finishing.jpg"
+    }
+  },
+  {
+    "assetId": "asset-31b9f12ea223",
+    "originalFilename": "IMG-20260409-WA0198.jpg",
+    "finalFilename": "IMG-20260409-WA0198.jpg",
+    "currentPath": "/images/workshop/IMG-20260409-WA0198.jpg",
+    "finalPath": "/images/workshop/IMG-20260409-WA0198.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 342807,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260409-WA0198.jpg",
+      "finalPath": "/images/workshop/IMG-20260409-WA0198.jpg"
+    }
+  },
+  {
+    "assetId": "asset-764d4624eec2",
+    "originalFilename": "IMG-20260409-WA0199.jpg",
+    "finalFilename": "IMG-20260409-WA0199.jpg",
+    "currentPath": "/images/workshop/IMG-20260409-WA0199.jpg",
+    "finalPath": "/images/workshop/IMG-20260409-WA0199.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 363062,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260409-WA0199.jpg",
+      "finalPath": "/images/workshop/IMG-20260409-WA0199.jpg"
+    }
+  },
+  {
+    "assetId": "asset-83faa735b990",
+    "originalFilename": "IMG-20260409-WA0200.jpg",
+    "finalFilename": "IMG-20260409-WA0200.jpg",
+    "currentPath": "/images/workshop/IMG-20260409-WA0200.jpg",
+    "finalPath": "/images/workshop/IMG-20260409-WA0200.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1600,
+      "height": 1200
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 422062,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260409-WA0200.jpg",
+      "finalPath": "/images/workshop/IMG-20260409-WA0200.jpg"
+    }
+  },
+  {
+    "assetId": "asset-71185059556f",
+    "originalFilename": "IMG-20260409-WA0202.jpg",
+    "finalFilename": "IMG-20260409-WA0202.jpg",
+    "currentPath": "/images/workshop/IMG-20260409-WA0202.jpg",
+    "finalPath": "/images/workshop/IMG-20260409-WA0202.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 419763,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260409-WA0202.jpg",
+      "finalPath": "/images/workshop/IMG-20260409-WA0202.jpg"
+    }
+  },
+  {
+    "assetId": "asset-c2e2eacbdf55",
+    "originalFilename": "IMG-20260412-WA0005.jpg",
+    "finalFilename": "IMG-20260412-WA0005.jpg",
+    "currentPath": "/images/workshop/IMG-20260412-WA0005.jpg",
+    "finalPath": "/images/workshop/IMG-20260412-WA0005.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 83704,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260412-WA0005.jpg",
+      "finalPath": "/images/workshop/IMG-20260412-WA0005.jpg"
+    }
+  },
+  {
+    "assetId": "asset-e81d9441a687",
+    "originalFilename": "IMG-20260412-WA0006.jpg",
+    "finalFilename": "IMG-20260412-WA0006.jpg",
+    "currentPath": "/images/workshop/IMG-20260412-WA0006.jpg",
+    "finalPath": "/images/workshop/IMG-20260412-WA0006.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 86090,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260412-WA0006.jpg",
+      "finalPath": "/images/workshop/IMG-20260412-WA0006.jpg"
+    }
+  },
+  {
+    "assetId": "asset-e977e1951c16",
+    "originalFilename": "IMG-20260412-WA0007.jpg",
+    "finalFilename": "IMG-20260412-WA0007.jpg",
+    "currentPath": "/images/workshop/IMG-20260412-WA0007.jpg",
+    "finalPath": "/images/workshop/IMG-20260412-WA0007.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 152456,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260412-WA0007.jpg",
+      "finalPath": "/images/workshop/IMG-20260412-WA0007.jpg"
+    }
+  },
+  {
+    "assetId": "asset-d81621face63",
+    "originalFilename": "IMG-20260412-WA0008.jpg",
+    "finalFilename": "IMG-20260412-WA0008.jpg",
+    "currentPath": "/images/workshop/IMG-20260412-WA0008.jpg",
+    "finalPath": "/images/workshop/IMG-20260412-WA0008.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 108758,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260412-WA0008.jpg",
+      "finalPath": "/images/workshop/IMG-20260412-WA0008.jpg"
+    }
+  },
+  {
+    "assetId": "asset-c440bf13b772",
+    "originalFilename": "IMG-20260412-WA0009.jpg",
+    "finalFilename": "IMG-20260412-WA0009.jpg",
+    "currentPath": "/images/workshop/IMG-20260412-WA0009.jpg",
+    "finalPath": "/images/workshop/IMG-20260412-WA0009.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 140851,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260412-WA0009.jpg",
+      "finalPath": "/images/workshop/IMG-20260412-WA0009.jpg"
+    }
+  },
+  {
+    "assetId": "asset-6418755003a5",
+    "originalFilename": "IMG-20260412-WA0010.jpg",
+    "finalFilename": "IMG-20260412-WA0010.jpg",
+    "currentPath": "/images/workshop/IMG-20260412-WA0010.jpg",
+    "finalPath": "/images/workshop/IMG-20260412-WA0010.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 188490,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260412-WA0010.jpg",
+      "finalPath": "/images/workshop/IMG-20260412-WA0010.jpg"
+    }
+  },
+  {
+    "assetId": "asset-07170575262d",
+    "originalFilename": "IMG-20260412-WA0011.jpg",
+    "finalFilename": "IMG-20260412-WA0011.jpg",
+    "currentPath": "/images/workshop/IMG-20260412-WA0011.jpg",
+    "finalPath": "/images/workshop/IMG-20260412-WA0011.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 155009,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260412-WA0011.jpg",
+      "finalPath": "/images/workshop/IMG-20260412-WA0011.jpg"
+    }
+  },
+  {
+    "assetId": "asset-f18cc2e1e0af",
+    "originalFilename": "IMG-20260412-WA0012.jpg",
+    "finalFilename": "IMG-20260412-WA0012.jpg",
+    "currentPath": "/images/workshop/IMG-20260412-WA0012.jpg",
+    "finalPath": "/images/workshop/IMG-20260412-WA0012.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 179836,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260412-WA0012.jpg",
+      "finalPath": "/images/workshop/IMG-20260412-WA0012.jpg"
+    }
+  },
+  {
+    "assetId": "asset-7be772aecaee",
+    "originalFilename": "IMG-20260412-WA0013.jpg",
+    "finalFilename": "IMG-20260412-WA0013.jpg",
+    "currentPath": "/images/workshop/IMG-20260412-WA0013.jpg",
+    "finalPath": "/images/workshop/IMG-20260412-WA0013.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 159212,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260412-WA0013.jpg",
+      "finalPath": "/images/workshop/IMG-20260412-WA0013.jpg"
+    }
+  },
+  {
+    "assetId": "asset-1afa9b228d62",
+    "originalFilename": "IMG-20260412-WA0014.jpg",
+    "finalFilename": "IMG-20260412-WA0014.jpg",
+    "currentPath": "/images/workshop/IMG-20260412-WA0014.jpg",
+    "finalPath": "/images/workshop/IMG-20260412-WA0014.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 160613,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260412-WA0014.jpg",
+      "finalPath": "/images/workshop/IMG-20260412-WA0014.jpg"
+    }
+  },
+  {
+    "assetId": "asset-4d5e84d1ac04",
+    "originalFilename": "IMG-20260412-WA0015.jpg",
+    "finalFilename": "IMG-20260412-WA0015.jpg",
+    "currentPath": "/images/workshop/IMG-20260412-WA0015.jpg",
+    "finalPath": "/images/workshop/IMG-20260412-WA0015.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 162979,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260412-WA0015.jpg",
+      "finalPath": "/images/workshop/IMG-20260412-WA0015.jpg"
+    }
+  },
+  {
+    "assetId": "asset-ffebc570503a",
+    "originalFilename": "IMG-20260412-WA0016.jpg",
+    "finalFilename": "IMG-20260412-WA0016.jpg",
+    "currentPath": "/images/workshop/IMG-20260412-WA0016.jpg",
+    "finalPath": "/images/workshop/IMG-20260412-WA0016.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1600,
+      "height": 1200
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 228565,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260412-WA0016.jpg",
+      "finalPath": "/images/workshop/IMG-20260412-WA0016.jpg"
+    }
+  },
+  {
+    "assetId": "asset-706a23df846a",
+    "originalFilename": "IMG-20260412-WA0017.jpg",
+    "finalFilename": "IMG-20260412-WA0017.jpg",
+    "currentPath": "/images/workshop/IMG-20260412-WA0017.jpg",
+    "finalPath": "/images/workshop/IMG-20260412-WA0017.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 196940,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260412-WA0017.jpg",
+      "finalPath": "/images/workshop/IMG-20260412-WA0017.jpg"
+    }
+  },
+  {
+    "assetId": "asset-4d867031714f",
+    "originalFilename": "IMG-20260412-WA0018.jpg",
+    "finalFilename": "IMG-20260412-WA0018.jpg",
+    "currentPath": "/images/workshop/IMG-20260412-WA0018.jpg",
+    "finalPath": "/images/workshop/IMG-20260412-WA0018.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1600,
+      "height": 1200
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 222175,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260412-WA0018.jpg",
+      "finalPath": "/images/workshop/IMG-20260412-WA0018.jpg"
+    }
+  },
+  {
+    "assetId": "asset-2654ff4fa222",
+    "originalFilename": "IMG-20260412-WA0019.jpg",
+    "finalFilename": "IMG-20260412-WA0019.jpg",
+    "currentPath": "/images/workshop/IMG-20260412-WA0019.jpg",
+    "finalPath": "/images/workshop/IMG-20260412-WA0019.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 171560,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260412-WA0019.jpg",
+      "finalPath": "/images/workshop/IMG-20260412-WA0019.jpg"
+    }
+  },
+  {
+    "assetId": "asset-5124c1fc7078",
+    "originalFilename": "IMG-20260412-WA0020.jpg",
+    "finalFilename": "IMG-20260412-WA0020.jpg",
+    "currentPath": "/images/workshop/IMG-20260412-WA0020.jpg",
+    "finalPath": "/images/workshop/IMG-20260412-WA0020.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 198282,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260412-WA0020.jpg",
+      "finalPath": "/images/workshop/IMG-20260412-WA0020.jpg"
+    }
+  },
+  {
+    "assetId": "asset-a26fba76a35c",
+    "originalFilename": "IMG-20260412-WA0021.jpg",
+    "finalFilename": "IMG-20260412-WA0021.jpg",
+    "currentPath": "/images/workshop/IMG-20260412-WA0021.jpg",
+    "finalPath": "/images/workshop/IMG-20260412-WA0021.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 212113,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260412-WA0021.jpg",
+      "finalPath": "/images/workshop/IMG-20260412-WA0021.jpg"
+    }
+  },
+  {
+    "assetId": "asset-e0bc6952a921",
+    "originalFilename": "IMG-20260412-WA0022.jpg",
+    "finalFilename": "IMG-20260412-WA0022.jpg",
+    "currentPath": "/images/workshop/IMG-20260412-WA0022.jpg",
+    "finalPath": "/images/workshop/IMG-20260412-WA0022.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 180897,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260412-WA0022.jpg",
+      "finalPath": "/images/workshop/IMG-20260412-WA0022.jpg"
+    }
+  },
+  {
+    "assetId": "asset-748882ca306b",
+    "originalFilename": "IMG-20260412-WA0023.jpg",
+    "finalFilename": "IMG-20260412-WA0023.jpg",
+    "currentPath": "/images/workshop/IMG-20260412-WA0023.jpg",
+    "finalPath": "/images/workshop/IMG-20260412-WA0023.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 210988,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260412-WA0023.jpg",
+      "finalPath": "/images/workshop/IMG-20260412-WA0023.jpg"
+    }
+  },
+  {
+    "assetId": "asset-7464a351e298",
+    "originalFilename": "IMG-20260412-WA0024.jpg",
+    "finalFilename": "IMG-20260412-WA0024.jpg",
+    "currentPath": "/images/workshop/IMG-20260412-WA0024.jpg",
+    "finalPath": "/images/workshop/IMG-20260412-WA0024.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 202665,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260412-WA0024.jpg",
+      "finalPath": "/images/workshop/IMG-20260412-WA0024.jpg"
+    }
+  },
+  {
+    "assetId": "asset-c6ee2b2ae845",
+    "originalFilename": "IMG-20260412-WA0025.jpg",
+    "finalFilename": "IMG-20260412-WA0025.jpg",
+    "currentPath": "/images/workshop/IMG-20260412-WA0025.jpg",
+    "finalPath": "/images/workshop/IMG-20260412-WA0025.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 166906,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260412-WA0025.jpg",
+      "finalPath": "/images/workshop/IMG-20260412-WA0025.jpg"
+    }
+  },
+  {
+    "assetId": "asset-cabb364a7609",
+    "originalFilename": "IMG-20260412-WA0026.jpg",
+    "finalFilename": "IMG-20260412-WA0026.jpg",
+    "currentPath": "/images/workshop/IMG-20260412-WA0026.jpg",
+    "finalPath": "/images/workshop/IMG-20260412-WA0026.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 197269,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260412-WA0026.jpg",
+      "finalPath": "/images/workshop/IMG-20260412-WA0026.jpg"
+    }
+  },
+  {
+    "assetId": "asset-2c8f074d2943",
+    "originalFilename": "IMG-20260412-WA0027.jpg",
+    "finalFilename": "IMG-20260412-WA0027.jpg",
+    "currentPath": "/images/workshop/IMG-20260412-WA0027.jpg",
+    "finalPath": "/images/workshop/IMG-20260412-WA0027.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 237128,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260412-WA0027.jpg",
+      "finalPath": "/images/workshop/IMG-20260412-WA0027.jpg"
+    }
+  },
+  {
+    "assetId": "asset-0aacc5715b61",
+    "originalFilename": "IMG-20260412-WA0028.jpg",
+    "finalFilename": "IMG-20260412-WA0028.jpg",
+    "currentPath": "/images/workshop/IMG-20260412-WA0028.jpg",
+    "finalPath": "/images/workshop/IMG-20260412-WA0028.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 188984,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260412-WA0028.jpg",
+      "finalPath": "/images/workshop/IMG-20260412-WA0028.jpg"
+    }
+  },
+  {
+    "assetId": "asset-47d700c48893",
+    "originalFilename": "IMG-20260426-WA0016.jpg",
+    "finalFilename": "IMG-20260426-WA0016.jpg",
+    "currentPath": "/images/workshop/IMG-20260426-WA0016.jpg",
+    "finalPath": "/images/workshop/IMG-20260426-WA0016.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1280,
+      "height": 960
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 200141,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260426-WA0016.jpg",
+      "finalPath": "/images/workshop/IMG-20260426-WA0016.jpg"
+    }
+  },
+  {
+    "assetId": "asset-dddf85246da8",
+    "originalFilename": "IMG-20260426-WA0017.jpg",
+    "finalFilename": "IMG-20260426-WA0017.jpg",
+    "currentPath": "/images/workshop/IMG-20260426-WA0017.jpg",
+    "finalPath": "/images/workshop/IMG-20260426-WA0017.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1280,
+      "height": 960
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 246142,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260426-WA0017.jpg",
+      "finalPath": "/images/workshop/IMG-20260426-WA0017.jpg"
+    }
+  },
+  {
+    "assetId": "asset-28ec7af4e850",
+    "originalFilename": "IMG-20260426-WA0031.jpg",
+    "finalFilename": "IMG-20260426-WA0031.jpg",
+    "currentPath": "/images/workshop/IMG-20260426-WA0031.jpg",
+    "finalPath": "/images/workshop/IMG-20260426-WA0031.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 4160,
+      "height": 3120
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 1526798,
+    "optimizedSizeBytes": 591236,
+    "optimizedVariants": [
+      "/assets/optimized/workshop/img-20260426-wa0031-w900.webp",
+      "/assets/optimized/workshop/img-20260426-wa0031-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Suitable after optimization",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260426-WA0031.jpg",
+      "finalPath": "/images/workshop/IMG-20260426-WA0031.jpg"
+    }
+  },
+  {
+    "assetId": "asset-4d2ef29aa027",
+    "originalFilename": "IMG-20260426-WA0035.jpg",
+    "finalFilename": "IMG-20260426-WA0035.jpg",
+    "currentPath": "/images/workshop/IMG-20260426-WA0035.jpg",
+    "finalPath": "/images/workshop/IMG-20260426-WA0035.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 3120,
+      "height": 4160
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 1469412,
+    "optimizedSizeBytes": 565602,
+    "optimizedVariants": [
+      "/assets/optimized/workshop/img-20260426-wa0035-w900.webp",
+      "/assets/optimized/workshop/img-20260426-wa0035-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Suitable after optimization",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260426-WA0035.jpg",
+      "finalPath": "/images/workshop/IMG-20260426-WA0035.jpg"
+    }
+  },
+  {
+    "assetId": "asset-0ed8382c3f37",
+    "originalFilename": "IMG-20260426-WA0038.jpg",
+    "finalFilename": "IMG-20260426-WA0038.jpg",
+    "currentPath": "/images/workshop/IMG-20260426-WA0038.jpg",
+    "finalPath": "/images/workshop/IMG-20260426-WA0038.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 3120,
+      "height": 4160
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 1245686,
+    "optimizedSizeBytes": 471220,
+    "optimizedVariants": [
+      "/assets/optimized/workshop/img-20260426-wa0038-w900.webp",
+      "/assets/optimized/workshop/img-20260426-wa0038-w2000.webp"
+    ],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Suitable after optimization",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260426-WA0038.jpg",
+      "finalPath": "/images/workshop/IMG-20260426-WA0038.jpg"
+    }
+  },
+  {
+    "assetId": "asset-1900c0fa10f3",
+    "originalFilename": "IMG-20260426-WA0049.jpg",
+    "finalFilename": "IMG-20260426-WA0049.jpg",
+    "currentPath": "/images/workshop/IMG-20260426-WA0049.jpg",
+    "finalPath": "/images/workshop/IMG-20260426-WA0049.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1280,
+      "height": 960
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 165959,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260426-WA0049.jpg",
+      "finalPath": "/images/workshop/IMG-20260426-WA0049.jpg"
+    }
+  },
+  {
+    "assetId": "asset-0a0bfa015e44",
+    "originalFilename": "IMG-20260506-WA0083.jpg",
+    "finalFilename": "IMG-20260506-WA0083.jpg",
+    "currentPath": "/images/workshop/IMG-20260506-WA0083.jpg",
+    "finalPath": "/images/workshop/IMG-20260506-WA0083.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 720,
+      "height": 1600
+    },
+    "aspectRatio": 0.45,
+    "originalSizeBytes": 50559,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260506-WA0083.jpg",
+      "finalPath": "/images/workshop/IMG-20260506-WA0083.jpg"
+    }
+  },
+  {
+    "assetId": "asset-78dd8a0dfea3",
+    "originalFilename": "IMG-20260506-WA0084.jpg",
+    "finalFilename": "IMG-20260506-WA0084.jpg",
+    "currentPath": "/images/workshop/IMG-20260506-WA0084.jpg",
+    "finalPath": "/images/workshop/IMG-20260506-WA0084.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 720,
+      "height": 1600
+    },
+    "aspectRatio": 0.45,
+    "originalSizeBytes": 70284,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260506-WA0084.jpg",
+      "finalPath": "/images/workshop/IMG-20260506-WA0084.jpg"
+    }
+  },
+  {
+    "assetId": "asset-9b897513c26e",
+    "originalFilename": "IMG-20260506-WA0085.jpg",
+    "finalFilename": "IMG-20260506-WA0085.jpg",
+    "currentPath": "/images/workshop/IMG-20260506-WA0085.jpg",
+    "finalPath": "/images/workshop/IMG-20260506-WA0085.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 720,
+      "height": 1600
+    },
+    "aspectRatio": 0.45,
+    "originalSizeBytes": 58708,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260506-WA0085.jpg",
+      "finalPath": "/images/workshop/IMG-20260506-WA0085.jpg"
+    }
+  },
+  {
+    "assetId": "asset-e0091c8072da",
+    "originalFilename": "IMG-20260507-WA0050.jpg",
+    "finalFilename": "IMG-20260507-WA0050.jpg",
+    "currentPath": "/images/workshop/IMG-20260507-WA0050.jpg",
+    "finalPath": "/images/workshop/IMG-20260507-WA0050.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 846,
+      "height": 1134
+    },
+    "aspectRatio": 0.746,
+    "originalSizeBytes": 234442,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\galleryAssets.json"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260507-WA0050.jpg",
+      "finalPath": "/images/workshop/IMG-20260507-WA0050.jpg"
+    }
+  },
+  {
+    "assetId": "asset-967cf802bd4e",
+    "originalFilename": "IMG-20260513-WA0022.jpg",
+    "finalFilename": "IMG-20260513-WA0022.jpg",
+    "currentPath": "/images/workshop/IMG-20260513-WA0022.jpg",
+    "finalPath": "/images/workshop/IMG-20260513-WA0022.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1306,
+      "height": 1205
+    },
+    "aspectRatio": 1.084,
+    "originalSizeBytes": 224436,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Unsuitable for customer-facing use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/IMG-20260513-WA0022.jpg",
+      "finalPath": "/images/workshop/IMG-20260513-WA0022.jpg"
+    }
+  },
+  {
+    "assetId": "asset-5a0e30b17c01",
+    "originalFilename": "mandir-installation.jpg",
+    "finalFilename": "mandir-installation.jpg",
+    "currentPath": "/images/workshop/mandir-installation.jpg",
+    "finalPath": "/images/workshop/mandir-installation.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 846,
+      "height": 1134
+    },
+    "aspectRatio": 0.746,
+    "originalSizeBytes": 242540,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Unused but potentially useful",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/mandir-installation.jpg",
+      "finalPath": "/images/workshop/mandir-installation.jpg"
+    }
+  },
+  {
+    "assetId": "asset-f989ed252fbb",
+    "originalFilename": "mandir-workshop-assembly.jpg",
+    "finalFilename": "mandir-workshop-assembly.jpg",
+    "currentPath": "/images/workshop/mandir-workshop-assembly.jpg",
+    "finalPath": "/images/workshop/mandir-workshop-assembly.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 960,
+      "height": 1280
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 208561,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\pages\\CustomMandir.jsx",
+      "src\\pages\\Home.jsx"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/mandir-workshop-assembly.jpg",
+      "finalPath": "/images/workshop/mandir-workshop-assembly.jpg"
+    }
+  },
+  {
+    "assetId": "asset-3a8f34145080",
+    "originalFilename": "om-design-installation.jpg",
+    "finalFilename": "om-design-installation.jpg",
+    "currentPath": "/images/workshop/om-design-installation.jpg",
+    "finalPath": "/images/workshop/om-design-installation.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1156,
+      "height": 867
+    },
+    "aspectRatio": 1.333,
+    "originalSizeBytes": 102237,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [],
+    "duplicateGroup": null,
+    "status": "Unused but potentially useful",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/om-design-installation.jpg",
+      "finalPath": "/images/workshop/om-design-installation.jpg"
+    }
+  },
+  {
+    "assetId": "asset-ca15ce3bc148",
+    "originalFilename": "stone-carving-in-progress.jpg",
+    "finalFilename": "stone-carving-in-progress.jpg",
+    "currentPath": "/images/workshop/stone-carving-in-progress.jpg",
+    "finalPath": "/images/workshop/stone-carving-in-progress.jpg",
+    "fileType": "image",
+    "extension": ".jpg",
+    "category": "workshop_or_product_view",
+    "subject": "Mandir, product, or workshop photograph; see contact sheet",
+    "dimensions": {
+      "width": 1200,
+      "height": 1600
+    },
+    "aspectRatio": 0.75,
+    "originalSizeBytes": 144264,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\products.js"
+    ],
+    "duplicateGroup": null,
+    "status": "Approved for current website use",
+    "classificationConfidence": "Medium",
+    "manualApprovalRequired": false,
+    "sourceMapping": {
+      "originalPath": "/images/workshop/stone-carving-in-progress.jpg",
+      "finalPath": "/images/workshop/stone-carving-in-progress.jpg"
+    }
+  },
+  {
+    "assetId": "asset-8f5de541cb34",
+    "originalFilename": "carving-detail.mp4",
+    "finalFilename": "carving-detail.mp4",
+    "currentPath": "/videos/carving-detail.mp4",
+    "finalPath": "/videos/carving-detail.mp4",
+    "fileType": "video",
+    "extension": ".mp4",
+    "category": "video",
+    "subject": "Video; content inspection pending",
+    "dimensions": null,
+    "aspectRatio": null,
+    "originalSizeBytes": 1942581,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\products.js"
+    ],
+    "duplicateGroup": null,
+    "status": "Needs manual review",
+    "classificationConfidence": "Low",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/videos/carving-detail.mp4",
+      "finalPath": "/videos/carving-detail.mp4"
+    }
+  },
+  {
+    "assetId": "asset-0db038d14e56",
+    "originalFilename": "carving-sequence.mp4",
+    "finalFilename": "carving-sequence.mp4",
+    "currentPath": "/videos/carving-sequence.mp4",
+    "finalPath": "/videos/carving-sequence.mp4",
+    "fileType": "video",
+    "extension": ".mp4",
+    "category": "video",
+    "subject": "Video; content inspection pending",
+    "dimensions": null,
+    "aspectRatio": null,
+    "originalSizeBytes": 813085,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\products.js"
+    ],
+    "duplicateGroup": null,
+    "status": "Needs manual review",
+    "classificationConfidence": "Low",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/videos/carving-sequence.mp4",
+      "finalPath": "/videos/carving-sequence.mp4"
+    }
+  },
+  {
+    "assetId": "asset-c03807408146",
+    "originalFilename": "marble-surface-grinding.mp4",
+    "finalFilename": "marble-surface-grinding.mp4",
+    "currentPath": "/videos/marble-surface-grinding.mp4",
+    "finalPath": "/videos/marble-surface-grinding.mp4",
+    "fileType": "video",
+    "extension": ".mp4",
+    "category": "video",
+    "subject": "Video; content inspection pending",
+    "dimensions": null,
+    "aspectRatio": null,
+    "originalSizeBytes": 4070923,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\products.js"
+    ],
+    "duplicateGroup": null,
+    "status": "Needs manual review",
+    "classificationConfidence": "Low",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/videos/marble-surface-grinding.mp4",
+      "finalPath": "/videos/marble-surface-grinding.mp4"
+    }
+  },
+  {
+    "assetId": "asset-2c73ec14c813",
+    "originalFilename": "panel-carving.mp4",
+    "finalFilename": "panel-carving.mp4",
+    "currentPath": "/videos/panel-carving.mp4",
+    "finalPath": "/videos/panel-carving.mp4",
+    "fileType": "video",
+    "extension": ".mp4",
+    "category": "video",
+    "subject": "Video; content inspection pending",
+    "dimensions": null,
+    "aspectRatio": null,
+    "originalSizeBytes": 936814,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\products.js"
+    ],
+    "duplicateGroup": null,
+    "status": "Needs manual review",
+    "classificationConfidence": "Low",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/videos/panel-carving.mp4",
+      "finalPath": "/videos/panel-carving.mp4"
+    }
+  },
+  {
+    "assetId": "asset-2e6a5f2dabe9",
+    "originalFilename": "stone-carving-prep.mp4",
+    "finalFilename": "stone-carving-prep.mp4",
+    "currentPath": "/videos/stone-carving-prep.mp4",
+    "finalPath": "/videos/stone-carving-prep.mp4",
+    "fileType": "video",
+    "extension": ".mp4",
+    "category": "video",
+    "subject": "Video; content inspection pending",
+    "dimensions": null,
+    "aspectRatio": null,
+    "originalSizeBytes": 12977576,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\products.js"
+    ],
+    "duplicateGroup": null,
+    "status": "Needs manual review",
+    "classificationConfidence": "Low",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/videos/stone-carving-prep.mp4",
+      "finalPath": "/videos/stone-carving-prep.mp4"
+    }
+  },
+  {
+    "assetId": "asset-0dc0265bbe0c",
+    "originalFilename": "stone-carving.mp4",
+    "finalFilename": "stone-carving.mp4",
+    "currentPath": "/videos/stone-carving.mp4",
+    "finalPath": "/videos/stone-carving.mp4",
+    "fileType": "video",
+    "extension": ".mp4",
+    "category": "video",
+    "subject": "Video; content inspection pending",
+    "dimensions": null,
+    "aspectRatio": null,
+    "originalSizeBytes": 6441366,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\products.js"
+    ],
+    "duplicateGroup": null,
+    "status": "Needs manual review",
+    "classificationConfidence": "Low",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/videos/stone-carving.mp4",
+      "finalPath": "/videos/stone-carving.mp4"
+    }
+  },
+  {
+    "assetId": "asset-ffafe2447e9a",
+    "originalFilename": "surface-polishing.mp4",
+    "finalFilename": "surface-polishing.mp4",
+    "currentPath": "/videos/surface-polishing.mp4",
+    "finalPath": "/videos/surface-polishing.mp4",
+    "fileType": "video",
+    "extension": ".mp4",
+    "category": "video",
+    "subject": "Video; content inspection pending",
+    "dimensions": null,
+    "aspectRatio": null,
+    "originalSizeBytes": 5680978,
+    "optimizedSizeBytes": null,
+    "optimizedVariants": [],
+    "associatedProductId": null,
+    "references": [
+      "src\\data\\products.js"
+    ],
+    "duplicateGroup": null,
+    "status": "Needs manual review",
+    "classificationConfidence": "Low",
+    "manualApprovalRequired": true,
+    "sourceMapping": {
+      "originalPath": "/videos/surface-polishing.mp4",
+      "finalPath": "/videos/surface-polishing.mp4"
+    }
+  }
+]

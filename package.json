@@ -1,0 +1,35 @@
+{
+  "name": "bharadwaj-mandir",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:netlify": "netlify dev",
+    "build": "vite build && node scripts/generate-seo.mjs",
+    "lint": "eslint .",
+    "test": "npm run test:lead && npm run test:assistant",
+    "check:assets": "node scripts/check-assets.mjs",
+    "test:lead": "node --test tests/lead-management.test.mjs",
+    "test:assistant": "node --test tests/ai-assistant.test.mjs",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.18.4"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "@vitejs/plugin-react": "^6.1.1",
+    "eslint": "^10.10.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.6",
+    "globals": "^17.12.0",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.3.0"
+  }
+}

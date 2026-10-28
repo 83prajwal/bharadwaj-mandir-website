@@ -1,0 +1,193 @@
+﻿{
+    "schemaVersion":  1,
+    "project":  "Bharadwaj Mandir",
+    "generationTool":  {
+                           "status":  "available-and-tested",
+                           "builtInImageGeneration":  false,
+                           "cliFallbackUsed":  true,
+                           "note":  "OpenArt CLI is installed and authenticated. Reference-guided image2image was verified and used for one review-only test. The test output is watermarked and not approved for publication."
+                       },
+    "referenceArchive":  "review/ai-generation/references/images/",
+    "websitePublicationPolicy":  "No generated image is approved. Keep current site references until a generated replacement is created and manually reviewed.",
+    "products":  [
+                     {
+                         "productId":  "white-marble-mandir",
+                         "productName":  "White Marble Mandir",
+                         "classification":  "Identified product; single reference view",
+                         "identityConfidence":  "medium",
+                         "references":  [
+                                            {
+                                                "websitePath":  "/images/finished/white-marble-mandir.jpg",
+                                                "archivePath":  "review/ai-generation/references/images/finished/white-marble-mandir.jpg",
+                                                "role":  "primary product reference",
+                                                "dimensions":  "720x503",
+                                                "bytes":  45067,
+                                                "notes":  "Wide installed/home-interior view. The reference shows a broad built-in arrangement with a central scalloped niche, symmetrical side structure, and carved lower cabinet. No reliable side/rear view is associated with this product."
+                                            }
+                                        ],
+                         "imageSet":  [
+                                          {
+                                              "type":  "main",
+                                              "plannedOutput":  "public/assets/ai-generated/products/white-marble-mandir/main.webp",
+                                              "promptId":  "white-marble-mandir-main",
+                                              "generationStatus":  "not-generated",
+                                              "reviewStatus":  "not-reviewed",
+                                              "approvedForPublication":  false,
+                                              "altText":  "AI-generated interior visualization based on the White Marble Mandir reference",
+                                              "intendedUse":  [
+                                                                  "homepage hero",
+                                                                  "product card",
+                                                                  "product detail primary image"
+                                                              ],
+                                              "notes":  "Generate one frontal wide image only. Do not invent side geometry or additional product components."
+                                          }
+                                      ],
+                         "additionalViews":  {
+                                                 "status":  "not-planned",
+                                                 "reason":  "Only one wide view is confidently associated; no reliable side/rear reference supports an alternate angle or close-up."
+                                             }
+                     },
+                     {
+                         "productId":  "peacock-design-mandir",
+                         "productName":  "Peacock Design Mandir",
+                         "classification":  "Identified product; single reference view",
+                         "identityConfidence":  "medium",
+                         "references":  [
+                                            {
+                                                "websitePath":  "/images/finished/peacock-design-mandir.jpg",
+                                                "archivePath":  "review/ai-generation/references/images/finished/peacock-design-mandir.jpg",
+                                                "role":  "primary product reference",
+                                                "dimensions":  "877x836",
+                                                "bytes":  64710,
+                                                "notes":  "Near-frontal view. Clearly visible white carved structure and central blue/turquoise peacock motif. No reliable side/rear view is associated with this product."
+                                            }
+                                        ],
+                         "referenceCandidates":  [
+                                                     {
+                                                         "path":  "/images/finished/IMG-20260320-WA0027.jpg",
+                                                         "status":  "possible-related-product-needs-confirmation",
+                                                         "notes":  "Shows a similar peacock motif, but the product association is not verified. Do not use as an input until a person confirms it is the same product."
+                                                     }
+                                                 ],
+                         "imageSet":  [
+                                          {
+                                              "type":  "main",
+                                              "plannedOutput":  "public/assets/ai-generated/products/peacock-design-mandir/main.webp",
+                                              "promptId":  "peacock-design-mandir-main",
+                                              "generationStatus":  "not-generated",
+                                              "reviewStatus":  "not-reviewed",
+                                              "approvedForPublication":  false,
+                                              "altText":  "AI-generated interior visualization based on the Peacock Design Mandir reference",
+                                              "intendedUse":  [
+                                                                  "product card",
+                                                                  "product detail primary image"
+                                                              ],
+                                              "notes":  "Generate one near-frontal image only. Preserve the visible motif and proportions; no alternate angle is supported."
+                                          }
+                                      ],
+                         "additionalViews":  {
+                                                 "status":  "held-for-review",
+                                                 "reason":  "The similar 2026-03-20 photograph may be a related product, but identity must be confirmed before it is used as a supporting reference."
+                                             }
+                     },
+                     {
+                         "productId":  "floral-design-mandir",
+                         "productName":  "Floral Design Mandir",
+                         "classification":  "Needs manual product verification",
+                         "identityConfidence":  "low",
+                         "references":  [
+                                            {
+                                                "websitePath":  "/images/finished/floral-design-mandir.jpg",
+                                                "archivePath":  "review/ai-generation/references/images/finished/floral-design-mandir.jpg",
+                                                "role":  "unconfirmed reference",
+                                                "dimensions":  "1200x1600",
+                                                "bytes":  116009,
+                                                "notes":  "The image appears to show an unfinished mandir assembly with construction marks. The existing product title and visible state do not establish the final product design."
+                                            }
+                                        ],
+                         "imageSet":  [
+                                          {
+                                              "type":  "main",
+                                              "plannedOutput":  "public/assets/ai-generated/products/floral-design-mandir/main.webp",
+                                              "promptId":  "floral-design-mandir-main-held",
+                                              "generationStatus":  "held-pending-product-confirmation",
+                                              "reviewStatus":  "needs-manual-product-verification",
+                                              "approvedForPublication":  false,
+                                              "altText":  "",
+                                              "intendedUse":  [
+
+                                                              ],
+                                              "notes":  "Do not generate or publish until the client confirms the actual product identity and supplies a clear photo of its finished form."
+                                          }
+                                      ],
+                         "additionalViews":  {
+                                                 "status":  "not-planned",
+                                                 "reason":  "The current image is not reliable evidence of the finished mandir."
+                                             }
+                     },
+                     {
+                         "productId":  "ornate-traditional-mandir",
+                         "productName":  "Ornate Traditional Mandir",
+                         "classification":  "Identified product; single reference view",
+                         "identityConfidence":  "medium",
+                         "references":  [
+                                            {
+                                                "websitePath":  "/images/finished/ornate-mandir.jpg",
+                                                "archivePath":  "review/ai-generation/references/images/finished/ornate-mandir.jpg",
+                                                "role":  "primary product reference",
+                                                "dimensions":  "960x1280",
+                                                "bytes":  160880,
+                                                "notes":  "Near-frontal photograph of a freestanding white mandir. Visible features include a high ornate arch, blue/green decorative accents, side columns, and a carved drawer base. Background includes a work area; do not mistake it for the product."
+                                            }
+                                        ],
+                         "imageSet":  [
+                                          {
+                                              "type":  "main",
+                                              "plannedOutput":  "public/assets/ai-generated/products/ornate-traditional-mandir/main.webp",
+                                              "promptId":  "ornate-traditional-mandir-main",
+                                              "generationStatus":  "not-generated",
+                                              "reviewStatus":  "not-reviewed",
+                                              "approvedForPublication":  false,
+                                              "altText":  "AI-generated interior visualization based on the Ornate Traditional Mandir reference",
+                                              "intendedUse":  [
+                                                                  "product card",
+                                                                  "product detail primary image"
+                                                              ],
+                                              "notes":  "Generate one frontal portrait image only. Do not add or rearrange inlay, pillars, carvings, or base panels."
+                                          }
+                                      ],
+                         "additionalViews":  {
+                                                 "status":  "not-planned",
+                                                 "reason":  "Only one reliable view is associated; a three-quarter view or detail image would require unsupported hidden geometry or unverified carving detail."
+                                             }
+                     }
+                 ],
+    "generationReviewChecklist":  [
+                                      "Compare silhouette and proportions directly with the archived reference.",
+                                      "Check arch, pillars, base, carving, and visible inlay placement.",
+                                      "Reject any added or removed structural feature, invented marble pattern, distorted carving, or unsupported view.",
+                                      "Confirm realistic room scale, contact shadows, neutral white balance, and natural marble appearance.",
+                                      "Mark Approved only after a human product-fidelity review; keep disclosure text on customer-facing product pages."
+                                  ],
+    "testRuns":  [
+                     {
+                         "historyId":  "f9vfBzX2yHnJbuVRvMG6",
+                         "productId":  "peacock-design-mandir",
+                         "reference":  "review/ai-generation/references/images/finished/peacock-design-mandir.jpg",
+                         "output":  "review/ai-generation/generated/test-peacock/T26fE8y0g7pNNeskfIud.webp",
+                         "model":  "byte-plus-seedream-5-pro",
+                         "mode":  "image2image",
+                         "configuration":  {
+                                               "aspectRatio":  "4:3",
+                                               "resolution":  "1K",
+                                               "imageCount":  1
+                                           },
+                         "estimatedCredits":  30,
+                         "generationStatus":  "completed",
+                         "reviewStatus":  "needs-revision",
+                         "approvedForPublication":  false,
+                         "watermarkPresent":  true,
+                         "notes":  "Photorealistic interior treatment and recognizable frontal geometry are present. Large OpenArt watermark obscures the peacock motif and center arch; do not publish this watermarked test."
+                     }
+                 ]
+}
