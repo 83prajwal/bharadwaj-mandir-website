@@ -1,0 +1,620 @@
+
+/**
+ * Bharadwaj Mandir Lead Management
+ *
+ * Functions:
+ * setupLeadRegister()
+ * testSpreadsheetAccess()
+ * findEnquiryForm()
+ * syncEnquiriesToSheet()
+ *
+ * Required Script Property:
+ * NETLIFY_ACCESS_TOKEN
+ */
+
+const CONFIG = {
+  SPREADSHEET_ID: '1XhvTJh9rtLSRl6wbY59huoKBpwaUs7gPkcjnyn6XVUY',
+  LEAD_TAB: 'Lead Register',
+  CONTROL_TAB: 'Report Control',
+  NETLIFY_SITE_ID: '490292b9-981a-42bd-9968-594d93479c87',
+  NETLIFY_FORM_NAME: 'enquiry'
+};
+
+
+/**
+ * Create spreadsheet tabs and headers.
+ */
+function setupLeadRegister() {
+  validateSpreadsheetId_();
+
+  const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+
+  const headers = [
+    'Lead ID',
+    'Submission Timestamp',
+    'Customer Name',
+    'Email',
+    'Phone',
+    'Country',
+    'Product / SKU',
+    'Enquiry Message',
+    'Lead Source',
+    'UTM Source',
+    'UTM Medium',
+    'UTM Campaign',
+    'Lead Status',
+    'Assigned Owner',
+    'Backup Owner',
+    'Last Contacted Date',
+    'First Human Response Timestamp',
+    'Next Action',
+    'Follow-up Due Date',
+    'Quote Status',
+    'Outcome',
+    'Internal Notes',
+    'Last Updated Timestamp'
+  ];
+
+  let leads = ss.getSheetByName(CONFIG.LEAD_TAB);
+
+  if (!leads) {
+    leads = ss.insertSheet(CONFIG.LEAD_TAB);
+  }
+
+  if (leads.getLastRow() === 0) {
+    leads.getRange(1, 1, 1, headers.length)
+      .setValues([headers]);
+  }
+
+  leads.setFrozenRows(1);
+
+  leads.getRange(1, 1, 1, headers.length)
+    .setFontWeight('bold')
+    .setWrap(true);
+
+  const statuses = [
+    'New',
+    'Contacted',
+    'Qualified',
+    'Needs Details',
+    'Quote in Progress',
+    'Quoted',
+    'Won',
+    'Lost',
+    'Nurture'
+  ];
+
+  const validation = SpreadsheetApp.newDataValidation()
+    .requireValueInList(statuses, true)
+    .setAllowInvalid(false)
+    .build();
+
+  leads.getRange(2, 13, leads.getMaxRows() - 1, 1)
+    .setDataValidation(validation);
+
+  let control = ss.getSheetByName(CONFIG.CONTROL_TAB);
+
+  if (!control) {
+    control = ss.insertSheet(CONFIG.CONTROL_TAB);
+  }
+
+  if (control.getLastRow() === 0) {
+    control.getRange(1, 1, 1, 2)
+      .setValues([['Setting', 'Value']]);
+
+    control.getRange(2, 1, 2, 2).setValues([
+      ['Next Report Due UTC', ''],
+      ['Pending Report', '']
+    ]);
+  }
+
+  control.setFrozenRows(1);
+
+  control.getRange(1, 1, 1, 2)
+    .setFontWeight('bold')
+    .setWrap(true);
+
+  Logger.log('Lead register setup completed.');
+}
+
+
+/**
+ * Test Google Sheet access.
+ */
+function testSpreadsheetAccess() {
+  validateSpreadsheetId_();
+
+  const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+
+  Logger.log('Google Sheet access successful.');
+  Logger.log(
+    'Lead Register exists: ' +
+    Boolean(ss.getSheetByName(CONFIG.LEAD_TAB))
+  );
+  Logger.log(
+    'Report Control exists: ' +
+    Boolean(ss.getSheetByName(CONFIG.CONTROL_TAB))
+  );
+}
+
+
+/**
+ * Find the Netlify enquiry form.
+ */
+function findEnquiryForm() {
+  validateNetlifyConfig_();
+
+  const token = getNetlifyToken_();
+
+  const url =
+    'https://api.netlify.com/api/v1/sites/' +
+    encodeURIComponent(CONFIG.NETLIFY_SITE_ID) +
+    '/forms';
+
+  const response = UrlFetchApp.fetch(url, {
+    method: 'get',
+    headers: {
+      Authorization: 'Bearer ' + token
+    },
+    muteHttpExceptions: true
+  });
+
+  if (response.getResponseCode() !== 200) {
+    throw new Error(
+      'Netlify API returned HTTP ' + response.getResponseCode() +
+      '. Check the Site ID and token permissions.'
+    );
+  }
+
+  const forms = JSON.parse(response.getContentText());
+
+  if (!Array.isArray(forms)) {
+    throw new Error('Unexpected Netlify forms response.');
+  }
+
+  const form = forms.find(function(item) {
+    return item.name === CONFIG.NETLIFY_FORM_NAME;
+  });
+
+  if (!form) {
+    Logger.log(
+      'Form not found: ' + CONFIG.NETLIFY_FORM_NAME
+    );
+    Logger.log(
+      'Available forms: ' +
+      forms.map(function(item) {
+        return item.name;
+      }).join(', ')
+    );
+    return;
+  }
+
+  Logger.log('Form name: ' + form.name);
+  Logger.log('Form ID: ' + form.id);
+  Logger.log('Submission count: ' + form.submission_count);
+}
+
+
+/**
+ * Import new Netlify submissions into Google Sheets.
+ * Existing submission IDs are skipped to prevent duplicates.
+ */
+function syncEnquiriesToSheet() {
+  validateSpreadsheetId_();
+  validateNetlifyConfig_();
+
+  const token = getNetlifyToken_();
+  const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+  const sheet = ss.getSheetByName(CONFIG.LEAD_TAB);
+
+  if (!sheet) {
+    throw new Error(
+      'Lead Register is missing. Run setupLeadRegister first.'
+    );
+  }
+
+  if (sheet.getLastRow() === 0 || sheet.getLastColumn() === 0) {
+    throw new Error(
+      'The Lead Register has no headers. Run setupLeadRegister first.'
+    );
+  }
+
+  const headers = sheet
+    .getRange(1, 1, 1, sheet.getLastColumn())
+    .getDisplayValues()[0];
+
+  // Retrieve forms from Netlify.
+  const formsUrl =
+    'https://api.netlify.com/api/v1/sites/' +
+    encodeURIComponent(CONFIG.NETLIFY_SITE_ID) +
+    '/forms';
+
+  const formsResponse = UrlFetchApp.fetch(formsUrl, {
+    method: 'get',
+    headers: {
+      Authorization: 'Bearer ' + token
+    },
+    muteHttpExceptions: true
+  });
+
+  if (formsResponse.getResponseCode() !== 200) {
+    throw new Error(
+      'Could not retrieve Netlify forms. HTTP ' +
+      formsResponse.getResponseCode()
+    );
+  }
+
+  const forms = JSON.parse(formsResponse.getContentText());
+
+  if (!Array.isArray(forms)) {
+    throw new Error('Unexpected Netlify forms response.');
+  }
+
+  const form = forms.find(function(item) {
+    return item.name === CONFIG.NETLIFY_FORM_NAME;
+  });
+
+  if (!form) {
+    throw new Error(
+      'The form "' + CONFIG.NETLIFY_FORM_NAME +
+      '" was not found on this site.'
+    );
+  }
+
+  // Retrieve submissions, 100 at a time.
+  const submissions = [];
+  let page = 1;
+
+  while (true) {
+    const submissionsUrl =
+      'https://api.netlify.com/api/v1/forms/' +
+      encodeURIComponent(form.id) +
+      '/submissions?page=' + page + '&per_page=100';
+
+    const response = UrlFetchApp.fetch(submissionsUrl, {
+      method: 'get',
+      headers: {
+        Authorization: 'Bearer ' + token
+      },
+      muteHttpExceptions: true
+    });
+
+    if (response.getResponseCode() !== 200) {
+      throw new Error(
+        'Could not retrieve submissions. HTTP ' +
+        response.getResponseCode()
+      );
+    }
+
+    const batch = JSON.parse(response.getContentText());
+
+    if (!Array.isArray(batch)) {
+      throw new Error('Unexpected submissions response.');
+    }
+
+    submissions.push.apply(submissions, batch);
+
+    if (batch.length < 100) {
+      break;
+    }
+
+    page++;
+  }
+
+  // Collect existing Lead IDs from column A.
+  const existingIds = new Set();
+  const lastRow = sheet.getLastRow();
+
+  if (lastRow >= 2) {
+    sheet.getRange(2, 1, lastRow - 1, 1)
+      .getDisplayValues()
+      .forEach(function(row) {
+        if (row[0]) {
+          existingIds.add(String(row[0]));
+        }
+      });
+  }
+
+  // Match form fields despite differences in spaces or underscores.
+  function getField(data, possibleNames) {
+    const keys = Object.keys(data || {});
+
+    for (let i = 0; i < possibleNames.length; i++) {
+      const wanted = possibleNames[i]
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, '');
+
+      const matchedKey = keys.find(function(key) {
+        return key.toLowerCase().replace(/[^a-z0-9]/g, '') === wanted;
+      });
+
+      if (
+        matchedKey &&
+        data[matchedKey] !== null &&
+        data[matchedKey] !== ''
+      ) {
+        return String(data[matchedKey]);
+      }
+    }
+
+    return '';
+  }
+
+  const newRows = [];
+
+  submissions.forEach(function(submission) {
+    const id = String(submission.id || '');
+
+    if (!id || existingIds.has(id)) {
+      return;
+    }
+
+    const data = submission.data || {};
+
+    const name =
+      getField(data, ['name', 'full_name', 'customer_name']) ||
+      submission.name || '';
+
+    const email =
+      getField(data, ['email', 'email_address']) ||
+      submission.email || '';
+
+    const phone =
+      getField(data, ['phone', 'telephone', 'mobile']);
+
+    const country =
+      getField(data, ['country']);
+
+    const product =
+      getField(data, ['product', 'product_sku', 'sku']);
+
+    const message =
+      getField(data, [
+        'message',
+        'enquiry',
+        'inquiry',
+        'enquiry_message',
+        'comments'
+      ]) ||
+      submission.body ||
+      submission.summary ||
+      '';
+
+    const values = {
+      'Lead ID': id,
+      'Submission Timestamp': submission.created_at
+        ? new Date(submission.created_at)
+        : '',
+      'Customer Name': name,
+      'Email': email,
+      'Phone': phone,
+      'Country': country,
+      'Product / SKU': product,
+      'Enquiry Message': message,
+      'Lead Source': 'Netlify enquiry form',
+      'Lead Status': 'New',
+      'Last Updated Timestamp': new Date()
+    };
+
+    const row = headers.map(function(header) {
+      return Object.prototype.hasOwnProperty.call(values, header)
+        ? values[header]
+        : '';
+    });
+
+    newRows.push(row);
+    existingIds.add(id);
+  });
+
+  if (newRows.length > 0) {
+    sheet.getRange(
+      sheet.getLastRow() + 1,
+      1,
+      newRows.length,
+      headers.length
+    ).setValues(newRows);
+  }
+
+  Logger.log(
+    'Sync completed. New leads added: ' + newRows.length
+  );
+  Logger.log(
+    'Previously recorded submissions were skipped.'
+  );
+}
+
+
+/**
+ * Validate spreadsheet configuration.
+ */
+function validateSpreadsheetId_() {
+  if (!CONFIG.SPREADSHEET_ID) {
+    throw new Error(
+      'Enter the Google Sheet ID in CONFIG.SPREADSHEET_ID.'
+    );
+  }
+}
+
+
+/**
+ * Validate Netlify configuration.
+ */
+function validateNetlifyConfig_() {
+  if (!CONFIG.NETLIFY_SITE_ID) {
+    throw new Error(
+      'Enter the correct Netlify Site ID in CONFIG.NETLIFY_SITE_ID.'
+    );
+  }
+
+  if (!CONFIG.NETLIFY_FORM_NAME) {
+    throw new Error(
+      'Set NETLIFY_FORM_NAME in CONFIG.'
+    );
+  }
+}
+
+
+/**
+ * Read the private Netlify token from Script Properties.
+ */
+function getNetlifyToken_() {
+  const token = PropertiesService.getScriptProperties()
+    .getProperty('NETLIFY_ACCESS_TOKEN');
+
+  if (!token) {
+    throw new Error(
+      'NETLIFY_ACCESS_TOKEN is missing. Add it under ' +
+      'Project Settings > Script Properties.'
+    );
+  }
+
+  return token;
+}
+/**
+ * Send a lead report covering the previous 48 hours.
+ * The report is emailed to the account running the script.
+ */
+function sendLeadReport() {
+  const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+  const sheet = ss.getSheetByName(CONFIG.LEAD_TAB);
+
+  if (!sheet || sheet.getLastRow() < 2) {
+    Logger.log('No lead records are available for the report.');
+    return;
+  }
+
+  const recipient = Session.getEffectiveUser().getEmail();
+
+  if (!recipient) {
+    throw new Error(
+      'Could not determine the report recipient. ' +
+      'Set the spreadsheet owner Gmail address in the code.'
+    );
+  }
+
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+
+  const col = {};
+  headers.forEach(function(header, index) {
+    col[header] = index;
+  });
+
+  const now = new Date();
+  const cutoff = new Date(now.getTime() - 48 * 60 * 60 * 1000);
+
+  const recentLeads = data.slice(1).filter(function(row) {
+    const timestamp = row[col['Submission Timestamp']];
+
+    return timestamp instanceof Date &&
+      !isNaN(timestamp.getTime()) &&
+      timestamp >= cutoff &&
+      timestamp <= now;
+  });
+
+  const allLeads = data.slice(1).filter(function(row) {
+    return row[col['Lead ID']];
+  });
+
+  const statuses = {};
+  allLeads.forEach(function(row) {
+    const status = row[col['Lead Status']] || 'Unassigned';
+    statuses[status] = (statuses[status] || 0) + 1;
+  });
+
+  const dueFollowUps = allLeads.filter(function(row) {
+    const due = row[col['Follow-up Due Date']];
+    return due instanceof Date &&
+      !isNaN(due.getTime()) &&
+      due <= now &&
+      row[col['Outcome']] !== 'Won' &&
+      row[col['Outcome']] !== 'Lost';
+  });
+
+  let body = 'BHARADWAJ MANDIR - LEAD REPORT\n\n';
+  body += 'Report period: ' + cutoff.toLocaleString() +
+    ' to ' + now.toLocaleString() + '\n\n';
+
+  body += 'SUMMARY\n';
+  body += 'New enquiries in the last 48 hours: ' +
+    recentLeads.length + '\n';
+  body += 'Total leads recorded: ' + allLeads.length + '\n';
+  body += 'Follow-ups due or overdue: ' + dueFollowUps.length + '\n\n';
+
+  body += 'LEAD STATUS SUMMARY\n';
+
+  Object.keys(statuses).sort().forEach(function(status) {
+    body += status + ': ' + statuses[status] + '\n';
+  });
+
+  body += '\nENQUIRIES RECEIVED IN THE LAST 48 HOURS\n';
+
+  if (recentLeads.length === 0) {
+    body += 'No new enquiries were recorded during this period.\n';
+  } else {
+    recentLeads.forEach(function(row, index) {
+      body += '\n' + (index + 1) + '. ' +
+        (row[col['Customer Name']] || 'Name not provided') + '\n';
+      body += 'Received: ' +
+        row[col['Submission Timestamp']] + '\n';
+      body += 'Email: ' + (row[col['Email']] || 'Not provided') + '\n';
+      body += 'Phone: ' + (row[col['Phone']] || 'Not provided') + '\n';
+      body += 'Product: ' +
+        (row[col['Product / SKU']] || 'Not provided') + '\n';
+      body += 'Message: ' +
+        (row[col['Enquiry Message']] || 'Not provided') + '\n';
+      body += 'Status: ' + (row[col['Lead Status']] || 'Unassigned') + '\n';
+    });
+  }
+
+  body += '\nFOLLOW-UPS DUE OR OVERDUE\n';
+
+  if (dueFollowUps.length === 0) {
+    body += 'No follow-ups are currently overdue or due.\n';
+  } else {
+    dueFollowUps.forEach(function(row, index) {
+      body += '\n' + (index + 1) + '. ' +
+        (row[col['Customer Name']] || 'Name not provided') + '\n';
+      body += 'Follow-up due: ' +
+        row[col['Follow-up Due Date']] + '\n';
+      body += 'Next action: ' +
+        (row[col['Next Action']] || 'Not specified') + '\n';
+      body += 'Status: ' +
+        (row[col['Lead Status']] || 'Unassigned') + '\n';
+    });
+  }
+
+  body += '\nOpen the Bharadwaj Mandir Lead spreadsheet for full details.\n';
+  body += 'This report was generated automatically.';
+
+  MailApp.sendEmail({
+    to: recipient,
+    subject: 'Bharadwaj Mandir Lead Report - Last 48 Hours',
+    body: body
+  });
+
+  Logger.log('Report email sent to: ' + recipient);
+  Logger.log('New enquiries in report: ' + recentLeads.length);
+}
+
+
+/**
+ * Create an automatic report trigger every two days.
+ * Run this function once only to install the trigger.
+ */
+function create48HourReportTrigger() {
+  const existingTriggers = ScriptApp.getProjectTriggers();
+
+  existingTriggers.forEach(function(trigger) {
+    if (trigger.getHandlerFunction() === 'sendLeadReport') {
+      ScriptApp.deleteTrigger(trigger);
+    }
+  });
+
+  ScriptApp.newTrigger('sendLeadReport')
+    .timeBased()
+    .everyDays(2)
+    .create();
+
+  Logger.log('Automatic report trigger created for every two days.');
+}

@@ -24,12 +24,6 @@ export default function Gallery({ items = [] }) {
         ))}
       </div>
 
-      {['All', 'Design Concepts', 'Reference images'].includes(activeFilter) ? (
-        <p className="gallery-image-disclosure" role="note">
-          Design concepts are AI-generated visualisations for inspiration, and reference boards may show illustrative designs. Neither confirms a completed product. Please enquire to confirm design details, materials, dimensions, finish and availability.
-        </p>
-      ) : null}
-
       {filteredItems.length ? (
         <div className="gallery-grid video-gallery-grid">
           {filteredItems.map((item) => item.video ? (

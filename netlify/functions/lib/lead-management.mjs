@@ -1,4 +1,200 @@
-import { createSign } from 'node:crypto'
+import { createHmac, createSign, randomBytes } from 'node:crypto'
+import { gzipSync } from 'node:zlib'
+
+export const LEAD_OPERATIONS_COORDINATOR_TIMEOUT_MS = 15_000
+export const LEAD_REGISTER_PAGE_SIZE = 100
+export const APPS_SCRIPT_REQUEST_LIMIT = 40_000
+export class CoordinatorUnavailableError extends Error {
+  constructor(message, { failurePhase = 'response-validation', httpStatus } = {}) {
+    super(message)
+    this.failurePhase = failurePhase
+    this.httpStatus = httpStatus
+  }
+}
+
+/** Creates the authenticated client for the Apps Script serialization boundary. */
+export function createLeadOperationsCoordinator({
+  url = process.env.AI_REVIEW_COORDINATOR_URL,
+  secret = process.env.AI_REVIEW_COORDINATOR_SECRET,
+  fetchImpl = fetch,
+  now = () => Date.now(),
+  nonce = () => randomBytes(24).toString('hex'),
+  requestTimeoutMs = LEAD_OPERATIONS_COORDINATOR_TIMEOUT_MS,
+} = {}) {
+  const request = async (payload) => {
+    const operation = typeof payload?.operation === 'string' ? payload.operation : 'unknown'
+    if (typeof url !== 'string' || !url.startsWith('https://') || typeof secret !== 'string' || secret.length < 32) {
+      throw new CoordinatorUnavailableError('Apps Script coordinator is not configured.', { failurePhase: 'configuration' })
+    }
+    if (!Number.isFinite(requestTimeoutMs) || requestTimeoutMs <= 0) {
+      throw new CoordinatorUnavailableError('Apps Script coordinator timeout configuration is invalid.', { failurePhase: 'configuration' })
+    }
+    const timestamp = new Date(now()).toISOString()
+    const requestNonce = nonce()
+    const serializedPayload = JSON.stringify(payload)
+    const canonical = `${timestamp}.${requestNonce}.${serializedPayload}`
+    const signature = createHmac('sha256', secret).update(canonical).digest('base64url')
+    const requestBody = JSON.stringify({ timestamp, nonce: requestNonce, signature, payload })
+    if (requestBody.length > APPS_SCRIPT_REQUEST_LIMIT) {
+      throw new CoordinatorUnavailableError('Coordinator request exceeds the supported size limit.', { failurePhase: 'request-validation' })
+    }
+    let response
+    const signal = AbortSignal.timeout(requestTimeoutMs)
+    try {
+      response = await fetchImpl(url, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: requestBody,
+        signal,
+      })
+    } catch (error) {
+      const timedOut = signal.aborted || error?.name === 'TimeoutError' || error?.name === 'AbortError'
+      throw new CoordinatorUnavailableError(
+        timedOut ? 'Apps Script coordinator request timed out.' : 'Apps Script coordinator request failed.',
+        { failurePhase: timedOut ? 'timeout' : 'transport' },
+      )
+    }
+    if (!response.ok) throw new CoordinatorUnavailableError('Apps Script coordinator is unavailable.', {
+      failurePhase: 'http', httpStatus: Number.isInteger(response.status) ? response.status : undefined,
+    })
+    let body
+    try { body = await response.json() } catch {
+      throw new CoordinatorUnavailableError('Apps Script coordinator returned invalid JSON.', { failurePhase: 'invalid-json' })
+    }
+    if (body && body.ok === false) {
+      const safeErrorCodes = ['INVALID_REQUEST', 'UNAUTHORIZED', 'REPLAYED_REQUEST', 'COORDINATOR_FAILURE']
+      const coordinatorError = safeErrorCodes.includes(body.error) ? body.error : 'UNEXPECTED_RESPONSE'
+      throw new CoordinatorUnavailableError(
+        `Apps Script coordinator rejected ${operation} (${coordinatorError}).`,
+        { failurePhase: 'coordinator-response' },
+      )
+    }
+    if (!body || body.ok !== true || !body.result || typeof body.result !== 'object') {
+      throw new CoordinatorUnavailableError(
+        `Apps Script coordinator response validation failed for ${operation}.`,
+        { failurePhase: 'response-validation' },
+      )
+    }
+    return body.result
+  }
+  const readLeadRegister = async () => {
+    const rows = []
+    let offset = 0
+    let snapshotLastRow = null
+    while (true) {
+      const result = await request({
+        operation: 'leadReadRegister', offset, limit: LEAD_REGISTER_PAGE_SIZE, snapshotLastRow,
+      })
+      if (!result || result.accepted !== true || !Number.isSafeInteger(result.snapshotLastRow)
+        || result.snapshotLastRow < 1 || result.offset !== offset || !Number.isSafeInteger(result.nextOffset)
+        || result.nextOffset < offset || result.nextOffset > Math.max(0, result.snapshotLastRow - 1)
+        || typeof result.done !== 'boolean' || !Array.isArray(result.rows)
+        || result.rows.some((row) => !Array.isArray(row) || row.length !== leadHeaders.length
+          || row.some((value) => typeof value !== 'string'))) {
+        throw new CoordinatorUnavailableError('Lead Register response is invalid.', { failurePhase: 'response-validation' })
+      }
+      if (snapshotLastRow === null) snapshotLastRow = result.snapshotLastRow
+      else if (result.snapshotLastRow !== snapshotLastRow) {
+        throw new CoordinatorUnavailableError('Lead Register page snapshot changed.', { failurePhase: 'response-validation' })
+      }
+      rows.push(...result.rows)
+      if (result.done) {
+        if (result.nextOffset !== Math.max(0, snapshotLastRow - 1)) {
+          throw new CoordinatorUnavailableError('Lead Register pagination ended early.', { failurePhase: 'response-validation' })
+        }
+        return rows
+      }
+      if (result.nextOffset === offset) {
+        throw new CoordinatorUnavailableError('Lead Register pagination did not advance.', { failurePhase: 'response-validation' })
+      }
+      offset = result.nextOffset
+    }
+  }
+
+  const requestEnvelopeLength = (payload) => JSON.stringify({
+    timestamp: '2000-01-01T00:00:00.000Z', nonce: '0'.repeat(48), signature: '0'.repeat(43), payload,
+  }).length
+
+  const appendLeadRows = async (rows) => {
+    if (!Array.isArray(rows) || rows.some((row) => !Array.isArray(row) || row.length !== leadHeaders.length
+      || row.some((value) => typeof value !== 'string') || !row[24] || row[24].length > 200)) {
+      throw new CoordinatorUnavailableError('Lead Register append request is invalid.', { failurePhase: 'request-validation' })
+    }
+    if (!rows.length) return { inserted: 0, alreadyPresent: 0 }
+    let inserted = 0
+    let alreadyPresent = 0
+    const appendBatch = async (batch) => {
+      const rowsGzip = gzipSync(Buffer.from(JSON.stringify(batch), 'utf8')).toString('base64')
+      const payload = { operation: 'leadAppend', rows_gzip: rowsGzip }
+      if (batch.length > 1000 || requestEnvelopeLength(payload) > APPS_SCRIPT_REQUEST_LIMIT) {
+        if (batch.length <= 1) {
+          throw new CoordinatorUnavailableError('A Lead Register row exceeds the supported request size.', { failurePhase: 'request-validation' })
+        }
+        const midpoint = Math.ceil(batch.length / 2)
+        await appendBatch(batch.slice(0, midpoint))
+        await appendBatch(batch.slice(midpoint))
+        return
+      }
+      const result = await request(payload)
+      if (!result || result.accepted !== true || !Number.isSafeInteger(result.inserted) || result.inserted < 0
+        || !Number.isSafeInteger(result.alreadyPresent) || result.alreadyPresent < 0
+        || result.inserted + result.alreadyPresent !== batch.length) {
+        throw new CoordinatorUnavailableError('Lead Register append response is invalid.', { failurePhase: 'response-validation' })
+      }
+      inserted += result.inserted
+      alreadyPresent += result.alreadyPresent
+    }
+    for (let offset = 0; offset < rows.length; offset += 1000) {
+      await appendBatch(rows.slice(offset, offset + 1000))
+    }
+    return { inserted, alreadyPresent }
+  }
+
+  const readLeadReportControl = async () => {
+    const result = await request({ operation: 'leadReadReportControl' })
+    const keys = ['last_report_end_utc', 'next_report_due_utc', 'pending_report_end_utc', 'pending_report_body']
+    if (!result || result.accepted !== true || !result.entries || typeof result.entries !== 'object'
+      || Array.isArray(result.entries) || Object.keys(result.entries).some((key) => !keys.includes(key))
+      || keys.some((key) => typeof result.entries[key] !== 'string')) {
+      throw new CoordinatorUnavailableError('Report Control response is invalid.', { failurePhase: 'response-validation' })
+    }
+    return new Map(keys.map((key) => [key, result.entries[key]]))
+  }
+
+  const writeLeadReportControl = async (entries) => {
+    const keys = ['last_report_end_utc', 'next_report_due_utc', 'pending_report_end_utc', 'pending_report_body']
+    if (!entries || typeof entries !== 'object' || Array.isArray(entries)
+      || Object.getPrototypeOf(entries) !== Object.prototype && Object.getPrototypeOf(entries) !== null
+      || Object.keys(entries).some((key) => !keys.includes(key) || typeof entries[key] !== 'string')) {
+      throw new CoordinatorUnavailableError('Report Control update is invalid.', { failurePhase: 'request-validation' })
+    }
+    let wireEntries = entries
+    if (requestEnvelopeLength({ operation: 'leadWriteReportControl', entries }) > APPS_SCRIPT_REQUEST_LIMIT) {
+      if (typeof entries.pending_report_body !== 'string') {
+        throw new CoordinatorUnavailableError('Report Control update exceeds the supported request size.', { failurePhase: 'request-validation' })
+      }
+      wireEntries = { ...entries, pending_report_body_gzip: gzipSync(Buffer.from(entries.pending_report_body, 'utf8')).toString('base64') }
+      delete wireEntries.pending_report_body
+      if (requestEnvelopeLength({ operation: 'leadWriteReportControl', entries: wireEntries }) > APPS_SCRIPT_REQUEST_LIMIT) {
+        throw new CoordinatorUnavailableError('Report Control body exceeds the supported request size.', { failurePhase: 'request-validation' })
+      }
+    }
+    const result = await request({ operation: 'leadWriteReportControl', entries: wireEntries })
+    if (!result || result.accepted !== true || !Number.isSafeInteger(result.updated)
+      || result.updated !== Object.keys(entries).length) {
+      throw new CoordinatorUnavailableError('Report Control update response is invalid.', { failurePhase: 'response-validation' })
+    }
+    return result
+  }
+
+  return {
+    requestTimeoutMs,
+    readLeadRegister,
+    appendLeadRows,
+    readLeadReportControl,
+    writeLeadReportControl,
+  }
+}
 
 export const leadStatuses = ['New', 'Contacted', 'Qualified', 'Needs Details', 'Quote in Progress', 'Quoted', 'Won', 'Lost', 'Nurture']
 export const quoteStatuses = ['Not started', 'In progress', 'Sent', 'Accepted', 'Declined', 'Not applicable']
@@ -20,7 +216,6 @@ const productNames = {
   'ornate-traditional-mandir': 'Ornate Traditional Mandir',
 }
 
-const controlKeys = ['last_report_end_utc', 'next_report_due_utc', 'pending_report_end_utc', 'pending_report_body']
 let tokenCache
 
 export function cleanText(value, maxLength = 4000) {
@@ -213,7 +408,7 @@ function requiredEnv(name) {
   return value
 }
 
-async function getGoogleAccessToken() {
+async function getGoogleAccessToken(fetchImpl = fetch) {
   if (tokenCache && tokenCache.expiresAt > Date.now() + 60000) return tokenCache.value
   const email = requiredEnv('GOOGLE_SERVICE_ACCOUNT_EMAIL')
   const privateKey = requiredEnv('GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY').replace(/\\n/g, '\n')
@@ -226,7 +421,7 @@ async function getGoogleAccessToken() {
   signer.update(unsigned)
   signer.end()
   const assertion = `${unsigned}.${signer.sign(privateKey, 'base64url')}`
-  const response = await fetch('https://oauth2.googleapis.com/token', {
+  const response = await fetchImpl('https://oauth2.googleapis.com/token', {
     method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({ grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer', assertion }),
   })
@@ -246,40 +441,22 @@ async function googleRequest(path, options = {}) {
   return response.status === 204 ? null : response.json()
 }
 
-function leadRange(suffix) {
-  const tab = process.env.GOOGLE_SHEET_TAB || 'Lead Register'
-  return `${encodeURIComponent(`'${tab.replace(/'/g, "''")}'!${suffix}`)}`
+function leadOperationsCoordinator(coordinator) {
+  return coordinator || createLeadOperationsCoordinator({ requestTimeoutMs: LEAD_OPERATIONS_COORDINATOR_TIMEOUT_MS })
+}
+export async function readLeadRegister(coordinator) {
+  return leadOperationsCoordinator(coordinator).readLeadRegister()
 }
 
-function controlRange(suffix) {
-  const tab = process.env.GOOGLE_CONTROL_TAB || 'Report Control'
-  return `${encodeURIComponent(`'${tab.replace(/'/g, "''")}'!${suffix}`)}`
-}
-
-export async function readLeadRegister() {
-  const response = await googleRequest(`values/${leadRange('A:AI')}?valueRenderOption=UNFORMATTED_VALUE`)
-  const values = response.values || []
-  if (!values.length || JSON.stringify(values[0]) !== JSON.stringify(leadHeaders)) {
-    throw new Error('Google Sheet lead-register headers are missing or do not match the documented schema.')
-  }
-  const dateColumns = new Set([1, 17, 19, 23, 27])
-  return values.slice(1).filter((row) => row.some((value) => value !== '')).map((row) => row.map((value, index) => {
-    if (dateColumns.has(index) && typeof value === 'number') return new Date((value - 25569) * 86400000).toISOString()
-    return String(value ?? '')
-  }))
-}
-
-export async function appendNewLeads(rows, existingRows) {
-  const pending = selectUnseenLeadRows(rows, existingRows)
+export async function appendNewLeads(rows, coordinator) {
+  const pending = selectUnseenLeadRows(rows, [])
   if (!pending.length) return 0
-  await googleRequest(`values/${leadRange('A:AI')}:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`, {
-    method: 'POST', body: JSON.stringify({ values: pending }),
-  })
-  return pending.length
+  const result = await leadOperationsCoordinator(coordinator).appendLeadRows(pending)
+  return result.inserted
 }
 
 export async function setupLeadSheets({ fetchImpl = fetch } = {}) {
-  const token = await getGoogleAccessToken()
+  const token = await getGoogleAccessToken(fetchImpl)
   const spreadsheetId = encodeURIComponent(requiredEnv('GOOGLE_SPREADSHEET_ID'))
   const base = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}`
   const headers = { authorization: `Bearer ${token}`, 'content-type': 'application/json' }
@@ -289,7 +466,8 @@ export async function setupLeadSheets({ fetchImpl = fetch } = {}) {
   const titles = new Set((metadata.sheets || []).map((sheet) => sheet.properties.title))
   const leadTab = process.env.GOOGLE_SHEET_TAB || 'Lead Register'
   const controlTab = process.env.GOOGLE_CONTROL_TAB || 'Report Control'
-  const addRequests = [leadTab, controlTab].filter((title) => !titles.has(title)).map((title) => ({ addSheet: { properties: { title } } }))
+  const addRequests = [leadTab, controlTab]
+    .filter((title) => !titles.has(title)).map((title) => ({ addSheet: { properties: { title } } }))
   if (addRequests.length) {
     const response = await fetchImpl(`${base}:batchUpdate`, { method: 'POST', headers, body: JSON.stringify({ requests: addRequests }), signal: AbortSignal.timeout(12000) })
     if (!response.ok) throw new Error(`Google sheet tab creation failed (HTTP ${response.status}).`)
@@ -351,46 +529,69 @@ export async function setupLeadSheets({ fetchImpl = fetch } = {}) {
   return { leadTab, controlTab }
 }
 
-export async function readReportControl() {
-  const response = await googleRequest(`values/${controlRange('A:B')}`)
-  return new Map((response.values || []).slice(1).filter((row) => row[0]).map(([key, value]) => [key, value || '']))
+export async function readReportControl(coordinator) {
+  return leadOperationsCoordinator(coordinator).readLeadReportControl()
 }
 
-export async function writeReportControl(entries) {
-  const startRow = 2
-  const updates = Object.entries(entries).map(([key, value]) => {
-    const rowNumber = controlKeys.indexOf(key) + startRow
-    if (rowNumber < startRow) throw new Error('Unknown report control key.')
-    return { range: controlRange(`B${rowNumber}`), values: [[value]] }
-  })
-  if (!updates.length) return
-  await googleRequest('values:batchUpdate', {
-    method: 'POST', body: JSON.stringify({ valueInputOption: 'RAW', data: updates }),
-  })
+export async function writeReportControl(entries, coordinator) {
+  return leadOperationsCoordinator(coordinator).writeLeadReportControl(entries)
 }
 
-export async function fetchNetlifySubmissions({ state = 'verified', fetchImpl = fetch } = {}) {
+export async function fetchNetlifySubmissions({
+  state = 'verified', fetchImpl = fetch, deadlineAtMs, requestTimeoutMs = 12000,
+  minimumRemainingMs = 0, nowMs = () => Date.now(), returnMetadata = false, logger = console,
+} = {}) {
+  if (state !== 'verified' && state !== 'spam') throw new TypeError('Submission state must be verified or spam.')
   const token = requiredEnv('NETLIFY_ACCESS_TOKEN')
   const formId = requiredEnv('NETLIFY_FORM_ID')
   const pageSize = 100
   const maxPages = Number(process.env.NETLIFY_SYNC_MAX_PAGES || 100)
   const submissions = []
+  let truncated = false
+  const finish = () => returnMetadata ? { submissions, complete: !truncated, truncated } : submissions
   const fetchPage = async (page) => {
+    const remaining = deadlineAtMs === undefined ? Infinity : deadlineAtMs - nowMs()
+    if (remaining <= minimumRemainingMs) {
+      truncated = true
+      return null
+    }
+    const timeoutMs = Math.max(1, Math.floor(Math.min(requestTimeoutMs, remaining - minimumRemainingMs)))
     const params = new URLSearchParams({ page: String(page), per_page: String(pageSize) })
     if (state === 'spam') params.set('state', 'spam')
-    const response = await fetchImpl(`https://api.netlify.com/api/v1/forms/${encodeURIComponent(formId)}/submissions?${params}`, {
-      headers: { authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(12000),
-    })
-    if (!response.ok) throw new Error(`Netlify submissions API failed (HTTP ${response.status}).`)
-    const current = await response.json()
+    let timer
+    let current
+    try {
+      current = await Promise.race([
+        Promise.resolve().then(async () => {
+          const response = await fetchImpl(`https://api.netlify.com/api/v1/forms/${encodeURIComponent(formId)}/submissions?${params}`, {
+            headers: { authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(timeoutMs),
+          })
+          if (!response.ok) {
+            // State and status are sufficient to identify which list failed. Never
+            // log the URL, authorization header, response body, or submission data.
+            logger.error(`Netlify ${state} submissions request failed (HTTP ${response.status}).`)
+            throw new Error(`Netlify ${state} submissions API failed (HTTP ${response.status}).`)
+          }
+          return response.json()
+        }),
+        new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('NETLIFY_REQUEST_TIMEOUT')), timeoutMs) }),
+      ])
+    } finally { clearTimeout(timer) }
     if (!Array.isArray(current)) throw new Error('Netlify submissions API returned an invalid response.')
     return current
   }
   for (let page = 1; page <= maxPages; page += 1) {
     const current = await fetchPage(page)
+    if (current === null) return finish()
     submissions.push(...current)
-    if (current.length < pageSize) return submissions
-    if (page === maxPages && (await fetchPage(page + 1)).length === 0) return submissions
+    if (current.length < pageSize) return finish()
+    if (page === maxPages) {
+      if (deadlineAtMs !== undefined || returnMetadata) {
+        truncated = true
+        throw new Error('Netlify reconciliation exceeded NETLIFY_SYNC_MAX_PAGES; increase the configured limit or archive old submissions.')
+      }
+      if ((await fetchPage(page + 1)).length === 0) return finish()
+    }
   }
   throw new Error('Netlify reconciliation exceeded NETLIFY_SYNC_MAX_PAGES; increase the configured limit or archive old submissions.')
 }

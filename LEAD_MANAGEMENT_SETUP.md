@@ -24,34 +24,26 @@ For UI-only work, `npm run dev` starts Vite but does not serve Netlify Functions
 
 ## Architecture and data flow
 
-1. The visitor submits the existing `enquiry` form to Netlify Forms. Netlify remains the intake system of record and continues to send the already configured customer/sales notifications. The React form and its success behavior are unchanged by this integration.
-2. An hourly Netlify Scheduled Function reads verified submissions for the configured form from the authenticated Netlify Forms API. It also reads the spam state for reporting. The function is server-side and has no public HTTP route.
-3. Each accepted submission is validated and copied to the private Google Sheet. The Netlify submission ID is the stable lead key; the function reads existing IDs before append. Similar submissions with the same normalized email, product interest and message in the recent 48 hours are retained and flagged for human review rather than discarded.
-4. The hourly process retries temporary API errors and re-reads Netlify on its next run. If Google Sheets is unavailable, the accepted Netlify form and existing email notification remain intact; the next reconciliation can recover missing rows. Function logs contain failure category/status, not form data or credentials.
-5. A report is prepared from actual Netlify and Sheet records every 48 hours after the first scheduled run establishes the initial due time. An hourly scheduler checks the due time held in the private `Report Control` tab. Resend idempotency keys and a persisted pending report body reduce duplicate delivery on retries.
+1. Visitors submit the existing `enquiry` form to Netlify Forms. The site, form validation, success behavior, and existing Netlify notification remain unchanged.
+2. Apps Script polls the existing Netlify Forms form hourly, maps verified enquiries to the existing 35-column Lead Register, and checks spam submissions for report counts.
+3. Apps Script uses `SpreadsheetApp` directly. It deduplicates under ScriptLock by Netlify Submission ID and never overwrites an existing lead. Report Control retains the 48-hour due time and pending-report state.
+4. The hourly Apps Script run sends a report when due. It stores the pending window and report body first, then uses the existing Resend idempotency key so a retry for the same report window does not send a second email.
 
-This uses Netlify's authenticated Forms API polling instead of relying solely on a best-effort outgoing webhook. It also avoids adding work to the user's form POST, so Sheet outages cannot make the customer-facing Netlify form/email path fail. A successful Netlify notification is not proof of a successful Sheet sync; monitor scheduled-function logs and the register.
+Function errors are logged without submission contents, contact information, or credentials. An uncertain write is not retried in the same invocation; the next scheduled reconciliation can safely deduplicate a persisted submission ID.
 
-Netlify runs Scheduled Functions only on published deploys. The schedule is hourly UTC; the report gate provides the 48-hour cadence. [Netlify Scheduled Functions](https://docs.netlify.com/build/functions/scheduled-functions/) · [Netlify Forms submissions API](https://docs.netlify.com/manage/forms/submissions/) · [Netlify functions environment variables](https://docs.netlify.com/build/functions/environment-variables/).
+## Lead Register schema
 
-## Lead register schema
+The existing `Lead Register` keeps its 35 columns in this order:
 
-The setup script creates these tabs:
-
-- **Lead Register**: one row per unique Netlify submission, status dropdown, quote-status dropdown, outcome dropdown, date columns, consent values and integration metadata.
-- **Report Control**: private scheduler state. Do not edit the control key names or pending report values.
-
-Columns, in order:
-
-1. Lead ID (`BM-` plus Netlify submission ID)
+1. Lead ID
 2. Submission timestamp
 3. Customer name
 4. Email
 5. Phone
 6. Country
-7. Product name or SKU (maps known product IDs; otherwise keeps the submitted ID/interest)
+7. Product name or SKU
 8. Enquiry message
-9. Lead source (UTM source, otherwise landing page/page URL, otherwise `Unattributed`)
+9. Lead source
 10. UTM source
 11. UTM medium
 12. UTM campaign
@@ -66,8 +58,8 @@ Columns, in order:
 21. Quote status
 22. Outcome
 23. Internal notes
-24. Last updated timestamp (set at intake; update manually when staff edit a row)
-25. Netlify Submission ID (technical deduplication key)
+24. Last updated timestamp
+25. Netlify Submission ID
 26. City
 27. Product interest
 28. First human response timestamp
@@ -76,80 +68,77 @@ Columns, in order:
 31. Desired timeline
 32. Delivery needs
 33. Possible duplicate review
-34. Enquiry processing consent (`Yes`/`No` from the actual checkbox value)
-35. Marketing consent (`Yes`/`No`; unchecked is recorded as `No`)
+34. Enquiry processing consent
+35. Marketing consent
 
-Statuses: `New`, `Contacted`, `Qualified`, `Needs Details`, `Quote in Progress`, `Quoted`, `Won`, `Lost`, `Nurture`. Quote status and outcome also have dropdowns. Assign actual names only after the business supplies them. Optional server variables `LEAD_OWNER_NAME`, `LEAD_BACKUP_OWNER_NAME`, `LEAD_OWNER_OPTIONS`, and `LEAD_BACKUP_OWNER_OPTIONS` set defaults/dropdown options; blank values are intentionally left blank. Rerun the setup command after changing owner option variables.
+Lead status, quote status, and outcome retain their existing dropdown values. Submission ID remains the synchronization deduplication key. The setup utility is for provisioning a new workbook; do not run it against the existing production workbook as part of this cleanup.
 
-The sheet does not receive uploaded file contents or private file links. Restrict the spreadsheet to authorized business users and the service account only. Protect the Report Control tab/ranges from routine edits while retaining the service account's ability to update them.
+## Apps Script Lead Operations
 
-## Google Sheets setup
+The local standalone Lead Management source is [`scripts/apps-script/Code.gs`](scripts/apps-script/Code.gs). It uses `SpreadsheetApp` directly and does not require a Web App coordinator, service-account key, or AI Review/qualification code. It validates the existing 35-column Lead Register and Report Control headers and does not clear or rewrite existing records.
 
-1. An authorized business Google account creates the spreadsheet and retains ownership. Copy the spreadsheet ID from the URL (`/spreadsheets/d/<ID>/edit`).
-2. Create/select a Google Cloud project and enable the Google Sheets API.
-3. Create a dedicated service account for this integration. Share only this spreadsheet with its service-account email as **Editor**. Do not grant access to a Drive folder or unrelated spreadsheets.
-4. Provide the private key and service-account email to the server configuration below. Do not commit the JSON key or place it in any `VITE_` variable.
-5. Run the setup script once. It creates the Lead Register and Report Control tabs if needed, installs the header row, freezes the header and applies dropdown/date validation. Existing lead rows and Report Control values are preserved; the lead header row is rewritten to the documented schema.
+`runLeadOperationsHourly()` fetches verified and spam form submissions, appends only verified records, then checks Report Control for a due report. `syncEnquiriesToSheet()` is available for controlled manual recovery. Run `setupHourlyLeadOperationsTrigger()` once to install an hourly time-driven trigger; it is idempotent and does not remove other triggers. Report timing remains governed by the existing `next_report_due_utc` value and pending-report fields.
+
+The existing Report Control keys remain `last_report_end_utc`, `next_report_due_utc`, `pending_report_end_utc`, and `pending_report_body`. An uncertain email attempt keeps the pending window and reuses the same Resend idempotency key on a later run.
+
+Required Apps Script Script Properties:
+
+- `LEAD_SPREADSHEET_ID`: the existing workbook ID.
+- `NETLIFY_ACCESS_TOKEN`: token allowed to read the existing form submissions.
+- `NETLIFY_FORM_ID`: ID of the existing `enquiry` form.
+- `RESEND_API_KEY`, `REPORT_FROM_EMAIL`, `REPORT_TO_EMAIL`: send scheduled reports through the existing Resend workflow.
+- `REPORT_TIMEZONE`: optional, defaults to `Asia/Kolkata`.
+- `NETLIFY_SYNC_MAX_PAGES`: optional, defaults to 100.
+- `LEAD_OWNER_NAME` and `LEAD_BACKUP_OWNER_NAME`: optional initial owner defaults.
+
+Do not run `setupLeadRegister()` from the old backup: its 23-column schema does not match this workbook. This standalone source is local only; it has not been deployed or run against production.
 
 ## Netlify and email configuration
 
-Set these under the Netlify site's **Environment variables** with function/runtime availability in the production context. Use encrypted/sensitive values for credentials. Never paste secrets into chat or frontend variables.
+Keep these server-only Netlify variables:
 
 | Variable | Required | Purpose |
 | --- | --- | --- |
-| `GOOGLE_SERVICE_ACCOUNT_EMAIL` | Yes | Dedicated Google service-account identity |
-| `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY` | Yes | Google service-account RSA private key; secure Netlify value, escaped `\\n` accepted |
-| `GOOGLE_SPREADSHEET_ID` | Yes | Target spreadsheet identifier |
-| `GOOGLE_SHEET_TAB` | No | Defaults to `Lead Register` |
-| `GOOGLE_CONTROL_TAB` | No | Defaults to `Report Control` |
-| `NETLIFY_ACCESS_TOKEN` | Yes | Netlify API token authorized to read this site's form submissions; use a dedicated account/token with the least site access available |
-| `NETLIFY_FORM_ID` | Yes | ID for the `enquiry` form. Get it from the site's Forms API/UI after it is active. The code filters by this ID, not other forms. |
-| `NETLIFY_SYNC_MAX_PAGES` | No | Maximum pages to scan per state; defaults to 100 pages of 100 records. Increase for a larger history and check scheduled function runtime. |
-| `RESEND_API_KEY` | Yes for reports | Server-only Resend API key |
-| `REPORT_FROM_EMAIL` | Yes for reports | Sender address verified by Resend |
-| `REPORT_TO_EMAIL` | Yes for reports | Approved reporting recipient |
-| `REPORT_TIMEZONE` | No | IANA timezone used for report display; defaults to `Asia/Kolkata`. Window boundaries are exact UTC instants. |
-| `LEAD_OWNER_NAME` / `LEAD_BACKUP_OWNER_NAME` | No | Actual owner defaults; leave blank until supplied |
-| `LEAD_OWNER_OPTIONS` / `LEAD_BACKUP_OWNER_OPTIONS` | No | Comma-separated actual names for dropdown setup; leave blank until supplied |
+| `NETLIFY_ACCESS_TOKEN` | Yes | Reads submissions for the existing form |
+| `NETLIFY_FORM_ID` | Yes | Selects the existing `enquiry` form |
+| `AI_REVIEW_COORDINATOR_URL` | Transition only | Required by the currently deployed Netlify Lead Operations function until that function is retired after Apps Script validation |
+| `AI_REVIEW_COORDINATOR_SECRET` | Transition only | HMAC key for the currently deployed Netlify function during migration |
+| `NETLIFY_SYNC_MAX_PAGES` | No | Maximum pages per form scan; defaults to 100 |
+| `RESEND_API_KEY` | Required when a report is due | Sends the 48-hour report |
+| `REPORT_FROM_EMAIL` | Required when a report is due | Verified Resend sender |
+| `REPORT_TO_EMAIL` | Required when a report is due | Report recipient |
+| `REPORT_TIMEZONE` | No | Report display timezone; defaults to `Asia/Kolkata` |
+| `LEAD_OWNER_NAME` / `LEAD_BACKUP_OWNER_NAME` | No | Initial assigned-owner defaults |
+| `LEAD_OWNER_OPTIONS` / `LEAD_BACKUP_OWNER_OPTIONS` | No | Optional owner dropdown lists for one-time sheet setup |
 
-Find the form ID in Netlify's authorized API response from `GET /api/v1/sites/{site_id}/forms` by matching `name` equal to `enquiry`. Do not put the Netlify token in a browser request. The existing Netlify submission email notification is configured in the Netlify UI and is not changed by these functions.
+The standalone Apps Script workflow does not use Netlify Google service-account variables. Keep the coordinator URL and secret until the existing Netlify scheduled function is retired; remove them only after cutover is complete.
 
-## One-time sheet setup
+For a new workbook only, the existing setup utility may be run in a secure environment with its required Google credentials. It creates or validates the Lead Register and Report Control tabs, headers, and lead dropdowns. It is not needed for the already verified production workbook.
 
-The current local `.env.example` has placeholders only. Do not place Google keys in `.env.example`. For local setup, use Node 20.6+ and a secrets file stored outside the repository with restrictive file permissions, then run:
-
-```powershell
-node --env-file="C:\secure\bharadwaj-lead-secrets.env" scripts/setup-lead-register.mjs
-```
-
-The secure file should contain only the Google service-account email, private key and spreadsheet ID, plus optional tab/owner-choice variables. Do not put it in the project folder. Alternatively run the setup script in an approved secure environment with those variables already injected. The setup script does not read a Netlify API token or Resend key.
+The existing Netlify form notification is configured in Netlify and remains independent of Sheets synchronization and report email.
 
 ## Reporting and recovery
 
-- The scheduler runs hourly in UTC and reconciles verified and spam submissions from the `enquiry` form. Verified records are copied; spam records are counted, not copied to the customer lead register.
-- The first successful scheduler invocation records a first report due time 48 hours later. Reports then use the preceding 48 hours, displayed in `REPORT_TIMEZONE`; the exact UTC bounds are included in each report.
-- The report includes unique register leads, verified submissions, spam, possible duplicates, countries, qualified leads, product interests, recorded source/UTMs, response-time median/P90 where first-response timestamps exist, current pipeline, follow-ups, and won/lost totals. Sessions/conversion metrics explicitly say unavailable until analytics is connected.
-- Staff must enter `First human response timestamp` to contribute to response-time percentiles. These metrics are unavailable when no rows have that timestamp.
-- Transient network/API failures retry up to three times with backoff. A later hourly reconciliation retries the durable Netlify source. A Google append whose response is lost is checked against submission IDs on the next run.
-- The report body and pending window are stored in the private control tab before sending. Resend idempotency keys protect retries. If a pending report is older than 23 hours, automatic sending stops to avoid a retry beyond the provider's 24-hour idempotency window; inspect function logs and the email provider before resolving the pending control row.
-- If submissions exceed the configured page limit, the function fails visibly and does not silently claim a complete sync/report. Increase the limit and deploy. Reconciliation scans verified/spam form submissions from the API; very large histories may require splitting/archive procedures to stay inside Netlify's scheduled-function time limit.
-- Duplicate detection by submission ID is deterministic. Similar customer submissions are retained and flagged, not discarded. Google Sheets does not enforce a unique constraint, so do not run concurrent manual copies of the sync process.
-- The existing Netlify form/email path is independent. A Sheet or report error does not send a failure response to the customer or retract the accepted Netlify submission.
+- The hourly Apps Script trigger reads verified and spam submissions. Verified records are copied to Lead Register; spam is counted, not copied.
+- The first successful run records the first report due time 48 hours later. Subsequent reports cover the preceding 48 hours using `REPORT_TIMEZONE` for display and exact UTC bounds internally.
+- Report Control stores the pending window and report body before delivery. Resend idempotency keys protect repeated email attempts. If a pending report is older than 23 hours, automatic sending stops to avoid retrying outside the provider idempotency window; review the control state and email provider before manual recovery.
+- The report includes register leads, verified/spam counts, possible duplicates, countries, product interests, sources/UTMs, response-time metrics when staff have recorded them, current pipeline, follow-ups, and won/lost totals. Analytics metrics remain explicitly unavailable until connected.
+- Similar enquiries are retained and flagged rather than discarded. Submission ID is the deterministic deduplication key. Do not run multiple manual sync copies concurrently.
+- A Netlify form or notification success does not guarantee a completed Sheets write. The next hourly reconciliation can repair missing rows safely.
 
-## Build, tests, deploy and production verification
+## Build, tests, and deployment
 
-Run locally:
+Run the local checks:
 
 ```powershell
 npm.cmd run lint
 npm.cmd run build
 npm.cmd run test:lead
+npm.cmd run test:assistant
 node --check netlify/functions/lead-operations.mjs
 node --check netlify/functions/lib/lead-management.mjs
 ```
 
-Netlify Functions are outside `dist`; a static-folder upload alone does **not** deploy the scheduled function. Deploy the repository through the connected Netlify build (command `npm run build`, publish directory `dist`, functions directory `netlify/functions`) or use an authenticated Netlify CLI build/deploy such as `netlify deploy --build --prod`. Do not use drag-and-drop `dist` as the deployment method for this integration.
+Netlify Functions are outside `dist`; publish through the repository build with `functions = "netlify/functions"` so the hourly Lead Operations function is included. Do not use a static-only upload for this workflow.
 
-After deploy, confirm `lead-operations` is listed as a scheduled function. Run the documented/available function test in the Netlify UI if supported, or wait for its hourly schedule, then check function logs for a reconciliation result. Submit a real enquiry and verify separately that (1) Netlify Forms still records it, (2) the existing notification email still arrives, and (3) one matching row appears in the configured Sheet. Re-run/allow the next hourly sync to confirm no second row is added. Check spam using a controlled test only if appropriate; don't repeatedly submit artificial data that may trip spam filtering.
-
-The local tests use fixtures and mocks; no live Google, Netlify API, Resend, production form, notification inbox or scheduled email was available to verify from this workspace. Production verification remains pending until the business configures credentials and runs those checks.
+Before cutover, test the Apps Script workflow against a test workbook with synthetic submissions and a mocked or test Resend account. Keep the current Netlify Lead Operations deployed until sync, deduplication, Report Control, and report idempotency are verified. Then coordinate retiring its schedule with installing the Apps Script trigger so two report senders do not run independently. No production settings or deployments are changed by this local work.

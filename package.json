@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "test": "npm run test:lead && npm run test:assistant",
     "check:assets": "node scripts/check-assets.mjs",
-    "test:lead": "node --test tests/lead-management.test.mjs",
+    "test:lead": "node --test tests/lead-management.test.mjs tests/lead-scheduled-operations.test.mjs tests/apps-script-coordinator.test.mjs tests/apps-script-coordinator-runtime.test.mjs",
     "test:assistant": "node --test tests/ai-assistant.test.mjs",
     "preview": "vite preview"
   },

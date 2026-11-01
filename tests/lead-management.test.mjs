@@ -14,10 +14,9 @@ import {
   retryTransient,
   selectUnseenLeadRows,
 } from '../netlify/functions/lib/lead-management.mjs'
-import leadOperations, { config as leadOperationsConfig } from '../netlify/functions/lead-operations.mjs'
+import leadOperations, { config as leadOperationsConfig, createLeadOperations } from '../netlify/functions/lead-operations.mjs'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-
 const submission = (id, data = {}) => ({
   id,
   created_at: '2026-10-10T08:00:00.000Z',
@@ -25,6 +24,9 @@ const submission = (id, data = {}) => ({
 })
 
 test('register schema includes requested columns and controlled workflow options', () => {
+  assert.equal(leadHeaders.length, 35)
+  assert.deepEqual(leadHeaders.slice(0, 5), ['Lead ID', 'Submission timestamp', 'Customer name', 'Email', 'Phone'])
+  assert.deepEqual(leadHeaders.slice(-7), ['Project dimensions', 'Budget', 'Desired timeline', 'Delivery needs', 'Possible duplicate review', 'Enquiry processing consent', 'Marketing consent'])
   for (const name of [
     'Lead ID', 'Submission timestamp', 'Customer name', 'Email', 'Phone', 'Country',
     'Product name or SKU', 'Enquiry message', 'Lead source', 'Lead status', 'Assigned owner',
@@ -122,6 +124,164 @@ test('the synchronizer is a scheduled function, not a public unauthenticated end
   assert.deepEqual(leadOperationsConfig, { schedule: '0 * * * *' })
 })
 
+test('Lead Operations preserves the hourly sync workflow through the Apps Script coordinator', async () => {
+  const envNames = [
+    'NETLIFY_ACCESS_TOKEN', 'NETLIFY_FORM_ID', 'GOOGLE_SERVICE_ACCOUNT_EMAIL',
+    'GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY', 'GOOGLE_SPREADSHEET_ID',
+  ]
+  const previous = Object.fromEntries(envNames.map((name) => [name, process.env[name]]))
+  process.env.NETLIFY_ACCESS_TOKEN = 'synthetic-token'
+  process.env.NETLIFY_FORM_ID = 'synthetic-form'
+  for (const name of envNames.slice(2)) delete process.env[name]
+  const existingId = 'saved-lead'
+  const appended = []
+  const control = new Map([['next_report_due_utc', '2099-01-01T00:00:00.000Z']])
+  const logs = []
+  try {
+    const handler = createLeadOperations({
+      coordinatorFactory: ({ requestTimeoutMs }) => {
+        assert.equal(requestTimeoutMs, 15_000)
+        return {
+          appendLeadRows: async (rows) => {
+            const unseen = rows.filter((row) => row[24] !== existingId)
+            appended.push(...unseen)
+            return { inserted: unseen.length, alreadyPresent: rows.length - unseen.length }
+          },
+          readLeadReportControl: async () => new Map(control),
+          writeLeadReportControl: async (entries) => { for (const [key, value] of Object.entries(entries)) control.set(key, value); return { accepted: true } },
+          readLeadRegister: async () => [],
+        }
+      },
+      fetchImpl: async () => ({ ok: true, json: async () => [submission('saved-lead'), submission('fresh-lead')] }),
+      logger: { log: (message) => logs.push(message), error: (message) => logs.push(message) },
+    })
+    await handler()
+    assert.equal(appended.length, 1)
+    assert.equal(appended[0][24], 'fresh-lead')
+    assert.equal(logs.includes('Lead register reconciled; next 48-hour report is not due.'), true)
+    assert.equal(control.get('next_report_due_utc'), '2099-01-01T00:00:00.000Z')
+  } finally {
+    for (const [name, value] of Object.entries(previous)) {
+      if (value === undefined) delete process.env[name]
+      else process.env[name] = value
+    }
+  }
+})
+
+test('Lead Operations preserves the 48-hour pending report and email idempotency flow', async () => {
+  const envNames = ['NETLIFY_ACCESS_TOKEN', 'NETLIFY_FORM_ID', 'RESEND_API_KEY', 'REPORT_FROM_EMAIL', 'REPORT_TO_EMAIL']
+  const previous = Object.fromEntries(envNames.map((name) => [name, process.env[name]]))
+  Object.assign(process.env, {
+    NETLIFY_ACCESS_TOKEN: 'synthetic-token', NETLIFY_FORM_ID: 'synthetic-form',
+    RESEND_API_KEY: 'synthetic-resend-key', REPORT_FROM_EMAIL: 'from@example.test', REPORT_TO_EMAIL: 'to@example.test',
+  })
+  const due = new Date(Date.now() - 60_000).toISOString()
+  const reportSubmission = submission('report-lead')
+  reportSubmission.created_at = new Date(Date.now() - 60 * 60_000).toISOString()
+  const leadRow = normalizeLead(reportSubmission)
+  const control = new Map([
+    ['last_report_end_utc', ''], ['next_report_due_utc', due],
+    ['pending_report_end_utc', ''], ['pending_report_body', ''],
+  ])
+  const updates = []
+  let emailRequest
+  try {
+    const handler = createLeadOperations({
+      coordinatorFactory: () => ({
+        appendLeadRows: async (rows) => ({ inserted: rows.length, alreadyPresent: 0 }),
+        readLeadReportControl: async () => new Map(control),
+        writeLeadReportControl: async (entries) => {
+          updates.push({ ...entries })
+          for (const [key, value] of Object.entries(entries)) control.set(key, value)
+          return { accepted: true }
+        },
+        readLeadRegister: async () => [leadRow],
+      }),
+      fetchImpl: async (url, options = {}) => {
+        if (url.startsWith('https://api.netlify.com/')) {
+          return { ok: true, json: async () => new URL(url).searchParams.get('state') === 'spam' ? [] : [reportSubmission] }
+        }
+        emailRequest = { url, options, body: JSON.parse(options.body) }
+        return { ok: true, json: async () => ({ id: 'synthetic-email-id' }) }
+      },
+      logger: { log() {}, error() {} },
+    })
+    await handler()
+    assert.equal(emailRequest.url, 'https://api.resend.com/emails')
+    assert.match(emailRequest.options.headers['Idempotency-Key'], /^bharadwaj-lead-report-\d+$/)
+    const end = updates[0].pending_report_end_utc
+    assert.ok(Date.parse(end) >= Date.parse(due))
+    assert.ok(Date.parse(end) - Date.parse(due) < 120_000)
+    assert.ok(emailRequest.body.subject.includes(end))
+    assert.equal(updates[0].pending_report_end_utc, end)
+    assert.ok(updates.some((entry) => typeof entry.pending_report_body === 'string' && entry.pending_report_body.length > 0))
+    assert.equal(updates.at(-1).next_report_due_utc, new Date(Date.parse(end) + 48 * 3600000).toISOString())
+    assert.equal(control.get('pending_report_end_utc'), '')
+    assert.equal(control.get('pending_report_body'), '')
+  } finally {
+    for (const [name, value] of Object.entries(previous)) {
+      if (value === undefined) delete process.env[name]
+      else process.env[name] = value
+    }
+  }
+})
+
+test('uncertain Lead Register append stops the run without retrying or sending a report', async () => {
+  const envNames = ['NETLIFY_ACCESS_TOKEN', 'NETLIFY_FORM_ID']
+  const previous = Object.fromEntries(envNames.map((name) => [name, process.env[name]]))
+  process.env.NETLIFY_ACCESS_TOKEN = 'synthetic-token'
+  process.env.NETLIFY_FORM_ID = 'synthetic-form'
+  let appendCalls = 0
+  let reportReads = 0
+  const errors = []
+  try {
+    const handler = createLeadOperations({
+      coordinatorFactory: () => ({
+        readLeadRegister: async () => [],
+        appendLeadRows: async () => { appendCalls += 1; throw new Error('simulated uncertain response') },
+        readLeadReportControl: async () => { reportReads += 1; return new Map() },
+      }),
+      fetchImpl: async () => ({ ok: true, json: async () => [submission('uncertain-lead')] }),
+      logger: { log() {}, error: (message) => errors.push(message) },
+    })
+    await assert.rejects(handler(), /Lead operations failed/)
+    assert.equal(appendCalls, 1)
+    assert.equal(reportReads, 0)
+    assert.equal(errors.length, 1)
+  } finally {
+    for (const [name, value] of Object.entries(previous)) {
+      if (value === undefined) delete process.env[name]
+      else process.env[name] = value
+    }
+  }
+})
+
+test('uncertain Report Control write is not retried within the invocation', async () => {
+  const envNames = ['NETLIFY_ACCESS_TOKEN', 'NETLIFY_FORM_ID']
+  const previous = Object.fromEntries(envNames.map((name) => [name, process.env[name]]))
+  process.env.NETLIFY_ACCESS_TOKEN = 'synthetic-token'
+  process.env.NETLIFY_FORM_ID = 'synthetic-form'
+  let writeCalls = 0
+  try {
+    const handler = createLeadOperations({
+      coordinatorFactory: () => ({
+        appendLeadRows: async () => ({ inserted: 0, alreadyPresent: 0 }),
+        readLeadReportControl: async () => new Map(),
+        writeLeadReportControl: async () => { writeCalls += 1; throw new Error('simulated uncertain response') },
+      }),
+      fetchImpl: async () => ({ ok: true, json: async () => [] }),
+      logger: { log() {}, error() {} },
+    })
+    await assert.rejects(handler(), /Lead operations failed/)
+    assert.equal(writeCalls, 1)
+  } finally {
+    for (const [name, value] of Object.entries(previous)) {
+      if (value === undefined) delete process.env[name]
+      else process.env[name] = value
+    }
+  }
+})
+
 test('Netlify API access fails closed when server credentials are missing', async () => {
   const oldToken = process.env.NETLIFY_ACCESS_TOKEN
   const oldFormId = process.env.NETLIFY_FORM_ID
@@ -134,6 +294,89 @@ test('Netlify API access fails closed when server credentials are missing', asyn
   } finally {
     if (oldToken !== undefined) process.env.NETLIFY_ACCESS_TOKEN = oldToken
     if (oldFormId !== undefined) process.env.NETLIFY_FORM_ID = oldFormId
+  }
+})
+
+test('Netlify verified submissions request uses the verified-list endpoint and succeeds', async () => {
+  const previous = { token: process.env.NETLIFY_ACCESS_TOKEN, formId: process.env.NETLIFY_FORM_ID }
+  process.env.NETLIFY_ACCESS_TOKEN = 'test-token'
+  process.env.NETLIFY_FORM_ID = 'synthetic-form-id'
+  let requestUrl
+  let requestOptions
+  try {
+    const result = await fetchNetlifySubmissions({
+      state: 'verified',
+      fetchImpl: async (url, options) => {
+        requestUrl = url
+        requestOptions = options
+        return { ok: true, json: async () => [] }
+      },
+      logger: { error() { throw new Error('success path must not log a failure') } },
+    })
+    assert.deepEqual(result, [])
+    const parsed = new URL(requestUrl)
+    assert.equal(parsed.pathname, '/api/v1/forms/synthetic-form-id/submissions')
+    assert.equal(parsed.searchParams.get('page'), '1')
+    assert.equal(parsed.searchParams.get('per_page'), '100')
+    assert.equal(parsed.searchParams.has('state'), false)
+    assert.equal(requestOptions.headers.authorization, 'Bearer test-token')
+  } finally {
+    if (previous.token === undefined) delete process.env.NETLIFY_ACCESS_TOKEN
+    else process.env.NETLIFY_ACCESS_TOKEN = previous.token
+    if (previous.formId === undefined) delete process.env.NETLIFY_FORM_ID
+    else process.env.NETLIFY_FORM_ID = previous.formId
+  }
+})
+
+test('Netlify spam submissions request uses the documented state=spam query and succeeds', async () => {
+  const previous = { token: process.env.NETLIFY_ACCESS_TOKEN, formId: process.env.NETLIFY_FORM_ID }
+  process.env.NETLIFY_ACCESS_TOKEN = 'test-token'
+  process.env.NETLIFY_FORM_ID = 'synthetic-form-id'
+  let requestUrl
+  try {
+    const result = await fetchNetlifySubmissions({
+      state: 'spam',
+      fetchImpl: async (url) => {
+        requestUrl = url
+        return { ok: true, json: async () => [] }
+      },
+      logger: { error() { throw new Error('success path must not log a failure') } },
+    })
+    assert.deepEqual(result, [])
+    const parsed = new URL(requestUrl)
+    assert.equal(parsed.pathname, '/api/v1/forms/synthetic-form-id/submissions')
+    assert.equal(parsed.searchParams.get('state'), 'spam')
+    assert.equal(parsed.searchParams.get('page'), '1')
+    assert.equal(parsed.searchParams.get('per_page'), '100')
+  } finally {
+    if (previous.token === undefined) delete process.env.NETLIFY_ACCESS_TOKEN
+    else process.env.NETLIFY_ACCESS_TOKEN = previous.token
+    if (previous.formId === undefined) delete process.env.NETLIFY_FORM_ID
+    else process.env.NETLIFY_FORM_ID = previous.formId
+  }
+})
+
+test('Netlify submissions failures identify verified or spam state and HTTP status without response data', async () => {
+  const previous = { token: process.env.NETLIFY_ACCESS_TOKEN, formId: process.env.NETLIFY_FORM_ID }
+  process.env.NETLIFY_ACCESS_TOKEN = 'test-token'
+  process.env.NETLIFY_FORM_ID = 'synthetic-form-id'
+  try {
+    for (const state of ['verified', 'spam']) {
+      const diagnostics = []
+      await assert.rejects(fetchNetlifySubmissions({
+        state,
+        fetchImpl: async () => ({ ok: false, status: 404, json: async () => { throw new Error('body must not be read') } }),
+        logger: { error(message) { diagnostics.push(message) } },
+      }), new RegExp(`Netlify ${state} submissions API failed \\(HTTP 404\\)`))
+      assert.deepEqual(diagnostics, [`Netlify ${state} submissions request failed (HTTP 404).`])
+      assert.equal(diagnostics.join(' ').includes('test-token'), false)
+      assert.equal(diagnostics.join(' ').includes('synthetic-form-id'), false)
+    }
+  } finally {
+    if (previous.token === undefined) delete process.env.NETLIFY_ACCESS_TOKEN
+    else process.env.NETLIFY_ACCESS_TOKEN = previous.token
+    if (previous.formId === undefined) delete process.env.NETLIFY_FORM_ID
+    else process.env.NETLIFY_FORM_ID = previous.formId
   }
 })
 
