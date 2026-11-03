@@ -8,16 +8,23 @@
     "dev:netlify": "netlify dev",
     "build": "vite build && node scripts/generate-seo.mjs",
     "lint": "eslint .",
-    "test": "npm run test:lead && npm run test:assistant",
+    "test": "npm run test:lead && npm run test:assistant && npm run test:design && npm run test:quotation",
+    "test:quotation": "node --experimental-strip-types --test tests/quotation-request.test.mjs",
+    "test:design": "node --experimental-strip-types --test tests/design-storage.test.mjs",
     "check:assets": "node scripts/check-assets.mjs",
     "test:lead": "node --test tests/lead-management.test.mjs tests/lead-scheduled-operations.test.mjs tests/apps-script-coordinator.test.mjs tests/apps-script-coordinator-runtime.test.mjs",
     "test:assistant": "node --test tests/ai-assistant.test.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@netlify/blobs": "^11.1.7",
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.2",
+    "jspdf": "^4.2.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "react-router-dom": "^7.18.4"
+    "react-router-dom": "^7.18.4",
+    "three": "^0.187.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

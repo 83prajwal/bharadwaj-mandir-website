@@ -2302,6 +2302,7 @@ section.section-shell > :last-child,
 .site-footer { padding-block: var(--space-5) var(--space-4); }
 
 .enquiry-form, .form-grid { gap: 1rem; }
+.form-grid-wide { grid-column: 1 / -1; }
 .enquiry-form label { display: grid; gap: .5rem; }
 .enquiry-form input, .enquiry-form select { min-height: 48px; }
 .enquiry-form textarea { min-height: 130px; }

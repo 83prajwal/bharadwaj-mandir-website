@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
-import { useEffect, useLayoutEffect } from 'react'
+import { lazy, Suspense, useEffect, useLayoutEffect } from 'react'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Home from './pages/Home'
@@ -16,6 +16,14 @@ import { products } from './data/products'
 import CookieConsent from './components/CookieConsent'
 import AnalyticsTracking from './components/AnalyticsTracking'
 import EnquiryAssistant from './components/EnquiryAssistant'
+import MotionEffects from './components/MotionEffects'
+import FloatingContact from './components/FloatingContact'
+
+const MandirDesigner = lazy(() => import('./pages/MandirDesigner.jsx'))
+
+function DesignerRouteFallback() {
+  return <main className="page-shell designer-route-loading" aria-live="polite">Opening the 3D studio…</main>
+}
 
 function NotFound() {
   return <main className="page-shell"><section className="section-shell container"><p className="eyebrow">Page not found</p><h1>This page is unavailable.</h1><a className="btn btn-primary" href="/">Return home</a></section></main>
@@ -49,6 +57,7 @@ const pageMetadata = {
   '/products': ['Marble Mandir Collection | Bharadwaj Mandir', 'Explore mandir designs and enquire about project specifications and quotations.'],
   '/custom-mandir': ['Custom Marble Mandir | Bharadwaj Mandir', 'Enquire about a custom marble mandir designed around your space and requirements.'],
   '/gallery': ['Marble Mandir Gallery | Bharadwaj Mandir', 'View marble mandir designs and craftsmanship from Bharadwaj Mandir.'],
+  '/mandir-designer': ['Bharadwaj Mandir 3D Studio', 'Explore the Bharadwaj Mandir prototype in an interactive 3D studio.'],
   '/about': ['About Bharadwaj Mandir', 'Learn about the mandir designs and project approach presented by Bharadwaj Mandir.'],
   '/contact': ['Contact Bharadwaj Mandir', 'Send an enquiry about a marble mandir, home temple or custom marble craftsmanship.'],
   '/faq': ['Frequently Asked Questions | Bharadwaj Mandir', 'Answers to common questions about custom marble mandirs, dimensions and enquiries.'],
@@ -107,6 +116,7 @@ function App() {
         <ScrollToTop />
         <AttributionCapture />
         <AnalyticsTracking />
+        <MotionEffects />
         <Navbar />
         <div id="main-content" tabIndex={-1}>
           <Routes>
@@ -115,6 +125,7 @@ function App() {
             <Route path="/products/:id" element={<ProductDetails />} />
             <Route path="/custom-mandir" element={<CustomMandir />} />
             <Route path="/gallery" element={<GalleryPage />} />
+            <Route path="/mandir-designer" element={<Suspense fallback={<DesignerRouteFallback />}><MandirDesigner /></Suspense>} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/faq" element={<FAQ />} />
@@ -127,6 +138,7 @@ function App() {
         <Footer />
         <CookieConsent />
         <EnquiryAssistant />
+        <FloatingContact />
       </div>
     </BrowserRouter>
   )

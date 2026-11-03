@@ -11,7 +11,10 @@ const LEAD_HEADERS = [
   'Internal notes', 'Last updated timestamp', 'Netlify Submission ID', 'City',
   'Product interest', 'First human response timestamp', 'Project dimensions', 'Budget',
   'Desired timeline', 'Delivery needs', 'Possible duplicate review', 'Enquiry processing consent', 'Marketing consent',
+  'Enquiry type', 'Design ID', 'Design name', 'Design configuration',
+  'Installation location', 'Shared design link', 'Quotation request reference', 'Reference file',
 ]
+const STUDIO_QUOTATION_HEADERS = LEAD_HEADERS.slice(35)
 const REPORT_CONTROL_HEADERS = ['Control key', 'Value']
 const REPORT_CONTROL_KEYS = ['last_report_end_utc', 'next_report_due_utc', 'pending_report_end_utc', 'pending_report_body']
 const LEAD_REGISTER_TAB = 'Lead Register'
@@ -93,7 +96,7 @@ function normalizeLeadSubmission_(submission, duplicateIds, now) {
   const source = utmSource || findLeadFormField_(data, ['landingPage'], 500)
     || findLeadFormField_(data, ['pageUrl'], 800) || 'Unattributed'
   const duplicate = duplicateIds && duplicateIds.has(id)
-  return [
+  const originalFields = [
     'BM-' + id, new Date(createdAt), name, email,
     findLeadFormField_(data, ['phone', 'telephone', 'mobile'], 40),
     findLeadFormField_(data, ['country'], 100),
@@ -113,6 +116,17 @@ function normalizeLeadSubmission_(submission, duplicateIds, now) {
     duplicate ? 'Review: similar submission in reporting window' : '',
     data.privacyAcknowledged === 'yes' ? 'Yes' : 'No', data.marketingConsent === 'yes' ? 'Yes' : 'No',
   ]
+  const quotationFields = [
+    findLeadFormField_(data, ['enquiryType', 'enquiry_type'], 80),
+    findLeadFormField_(data, ['designId', 'design_id'], 80),
+    findLeadFormField_(data, ['designName', 'design_name'], 80),
+    findLeadFormField_(data, ['designConfiguration', 'design_configuration'], 30000),
+    findLeadFormField_(data, ['installationLocation', 'installation_location'], 240),
+    findLeadFormField_(data, ['sharedDesignLink', 'shared_design_link'], 1000),
+    findLeadFormField_(data, ['quotationReference', 'quotation_request_reference'], 80),
+    findLeadFormField_(data, ['referenceFile', 'reference_file'], 1000),
+  ]
+  return originalFields.concat(quotationFields)
 }
 
 function leadDuplicateKey_(submission) {

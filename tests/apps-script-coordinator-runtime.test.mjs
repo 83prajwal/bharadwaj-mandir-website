@@ -11,14 +11,18 @@ const headers = [
   'Internal notes', 'Last updated timestamp', 'Netlify Submission ID', 'City',
   'Product interest', 'First human response timestamp', 'Project dimensions', 'Budget',
   'Desired timeline', 'Delivery needs', 'Possible duplicate review', 'Enquiry processing consent', 'Marketing consent',
+  'Enquiry type', 'Design ID', 'Design name', 'Design configuration', 'Installation location', 'Shared design link', 'Quotation request reference', 'Reference file',
 ]
 const controlKeys = ['last_report_end_utc', 'next_report_due_utc', 'pending_report_end_utc', 'pending_report_body']
 
 function fakeSheet(rows) {
+  let maxColumns = Math.max(0, ...rows.map((row) => row.length))
   return {
     rows,
     getLastRow: () => rows.length,
     getLastColumn: () => Math.max(0, ...rows.map((row) => row.length)),
+    getMaxColumns: () => maxColumns,
+    insertColumnsAfter(_index, count) { maxColumns += count },
     getRange(row, col, rowCount = 1, colCount = 1) {
       return {
         getValues: () => Array.from({ length: rowCount }, (_, r) => Array.from({ length: colCount }, (_, c) => rows[row - 1 + r]?.[col - 1 + c] ?? '')),
@@ -106,10 +110,15 @@ test('hourly trigger setup is idempotent and does not create an extra report tri
   assert.equal(app.triggers.length, 1)
 })
 
-test('Netlify submission mapper preserves the current 35-column schema', () => {
+test('Netlify submission mapper preserves the expanded lead schema', () => {
   const app = harness()
-  const row = app.context.normalizeLeadSubmission_(syntheticSubmission('map-1'), new Set(), new Date('2026-11-01T12:00:00.000Z'))
-  assert.equal(row.length, 35)
+  const row = app.context.normalizeLeadSubmission_(syntheticSubmission('map-1', {
+    enquiryType: '3D Studio quotation request', designId: '01234567-89ab-cdef-0123-456789abcdef',
+    designName: 'Marble Mandir Concept', designConfiguration: '{"width":1200}',
+    installationLocation: 'Jaipur site', sharedDesignLink: 'https://mandir.test/mandir-designer#share=token',
+    quotationReference: 'BM-QUOTE-123', referenceFile: 'reference-plan.pdf',
+  }), new Set(), new Date('2026-11-01T12:00:00.000Z'))
+  assert.equal(row.length, 43)
   assert.equal(row[0], 'BM-map-1')
   assert.equal(row[1].toISOString(), '2026-10-30T10:00:00.000Z')
   assert.equal(row[2], 'Synthetic Customer')
@@ -117,11 +126,16 @@ test('Netlify submission mapper preserves the current 35-column schema', () => {
   assert.equal(row[24], 'map-1')
   assert.equal(row[28], 'Test dimensions')
   assert.equal(row[33], 'Yes')
+  assert.deepEqual(JSON.parse(JSON.stringify(row.slice(35))), [
+    '3D Studio quotation request', '01234567-89ab-cdef-0123-456789abcdef',
+    'Marble Mandir Concept', '{"width":1200}', 'Jaipur site',
+    'https://mandir.test/mandir-designer#share=token', 'BM-QUOTE-123', 'reference-plan.pdf',
+  ])
 })
 
 test('Lead Register appends deduplicate by Netlify Submission ID and preserve existing rows', () => {
   const app = harness()
-  const existing = Array(35).fill('')
+  const existing = Array(43).fill('')
   existing[0] = 'BM-duplicate-1'
   existing[2] = 'Existing value stays'
   existing[24] = 'duplicate-1'

@@ -1,0 +1,328 @@
+.designer-route-loading {
+  display: grid;
+  min-height: 55vh;
+  place-items: center;
+  color: var(--maroon);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+}
+
+.mandir-studio-workspace { padding-top: clamp(1.5rem, 3vw, 2.5rem); }
+.mandir-studio-manage { display: flex; flex-wrap: wrap; align-items: end; gap: .55rem; padding: .8rem; margin-bottom: 1rem; border: 1px solid rgba(90, 16, 32, .12); background: rgba(255,255,255,.55); }
+.mandir-studio-manage button, .mandir-studio-manage select, .mandir-studio-manage input { min-height: 40px; border: 1px solid rgba(90,16,32,.22); border-radius: 3px; padding: .55rem .7rem; color: var(--maroon); background: #fffdf9; font: inherit; font-size: .72rem; }
+.mandir-studio-manage button { font-weight: 700; letter-spacing: .035em; cursor: pointer; }
+.mandir-studio-manage button:hover { border-color: var(--gold); background: #f7f0e4; }
+.mandir-studio-manage button.mandir-studio-quote-action { min-height: 44px; border: 1px solid var(--gold); color: #fff; background: var(--maroon); font-size: .76rem; font-weight: 800; letter-spacing: .045em; box-shadow: 0 5px 14px rgba(90,16,32,.14); }
+.mandir-studio-manage button.mandir-studio-quote-action:hover { border-color: #e5c77f; color: #fff; background: #6b1428; box-shadow: 0 7px 18px rgba(90,16,32,.2); }
+.mandir-studio-manage button.mandir-studio-quote-action:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.mandir-studio-name, .mandir-studio-load { display: grid; flex: 1 1 180px; gap: .25rem; color: var(--muted); font-size: .64rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.mandir-studio-status { flex: 1 1 100%; color: var(--maroon); font-size: .72rem; }
+.mandir-studio-share-url { display: grid; flex: 1 1 100%; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: .45rem; color: var(--muted); font-size: .64rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.mandir-studio-share-url input { grid-column: 1; width: 100%; min-width: 0; font-size: .68rem !important; letter-spacing: 0 !important; text-transform: none; }
+.mandir-studio-share-url button { grid-column: 2; grid-row: 2; min-height: 40px; border: 1px solid rgba(90,16,32,.22); padding: .55rem .7rem; color: var(--maroon); background: #fffdf9; font: inherit; font-size: .7rem; font-weight: 700; cursor: pointer; }
+.mandir-design-list { display: grid; flex: 1 1 100%; gap: .6rem; margin-top: .45rem; }
+.mandir-design-list h2 { display: flex; align-items: center; gap: .5rem; margin: 0; color: var(--maroon); font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; font-weight: 500; }
+.mandir-design-list h2 span { display: inline-grid; min-width: 1.35rem; height: 1.35rem; place-items: center; border-radius: 50%; color: var(--maroon); background: #f2e8d7; font: 600 .65rem sans-serif; }
+.mandir-design-card { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .65rem; padding: .7rem .8rem; border: 1px solid rgba(90, 16, 32, .13); background: rgba(255, 253, 249, .78); }
+.mandir-design-card > div:first-child { display: grid; gap: .18rem; min-width: 12rem; }
+.mandir-design-card strong { color: var(--maroon); font-size: .78rem; }
+.mandir-design-card small { color: var(--muted); font-size: .64rem; }
+.mandir-design-card-actions { display: flex; flex-wrap: wrap; gap: .35rem; }
+.mandir-design-card-actions button { min-height: 32px; border: 1px solid rgba(90,16,32,.2); padding: .35rem .55rem; color: var(--maroon); background: #fffdf9; font: inherit; font-size: .65rem; cursor: pointer; }
+.mandir-design-card-actions button:hover { border-color: var(--gold); background: #f7f0e4; }
+.mandir-shared-notice { margin-bottom: 1rem; padding: 1rem 1.2rem; border: 1px solid rgba(185, 138, 62, .4); background: #fffdf8; color: var(--maroon); }
+.mandir-shared-notice p { margin: .35rem 0 .8rem; color: var(--muted); font-size: .78rem; }
+.mandir-shared-notice button { min-height: 40px; border: 1px solid var(--maroon); padding: .6rem .9rem; color: #fffaf2; background: var(--maroon); font: inherit; font-size: .72rem; font-weight: 700; cursor: pointer; }
+.mandir-studio-layout { display: grid; grid-template-columns: minmax(280px, 370px) minmax(0, 1fr); align-items: start; gap: 1.15rem; }
+.mandir-studio-controls { min-width: 0; border: 1px solid rgba(90,16,32,.13); background: rgba(255,255,255,.58); box-shadow: 0 12px 34px rgba(58,10,21,.055); }
+.mandir-studio-tabs { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); border-bottom: 1px solid rgba(90,16,32,.14); }
+.mandir-studio-tabs button { min-height: 48px; padding: .45rem .25rem; border: 0; border-bottom: 2px solid transparent; color: var(--muted); background: transparent; font: inherit; font-size: .59rem; font-weight: 700; line-height: 1.3; cursor: pointer; }
+.mandir-studio-tabs button.is-active { border-bottom-color: var(--gold); color: var(--maroon); background: rgba(185,138,62,.07); }
+.mandir-studio-fields { display: grid; gap: .85rem; max-height: 710px; overflow: auto; padding: 1rem; }
+.mandir-studio-field { display: grid; gap: .35rem; color: var(--maroon); font-size: .68rem; font-weight: 700; letter-spacing: .025em; }
+.mandir-studio-field select, .mandir-studio-field input:not([type="range"]), .mandir-studio-field textarea { width: 100%; min-height: 40px; padding: .6rem .7rem; border: 1px solid rgba(90,16,32,.18); border-radius: 3px; color: var(--charcoal); background: #fffdf9; font: inherit; font-size: .78rem; }
+.mandir-studio-field textarea { resize: vertical; }
+.mandir-studio-field input[type="range"] { width: 100%; accent-color: var(--maroon); }
+.mandir-studio-number { display: flex; align-items: center; border: 1px solid rgba(90,16,32,.18); background: #fffdf9; }
+.mandir-studio-number input { border: 0 !important; background: transparent !important; }
+.mandir-studio-number small { padding-inline: .65rem; color: var(--muted); font-size: .66rem; }
+.mandir-studio-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: .65rem; }
+.mandir-studio-units { display: flex; gap: .35rem; }
+.mandir-studio-units button { min-width: 45px; min-height: 34px; border: 1px solid rgba(90,16,32,.16); color: var(--maroon); background: white; cursor: pointer; }
+.mandir-studio-units button.is-active { color: white; background: var(--maroon); }
+.mandir-studio-check { display: flex; align-items: start; gap: .5rem; color: var(--muted); font-size: .72rem; }
+.mandir-studio-check input { accent-color: var(--maroon); }
+.mandir-studio-swatches { display: grid; grid-template-columns: repeat(5,1fr); gap: .35rem; }
+.mandir-studio-swatches button { display: grid; justify-items: center; gap: .35rem; padding: .4rem .2rem; border: 1px solid transparent; color: var(--muted); background: transparent; font: inherit; font-size: .62rem; cursor: pointer; }
+.mandir-studio-swatches button.is-active { border-color: var(--gold); color: var(--maroon); }
+.mandir-studio-swatches button span { width: 28px; height: 28px; border: 1px solid rgba(0,0,0,.12); border-radius: 50%; }
+.mandir-studio-quote { display: inline-flex; justify-content: center; align-items: center; min-height: 44px; padding: .7rem; font-size: .7rem; text-align: center; }
+.mandir-studio-preview-column { min-width: 0; }
+.mandir-studio-preview-heading { display: flex; justify-content: space-between; gap: .6rem; padding: .65rem .85rem; color: var(--maroon); font-size: .63rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+.mandir-studio-preview-heading span:last-child { color: var(--muted); font-weight: 500; text-align: right; }
+.mandir-studio-preview-column .mandir-view { min-height: 600px !important; height: min(78vh, 860px) !important; border: 1px solid rgba(185,138,62,.48); box-shadow: 0 18px 55px rgba(58,10,21,.09); }
+.mandir-studio-viewer-fallback { display: grid; min-height: 560px; place-items: center; border: 1px solid rgba(185,138,62,.48); color: var(--maroon); background: #f7f1e7; }
+.mandir-studio-warnings { margin-top: .7rem; padding: .8rem 1rem; border-left: 3px solid #b98a3e; color: var(--maroon); background: #f8f0e2; font-size: .75rem; }
+.mandir-studio-warnings ul { margin: .5rem 0 0; padding-left: 1.2rem; color: var(--muted); }
+.mandir-studio-summary { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .35rem .8rem; max-height: 240px; overflow: auto; margin: .7rem 0; padding: .8rem; border: 1px solid rgba(90,16,32,.1); background: rgba(255,255,255,.48); }
+.mandir-studio-summary div { display: flex; justify-content: space-between; gap: .5rem; border-bottom: 1px solid rgba(90,16,32,.08); padding: .25rem 0; font-size: .65rem; }
+.mandir-studio-summary dt { color: var(--muted); text-transform: capitalize; }
+.mandir-studio-summary dd { margin: 0; color: var(--maroon); text-align: right; }
+.mandir-original-details { margin-top: 1rem; border: 1px solid rgba(185,138,62,.42); background: rgba(255,255,255,.38); }
+.mandir-original-details summary { padding: .9rem 1rem; color: var(--maroon); font-size: .75rem; font-weight: 700; cursor: pointer; }
+.designer-original-prototype { padding: 0 1rem 1rem; }
+.designer-original-canvas { height: min(68vh,640px); min-height: 380px; border: 1px solid rgba(185,138,62,.3); }
+.designer-original-canvas canvas { display: block; width: 100%; height: 100%; }
+
+@media (max-width: 900px) {
+  .mandir-studio-layout { grid-template-columns: 1fr; }
+  .mandir-studio-fields { max-height: none; }
+  .mandir-studio-preview-column .mandir-view { min-height: 500px !important; height: 65vh !important; }
+}
+
+@media (max-width: 520px) {
+  .mandir-studio-manage > button { flex: 1 1 calc(50% - .5rem); }
+  .mandir-studio-name, .mandir-studio-load { flex-basis: 100%; }
+  .mandir-studio-tabs button { min-height: 54px; font-size: .52rem; }
+  .mandir-studio-fields { padding: .75rem; }
+  .mandir-studio-preview-heading { font-size: .56rem; }
+  .mandir-studio-preview-column .mandir-view { min-height: 430px !important; height: 64vh !important; }
+  .mandir-studio-viewer-fallback { min-height: 430px; }
+  .mandir-studio-summary { grid-template-columns: 1fr; }
+}
+
+.mandir-designer-page {
+  min-height: 70vh;
+  padding-bottom: clamp(3.5rem, 7vw, 6rem);
+  color: var(--charcoal);
+  background: var(--ivory);
+}
+
+.mandir-designer-container {
+  width: min(1240px, calc(100% - 3rem));
+  margin-inline: auto;
+}
+
+.mandir-designer-intro {
+  padding: clamp(2.5rem, 6vw, 5rem) 0 clamp(1.6rem, 3vw, 2.5rem);
+  background:
+    radial-gradient(ellipse at 82% 0%, rgba(227, 201, 143, .24), transparent 42%),
+    linear-gradient(135deg, #fbf7f0 0%, #f3ece0 100%);
+  border-bottom: 1px solid rgba(90, 16, 32, .08);
+}
+
+.designer-kicker {
+  margin: 0 0 .8rem;
+  color: var(--maroon);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .17em;
+  text-transform: uppercase;
+}
+
+.mandir-designer-intro h1 {
+  margin: 0;
+  color: var(--maroon-deep);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  font-weight: 500;
+  line-height: .98;
+}
+
+.designer-intro-copy {
+  max-width: 42rem;
+  margin: 1rem 0 0;
+  color: var(--muted);
+  font-size: .94rem;
+}
+
+.designer-workspace {
+  padding-top: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.designer-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .8rem;
+  margin-bottom: .8rem;
+}
+
+.designer-view-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .45rem;
+}
+
+.designer-view-buttons button,
+.designer-reset-button,
+.designer-retry-button {
+  min-height: 42px;
+  padding: .6rem .95rem;
+  border: 1px solid rgba(90, 16, 32, .2);
+  border-radius: 3px;
+  color: var(--maroon);
+  background: rgba(255, 255, 255, .72);
+  font: inherit;
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  transition: color .2s ease, background-color .2s ease, border-color .2s ease, transform .2s ease;
+}
+
+.designer-view-buttons button:hover,
+.designer-reset-button:hover,
+.designer-retry-button:hover {
+  border-color: var(--gold);
+  transform: translateY(-1px);
+}
+
+.designer-view-buttons button.is-active {
+  border-color: var(--maroon);
+  color: var(--ivory);
+  background: var(--maroon);
+}
+
+.designer-reset-button {
+  border-color: var(--gold);
+  background: transparent;
+}
+
+.designer-viewer {
+  position: relative;
+  height: 560px;
+  overflow: hidden;
+  border: 1px solid rgba(185, 138, 62, .48);
+  background:
+    radial-gradient(ellipse at 50% 40%, rgba(255, 255, 255, .92), rgba(255, 255, 255, .18) 62%),
+    repeating-linear-gradient(118deg, transparent 0 58px, rgba(90, 16, 32, .018) 59px, transparent 60px),
+    linear-gradient(145deg, #f8f4ed, #e9dfd1);
+  box-shadow: 0 18px 55px rgba(58, 10, 21, .09), inset 0 0 0 7px rgba(255, 255, 255, .28);
+}
+
+.designer-viewer canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+.designer-viewer-caption {
+  position: absolute;
+  z-index: 2;
+  top: 1rem;
+  right: 1.15rem;
+  left: 1.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  pointer-events: none;
+}
+
+.designer-viewer-caption span:first-child {
+  color: var(--maroon);
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.designer-viewer-caption span:last-child {
+  color: rgba(42, 26, 29, .62);
+  font-size: .66rem;
+}
+
+.designer-loading-indicator {
+  display: grid;
+  justify-items: center;
+  gap: .5rem;
+  min-width: 170px;
+  padding: 1.15rem 1.35rem;
+  border: 1px solid rgba(185, 138, 62, .48);
+  color: var(--maroon);
+  background: rgba(251, 247, 240, .94);
+  box-shadow: 0 12px 35px rgba(58, 10, 21, .12);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  white-space: nowrap;
+}
+
+.designer-loading-indicator small {
+  color: var(--muted);
+  font-size: .68rem;
+  font-weight: 500;
+}
+
+.designer-loading-mark {
+  width: 25px;
+  height: 25px;
+  border: 2px solid rgba(185, 138, 62, .28);
+  border-top-color: var(--maroon);
+  border-radius: 50%;
+  animation: designer-spin .8s linear infinite;
+}
+
+@keyframes designer-spin { to { transform: rotate(360deg); } }
+
+.designer-error {
+  display: grid;
+  min-height: 100%;
+  align-content: center;
+  justify-items: center;
+  padding: 2rem;
+  color: var(--maroon-deep);
+  text-align: center;
+}
+
+.designer-error h2 {
+  margin: .35rem 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 500;
+}
+
+.designer-error p {
+  max-width: 30rem;
+  margin: .3rem 0 1rem;
+  color: var(--muted);
+  font-size: .86rem;
+}
+
+.designer-retry-button {
+  color: var(--ivory);
+  background: var(--maroon);
+}
+
+.designer-viewer-note {
+  margin: .85rem 0 0;
+  color: var(--muted);
+  font-size: .72rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 700px) {
+  .mandir-designer-container { width: min(100% - 1.5rem, 620px); }
+  .mandir-designer-intro { padding-top: 2.2rem; }
+  .designer-viewer { height: clamp(380px, 68vh, 520px); }
+  .designer-viewer-caption { top: .75rem; right: .8rem; left: .8rem; align-items: flex-start; }
+  .designer-viewer-caption span:last-child { max-width: 55%; text-align: right; }
+  .designer-toolbar { align-items: stretch; }
+  .designer-view-buttons { flex: 1 1 100%; }
+  .designer-view-buttons button { flex: 1 1 4.2rem; padding-inline: .55rem; }
+  .designer-reset-button { width: 100%; }
+}
+
+@media (max-width: 420px) {
+  .designer-viewer { height: 420px; }
+  .designer-viewer-caption span:last-child { font-size: .58rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .designer-loading-mark { animation: none; }
+  .designer-view-buttons button,
+  .designer-reset-button,
+  .designer-retry-button { transition: none; }
+}

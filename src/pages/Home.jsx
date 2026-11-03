@@ -4,6 +4,7 @@ import ProductGrid from '../components/ProductGrid'
 import CTASection from '../components/CTASection'
 import SectionHeading from '../components/SectionHeading'
 import FAQSection from '../components/FAQSection'
+import Ticker from '../components/Ticker'
 import { products, galleryImages, faqItems } from '../data/products'
 
 const projectSteps = [
@@ -14,11 +15,17 @@ const projectSteps = [
 ]
 
 const processVideos = galleryImages.filter((item) => item.video).slice(0, 3)
+const processVideoPosters = [
+  '/posters/home-stone-carving.webp',
+  '/posters/home-carving-detail.webp',
+  '/posters/home-mandir-craftsmanship.webp',
+]
 
 export default function Home() {
   return (
     <main className="home-page">
       <Hero />
+      <Ticker />
 
       <section className="collection-section section-shell">
         <div className="container">
@@ -52,7 +59,7 @@ export default function Home() {
             {processVideos.map((item, index) => (
               <article className="process-video-item" key={item.id}>
                 <span>Video {String(index + 1).padStart(2, '0')}</span>
-                <video controls playsInline preload="metadata" aria-label={item.title}><source src={item.video} type="video/mp4" />Your browser does not support this video.</video>
+                <video controls playsInline preload="none" loading="lazy" poster={processVideoPosters[index]} aria-label={item.title}><source src={item.video} type="video/mp4" />Your browser does not support this video.</video>
                 <h3>{item.title}</h3>
                 <small>{item.audioAvailable ? 'Audio available' : 'No audio'}</small>
 

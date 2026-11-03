@@ -24,9 +24,10 @@ const submission = (id, data = {}) => ({
 })
 
 test('register schema includes requested columns and controlled workflow options', () => {
-  assert.equal(leadHeaders.length, 35)
+  assert.equal(leadHeaders.length, 43)
   assert.deepEqual(leadHeaders.slice(0, 5), ['Lead ID', 'Submission timestamp', 'Customer name', 'Email', 'Phone'])
-  assert.deepEqual(leadHeaders.slice(-7), ['Project dimensions', 'Budget', 'Desired timeline', 'Delivery needs', 'Possible duplicate review', 'Enquiry processing consent', 'Marketing consent'])
+  assert.deepEqual(leadHeaders.slice(25, 35), ['City', 'Product interest', 'First human response timestamp', 'Project dimensions', 'Budget', 'Desired timeline', 'Delivery needs', 'Possible duplicate review', 'Enquiry processing consent', 'Marketing consent'])
+  assert.deepEqual(leadHeaders.slice(-8), ['Enquiry type', 'Design ID', 'Design name', 'Design configuration', 'Installation location', 'Shared design link', 'Quotation request reference', 'Reference file'])
   for (const name of [
     'Lead ID', 'Submission timestamp', 'Customer name', 'Email', 'Phone', 'Country',
     'Product name or SKU', 'Enquiry message', 'Lead source', 'Lead status', 'Assigned owner',
@@ -50,6 +51,11 @@ test('normalizes verified Netlify fields and uses stable submission IDs', () => 
   assert.equal(row.length, leadHeaders.length)
   assert.equal(row[33], 'No')
   assert.equal(row[34], 'No')
+  const studio = normalizeLead(submission('studio', { enquiryType: '3D Studio quotation request', designId: 'abcd', designName: 'Sanctuary', designConfiguration: '{"width":1200}', installationLocation: 'Koramangala', sharedDesignLink: 'https://example.test/mandir-designer#share=token', quotationReference: 'ref-1' }))
+  assert.equal(studio[35], '3D Studio quotation request')
+  assert.equal(studio[37], 'Sanctuary')
+  assert.equal(studio[39], 'Koramangala')
+  assert.equal(studio[41], 'ref-1')
   const optedIn = normalizeLead(submission('consented', { privacyAcknowledged: 'yes', marketingConsent: 'yes' }))
   assert.equal(optedIn[33], 'Yes')
   assert.equal(optedIn[34], 'Yes')

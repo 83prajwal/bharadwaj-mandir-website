@@ -207,6 +207,7 @@ export const leadHeaders = [
   'Internal notes', 'Last updated timestamp', 'Netlify Submission ID', 'City',
   'Product interest', 'First human response timestamp', 'Project dimensions', 'Budget',
   'Desired timeline', 'Delivery needs', 'Possible duplicate review', 'Enquiry processing consent', 'Marketing consent',
+  'Enquiry type', 'Design ID', 'Design name', 'Design configuration', 'Installation location', 'Shared design link', 'Quotation request reference', 'Reference file',
 ]
 
 const productNames = {
@@ -244,6 +245,8 @@ export function normalizeLead(submission, { possibleDuplicate = false, now = new
     cleanText(data.budget, 100), cleanText(data.timeline, 100), cleanText(data.deliveryNeeds, 100),
     possibleDuplicate ? 'Review: similar submission in reporting window' : '',
     data.privacyAcknowledged === 'yes' ? 'Yes' : 'No', data.marketingConsent === 'yes' ? 'Yes' : 'No',
+    cleanText(data.enquiryType, 80), cleanText(data.designId, 80), cleanText(data.designName, 80), cleanText(data.designConfiguration, 30_000),
+    cleanText(data.installationLocation, 240), cleanText(data.sharedDesignLink, 1000), cleanText(data.quotationReference, 80), cleanText(data.referenceFile, 1000),
   ]
 }
 
@@ -472,11 +475,21 @@ export async function setupLeadSheets({ fetchImpl = fetch } = {}) {
     const response = await fetchImpl(`${base}:batchUpdate`, { method: 'POST', headers, body: JSON.stringify({ requests: addRequests }), signal: AbortSignal.timeout(12000) })
     if (!response.ok) throw new Error(`Google sheet tab creation failed (HTTP ${response.status}).`)
   }
-  const refreshed = await fetchImpl(`${base}?fields=sheets.properties(sheetId,title)`, { headers, signal: AbortSignal.timeout(12000) })
+  const refreshed = await fetchImpl(`${base}?fields=sheets.properties(sheetId,title,gridProperties(columnCount))`, { headers, signal: AbortSignal.timeout(12000) })
   if (!refreshed.ok) throw new Error(`Google spreadsheet lookup failed (HTTP ${refreshed.status}).`)
   const sheets = (await refreshed.json()).sheets || []
-  const leadSheetId = sheets.find((sheet) => sheet.properties.title === leadTab)?.properties.sheetId
+  const leadSheet = sheets.find((sheet) => sheet.properties.title === leadTab)
+  const leadSheetId = leadSheet?.properties.sheetId
   if (leadSheetId === undefined) throw new Error('Lead Register tab could not be initialized.')
+  const currentColumnCount = leadSheet.properties.gridProperties?.columnCount || 0
+  if (currentColumnCount < leadHeaders.length) {
+    const response = await fetchImpl(`${base}:batchUpdate`, {
+      method: 'POST', headers,
+      body: JSON.stringify({ requests: [{ appendDimension: { sheetId: leadSheetId, dimension: 'COLUMNS', length: leadHeaders.length - currentColumnCount } }] }),
+      signal: AbortSignal.timeout(12000),
+    })
+    if (!response.ok) throw new Error(`Google Sheet column expansion failed (HTTP ${response.status}).`)
+  }
   const setValues = async (range, values) => {
     const encodedRange = encodeURIComponent(range)
     const result = await fetchImpl(`${base}/values/${encodedRange}?valueInputOption=RAW`, {
@@ -484,7 +497,8 @@ export async function setupLeadSheets({ fetchImpl = fetch } = {}) {
     })
     if (!result.ok) throw new Error(`Google sheet header setup failed (HTTP ${result.status}).`)
   }
-  await setValues(`'${leadTab.replace(/'/g, "''")}'!A1:AI1`, [leadHeaders])
+  const endColumn = (column) => { let label = ''; for (let value = column; value; value = Math.floor((value - 1) / 26)) label = String.fromCharCode(65 + ((value - 1) % 26)) + label; return label }
+  await setValues(`'${leadTab.replace(/'/g, "''")}'!A1:${endColumn(leadHeaders.length)}1`, [leadHeaders])
   await setValues(`'${controlTab.replace(/'/g, "''")}'!A1:A5`, [
     ['Control key'], ['last_report_end_utc'], ['next_report_due_utc'], ['pending_report_end_utc'], ['pending_report_body'],
   ])

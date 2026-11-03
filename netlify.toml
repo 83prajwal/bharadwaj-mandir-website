@@ -4,6 +4,7 @@
   functions = "netlify/functions"
 
 [build.environment]
+  NODE_VERSION = "22"
   VITE_SITE_URL = "https://singular-kelpie-c8df6b.netlify.app"
 
 [context.production.environment]
