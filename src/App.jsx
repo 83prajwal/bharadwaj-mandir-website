@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useLocation, Link } from 'react-router-dom'
 import { lazy, Suspense, useEffect, useLayoutEffect } from 'react'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
@@ -26,7 +26,7 @@ function DesignerRouteFallback() {
 }
 
 function NotFound() {
-  return <main className="page-shell"><section className="section-shell container"><p className="eyebrow">Page not found</p><h1>This page is unavailable.</h1><a className="btn btn-primary" href="/">Return home</a></section></main>
+  return <main className="page-shell"><section className="section-shell container"><p className="eyebrow">Page not found</p><h1>This page is unavailable.</h1><Link className="btn btn-primary" to="/">Return home</Link></section></main>
 }
 
 function ScrollToTop() {

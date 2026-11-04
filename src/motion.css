@@ -60,7 +60,7 @@ html[data-scrolled] .navbar { min-height: 66px; }
 .ticker-track { display: flex; width: max-content; animation: m-ticker 52s linear infinite; }
 .ticker:hover .ticker-track { animation-play-state: paused; }
 .ticker-row { display: flex; margin: 0; padding: 0; list-style: none; }
-.ticker-row li { display: inline-flex; align-items: center; gap: 2.2rem; padding: .95rem 0 .95rem 2.2rem; font-family: 'Cormorant Garamond', serif; font-size: clamp(1.15rem, 1.7vw, 1.5rem); font-style: italic; white-space: nowrap; }
+.ticker-row li { display: inline-flex; align-items: center; gap: 2.2rem; padding: .95rem 0 .95rem 2.2rem; font-family: var(--font-heading); font-size: clamp(1.15rem, 1.7vw, 1.5rem); font-style: italic; white-space: nowrap; }
 .ticker-row li::after { content: ''; width: 6px; height: 6px; background: var(--gold); transform: rotate(45deg); }
 @keyframes m-ticker { to { transform: translateX(-50%); } }
 

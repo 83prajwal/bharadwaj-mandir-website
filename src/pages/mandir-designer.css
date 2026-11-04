@@ -3,7 +3,7 @@
   min-height: 55vh;
   place-items: center;
   color: var(--maroon);
-  font-family: 'Cormorant Garamond', serif;
+  font-family: var(--font-heading);
   font-size: 1.6rem;
 }
 
@@ -21,7 +21,7 @@
 .mandir-studio-share-url input { grid-column: 1; width: 100%; min-width: 0; font-size: .68rem !important; letter-spacing: 0 !important; text-transform: none; }
 .mandir-studio-share-url button { grid-column: 2; grid-row: 2; min-height: 40px; border: 1px solid rgba(90,16,32,.22); padding: .55rem .7rem; color: var(--maroon); background: #fffdf9; font: inherit; font-size: .7rem; font-weight: 700; cursor: pointer; }
 .mandir-design-list { display: grid; flex: 1 1 100%; gap: .6rem; margin-top: .45rem; }
-.mandir-design-list h2 { display: flex; align-items: center; gap: .5rem; margin: 0; color: var(--maroon); font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; font-weight: 500; }
+.mandir-design-list h2 { display: flex; align-items: center; gap: .5rem; margin: 0; color: var(--maroon); font-family: var(--font-heading); font-size: 1.35rem; font-weight: 500; }
 .mandir-design-list h2 span { display: inline-grid; min-width: 1.35rem; height: 1.35rem; place-items: center; border-radius: 50%; color: var(--maroon); background: #f2e8d7; font: 600 .65rem sans-serif; }
 .mandir-design-card { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .65rem; padding: .7rem .8rem; border: 1px solid rgba(90, 16, 32, .13); background: rgba(255, 253, 249, .78); }
 .mandir-design-card > div:first-child { display: grid; gap: .18rem; min-width: 12rem; }
@@ -123,7 +123,7 @@
 .mandir-designer-intro h1 {
   margin: 0;
   color: var(--maroon-deep);
-  font-family: 'Cormorant Garamond', serif;
+  font-family: var(--font-heading);
   font-size: clamp(2.8rem, 6vw, 5rem);
   font-weight: 500;
   line-height: .98;
@@ -279,7 +279,7 @@
 
 .designer-error h2 {
   margin: .35rem 0;
-  font-family: 'Cormorant Garamond', serif;
+  font-family: var(--font-heading);
   font-size: clamp(1.8rem, 4vw, 2.6rem);
   font-weight: 500;
 }

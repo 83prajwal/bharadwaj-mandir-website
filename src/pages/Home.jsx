@@ -3,10 +3,11 @@ import Hero from '../components/Hero'
 import ProductGrid from '../components/ProductGrid'
 import CTASection from '../components/CTASection'
 import SectionHeading from '../components/SectionHeading'
-import FAQSection from '../components/FAQSection'
-import Ticker from '../components/Ticker'
-import { products, galleryImages, faqItems } from '../data/products'
+import { products } from '../data/products'
 
+// The home page stays short: hero, featured designs, how custom work begins,
+// and one call to action. Gallery, story, FAQ and the enquiry form live on
+// their own pages in the main menu.
 const projectSteps = [
   'Share your requirements and references',
   'Provide available measurements',
@@ -14,69 +15,37 @@ const projectSteps = [
   'Discuss specifications and quotation',
 ]
 
-const processVideos = galleryImages.filter((item) => item.video).slice(0, 3)
-const processVideoPosters = [
-  '/posters/home-stone-carving.webp',
-  '/posters/home-carving-detail.webp',
-  '/posters/home-mandir-craftsmanship.webp',
-]
-
 export default function Home() {
   return (
-    <main className="home-page">
+    <main className="home-page temple-home">
       <Hero />
-      <Ticker />
 
-      <section className="collection-section section-shell">
+      <section id="collection" className="home-section home-collection">
         <div className="container">
           <div className="section-heading-row">
-            <SectionHeading eyebrow="The collection · 01—04" title="A study in marble" text="A considered selection of mandir designs. Enquire for confirmed materials, dimensions and project details." />
+            <SectionHeading eyebrow="The collection" title={<>A study in <span className="text-gradient">marble</span></>} text="A considered selection of mandir designs. Enquire for confirmed materials, dimensions and project details." />
             <Link to="/products" className="text-link section-side-link">View all designs <span aria-hidden="true">→</span></Link>
           </div>
           <ProductGrid products={products} />
         </div>
       </section>
 
-      <section className="custom-feature custom-feature-text-only">
-        <div className="custom-feature-copy">
-          <p className="eyebrow">Made around your space</p>
-          <h2>A mandir for your dedicated space.</h2>
-          <p>Every space has its own proportions and point of view. Share your setting, measurements, references and preferences so the team can review a design for your enquiry.</p>
-          <ol className="project-steps">
-            {projectSteps.map((step, index) => <li key={step}><span>0{index + 1}</span>{step}</li>)}
-          </ol>
-          <Link to="/custom-mandir" className="btn btn-primary">Explore custom enquiries <span aria-hidden="true">→</span></Link>
-        </div>
-      </section>
-
-      <section className="craft-section section-shell">
-        <div className="container">
-          <div className="section-heading-row craft-heading-row">
-            <SectionHeading eyebrow="The making · 02" title="Process in motion" text="A selection of workshop videos, with audio where available." />
-            <Link to="/gallery" className="text-link section-side-link">View workshop videos <span aria-hidden="true">→</span></Link>
+      <section className="home-section home-custom">
+        <div className="container home-custom-inner">
+          <div>
+            <p className="eyebrow">Made around your space</p>
+            <h2>A mandir for your <span className="text-gradient">dedicated space.</span></h2>
+            <p className="home-custom-text">Share your setting, measurements and references. The team reviews a design for your space and confirms specifications and quotation with you.</p>
+            <div className="home-custom-actions">
+              <Link to="/custom-mandir" className="btn btn-primary">Request a custom quote <span aria-hidden="true">→</span></Link>
+              <Link to="/mandir-designer" className="btn btn-secondary">Try the 3D Studio</Link>
+            </div>
           </div>
-          <div className="process-video-list">
-            {processVideos.map((item, index) => (
-              <article className="process-video-item" key={item.id}>
-                <span>Video {String(index + 1).padStart(2, '0')}</span>
-                <video controls playsInline preload="none" loading="lazy" poster={processVideoPosters[index]} aria-label={item.title}><source src={item.video} type="video/mp4" />Your browser does not support this video.</video>
-                <h3>{item.title}</h3>
-                <small>{item.audioAvailable ? 'Audio available' : 'No audio'}</small>
-
-              </article>
+          <ol className="home-steps">
+            {projectSteps.map((step, index) => (
+              <li key={step}><span>{String(index + 1).padStart(2, '0')}</span>{step}</li>
             ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="story-band">
-        <div className="container story-band-inner">
-          <p className="eyebrow light">Bharadwaj Mandir · 03</p>
-          <h2>A dedicated space for the things that matter most.</h2>
-          <div className="story-band-bottom">
-            <p>We present marble mandir designs and custom devotional spaces for homes, workplaces, institutions and other settings. Project specifications are confirmed individually.</p>
-            <Link to="/about" className="story-link">A little about us <span aria-hidden="true">→</span></Link>
-          </div>
+          </ol>
         </div>
       </section>
 
@@ -87,8 +56,6 @@ export default function Home() {
         buttonLabel="Start a conversation"
         buttonLink="/contact"
       />
-
-      <FAQSection items={faqItems} />
     </main>
   )
 }

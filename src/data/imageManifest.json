@@ -1,0 +1,1130 @@
+{
+  "/assets/ai-concepts/mandir-concept-02.jpg": {
+    "w": 381,
+    "h": 492,
+    "base": "/opt/ai-concepts/mandir-concept-02",
+    "widths": [
+      381
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-03.jpg": {
+    "w": 500,
+    "h": 500,
+    "base": "/opt/ai-concepts/mandir-concept-03",
+    "widths": [
+      480,
+      500
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-04.jpg": {
+    "w": 745,
+    "h": 1118,
+    "base": "/opt/ai-concepts/mandir-concept-04",
+    "widths": [
+      480,
+      745
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-05.jpg": {
+    "w": 2250,
+    "h": 3000,
+    "base": "/opt/ai-concepts/mandir-concept-05",
+    "widths": [
+      480,
+      960,
+      1600
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-06.jpg": {
+    "w": 1024,
+    "h": 1024,
+    "base": "/opt/ai-concepts/mandir-concept-06",
+    "widths": [
+      480,
+      960,
+      1024
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-07.jpg": {
+    "w": 836,
+    "h": 1000,
+    "base": "/opt/ai-concepts/mandir-concept-07",
+    "widths": [
+      480,
+      836
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-08.jpg": {
+    "w": 2250,
+    "h": 3000,
+    "base": "/opt/ai-concepts/mandir-concept-08",
+    "widths": [
+      480,
+      960,
+      1600
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-09.jpg": {
+    "w": 1024,
+    "h": 1024,
+    "base": "/opt/ai-concepts/mandir-concept-09",
+    "widths": [
+      480,
+      960,
+      1024
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-10.jpg": {
+    "w": 3840,
+    "h": 3020,
+    "base": "/opt/ai-concepts/mandir-concept-10",
+    "widths": [
+      480,
+      960,
+      1600
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-11.jpg": {
+    "w": 864,
+    "h": 886,
+    "base": "/opt/ai-concepts/mandir-concept-11",
+    "widths": [
+      480,
+      864
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-12.jpg": {
+    "w": 1536,
+    "h": 1536,
+    "base": "/opt/ai-concepts/mandir-concept-12",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-13.jpg": {
+    "w": 736,
+    "h": 736,
+    "base": "/opt/ai-concepts/mandir-concept-13",
+    "widths": [
+      480,
+      736
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-14.jpg": {
+    "w": 2048,
+    "h": 2048,
+    "base": "/opt/ai-concepts/mandir-concept-14",
+    "widths": [
+      480,
+      960,
+      1600
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-15.jpg": {
+    "w": 1000,
+    "h": 1333,
+    "base": "/opt/ai-concepts/mandir-concept-15",
+    "widths": [
+      480,
+      960,
+      1000
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-16.jpg": {
+    "w": 768,
+    "h": 517,
+    "base": "/opt/ai-concepts/mandir-concept-16",
+    "widths": [
+      480,
+      768
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-17.jpg": {
+    "w": 736,
+    "h": 888,
+    "base": "/opt/ai-concepts/mandir-concept-17",
+    "widths": [
+      480,
+      736
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-18.jpg": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/ai-concepts/mandir-concept-18",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-19.jpg": {
+    "w": 1500,
+    "h": 1298,
+    "base": "/opt/ai-concepts/mandir-concept-19",
+    "widths": [
+      480,
+      960,
+      1500
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-20.jpg": {
+    "w": 500,
+    "h": 500,
+    "base": "/opt/ai-concepts/mandir-concept-20",
+    "widths": [
+      480,
+      500
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-21.jpg": {
+    "w": 375,
+    "h": 500,
+    "base": "/opt/ai-concepts/mandir-concept-21",
+    "widths": [
+      375
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-22.jpg": {
+    "w": 1024,
+    "h": 1024,
+    "base": "/opt/ai-concepts/mandir-concept-22",
+    "widths": [
+      480,
+      960,
+      1024
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-23.jpg": {
+    "w": 800,
+    "h": 800,
+    "base": "/opt/ai-concepts/mandir-concept-23",
+    "widths": [
+      480,
+      800
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-24.jpg": {
+    "w": 500,
+    "h": 500,
+    "base": "/opt/ai-concepts/mandir-concept-24",
+    "widths": [
+      480,
+      500
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-25.jpg": {
+    "w": 1344,
+    "h": 896,
+    "base": "/opt/ai-concepts/mandir-concept-25",
+    "widths": [
+      480,
+      960,
+      1344
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-26.jpg": {
+    "w": 500,
+    "h": 500,
+    "base": "/opt/ai-concepts/mandir-concept-26",
+    "widths": [
+      480,
+      500
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-27.jpg": {
+    "w": 1024,
+    "h": 1024,
+    "base": "/opt/ai-concepts/mandir-concept-27",
+    "widths": [
+      480,
+      960,
+      1024
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-28.jpg": {
+    "w": 1920,
+    "h": 1080,
+    "base": "/opt/ai-concepts/mandir-concept-28",
+    "widths": [
+      480,
+      960,
+      1600
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-29.jpg": {
+    "w": 1254,
+    "h": 1254,
+    "base": "/opt/ai-concepts/mandir-concept-29",
+    "widths": [
+      480,
+      960,
+      1254
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-30.jpg": {
+    "w": 1000,
+    "h": 1000,
+    "base": "/opt/ai-concepts/mandir-concept-30",
+    "widths": [
+      480,
+      960,
+      1000
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-31.jpg": {
+    "w": 650,
+    "h": 650,
+    "base": "/opt/ai-concepts/mandir-concept-31",
+    "widths": [
+      480,
+      650
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-32.jpg": {
+    "w": 850,
+    "h": 850,
+    "base": "/opt/ai-concepts/mandir-concept-32",
+    "widths": [
+      480,
+      850
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-33.jpg": {
+    "w": 576,
+    "h": 576,
+    "base": "/opt/ai-concepts/mandir-concept-33",
+    "widths": [
+      480,
+      576
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-34.jpg": {
+    "w": 1112,
+    "h": 1415,
+    "base": "/opt/ai-concepts/mandir-concept-34",
+    "widths": [
+      480,
+      960,
+      1112
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-35.jpg": {
+    "w": 1280,
+    "h": 1280,
+    "base": "/opt/ai-concepts/mandir-concept-35",
+    "widths": [
+      480,
+      960,
+      1280
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-36.jpg": {
+    "w": 1000,
+    "h": 1000,
+    "base": "/opt/ai-concepts/mandir-concept-36",
+    "widths": [
+      480,
+      960,
+      1000
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-37.jpg": {
+    "w": 1080,
+    "h": 1080,
+    "base": "/opt/ai-concepts/mandir-concept-37",
+    "widths": [
+      480,
+      960,
+      1080
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-38.jpg": {
+    "w": 828,
+    "h": 1243,
+    "base": "/opt/ai-concepts/mandir-concept-38",
+    "widths": [
+      480,
+      828
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-39.jpg": {
+    "w": 1024,
+    "h": 1024,
+    "base": "/opt/ai-concepts/mandir-concept-39",
+    "widths": [
+      480,
+      960,
+      1024
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-40.jpg": {
+    "w": 850,
+    "h": 850,
+    "base": "/opt/ai-concepts/mandir-concept-40",
+    "widths": [
+      480,
+      850
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-42.jpg": {
+    "w": 500,
+    "h": 500,
+    "base": "/opt/ai-concepts/mandir-concept-42",
+    "widths": [
+      480,
+      500
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-43.jpg": {
+    "w": 400,
+    "h": 400,
+    "base": "/opt/ai-concepts/mandir-concept-43",
+    "widths": [
+      400
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-44.jpg": {
+    "w": 1024,
+    "h": 1024,
+    "base": "/opt/ai-concepts/mandir-concept-44",
+    "widths": [
+      480,
+      960,
+      1024
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-45.jpg": {
+    "w": 1344,
+    "h": 896,
+    "base": "/opt/ai-concepts/mandir-concept-45",
+    "widths": [
+      480,
+      960,
+      1344
+    ]
+  },
+  "/assets/ai-concepts/mandir-concept-46.jpg": {
+    "w": 1024,
+    "h": 1536,
+    "base": "/opt/ai-concepts/mandir-concept-46",
+    "widths": [
+      480,
+      960,
+      1024
+    ]
+  },
+  "/assets/catalog-references/bharadwaj-mandir-luxury-catalog-collage.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/bharadwaj-mandir-luxury-catalog-collage",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/bharadwaj-mandir-luxury-marble-catalog-1.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/bharadwaj-mandir-luxury-marble-catalog-1",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/bharadwaj-mandir-marble-showcase-33.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/bharadwaj-mandir-marble-showcase-33",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/bharadwaj-pink-marble-mandir-showcase-3.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/bharadwaj-pink-marble-mandir-showcase-3",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/bm-0002-marble-mandir-showcase-2.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/bm-0002-marble-mandir-showcase-2",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/bm-0002-marble-mandir-showcase-4.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/bm-0002-marble-mandir-showcase-4",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/bm-0003-marble-mandir-product-showcase-31.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/bm-0003-marble-mandir-product-showcase-31",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/handcrafted-makrana-marble-mandir-catalog.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/handcrafted-makrana-marble-mandir-catalog",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/heritage-marble-mandir-catalog-collage-20.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/heritage-marble-mandir-catalog-collage-20",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/luxury-makrana-marble-mandir-showcase-12.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/luxury-makrana-marble-mandir-showcase-12",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/luxury-marble-mandir-catalog-2.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/luxury-marble-mandir-catalog-2",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/luxury-marble-mandir-catalog-collection-7.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/luxury-marble-mandir-catalog-collection-7",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/luxury-marble-mandir-catalog-collection.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/luxury-marble-mandir-catalog-collection",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/luxury-marble-mandir-catalog-montage-1.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/luxury-marble-mandir-catalog-montage-1",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/luxury-marble-mandir-portfolio-board-3.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/luxury-marble-mandir-portfolio-board-3",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/luxury-marble-mandir-product-showcase-9.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/luxury-marble-mandir-product-showcase-9",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/luxury-pink-marble-mandir-catalog-1.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/luxury-pink-marble-mandir-catalog-1",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/luxury-pink-marble-mandir-catalog-4.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/luxury-pink-marble-mandir-catalog-4",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/luxury-pink-marble-mandir-catalog-7.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/luxury-pink-marble-mandir-catalog-7",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/luxury-pink-marble-mandir-catalog-board-2.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/luxury-pink-marble-mandir-catalog-board-2",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/luxury-pink-marble-mandir-catalog-board-5.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/luxury-pink-marble-mandir-catalog-board-5",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/luxury-pink-marble-mandir-catalog-board-8.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/luxury-pink-marble-mandir-catalog-board-8",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/luxury-pink-marble-mandir-catalog-collage-6.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/luxury-pink-marble-mandir-catalog-collage-6",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/luxury-pink-marble-mandir-product-collage-28.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/luxury-pink-marble-mandir-product-collage-28",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/luxury-pink-marble-mandir-showcase-22.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/luxury-pink-marble-mandir-showcase-22",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/makrana-dongri-pink-marble-temple-catalogue-25.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/makrana-dongri-pink-marble-temple-catalogue-25",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/makrana-marble-temple-showcase-board-1.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/makrana-marble-temple-showcase-board-1",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/makrana-pink-marble-mandir-portfolio-30.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/makrana-pink-marble-mandir-portfolio-30",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/makrana-pink-marble-mandir-showcase-3.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/makrana-pink-marble-mandir-showcase-3",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/marble-mandir-showcase-collection-7.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/marble-mandir-showcase-collection-7",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/marble-temple-portfolio-makrana-albeta-heritage-3.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/marble-temple-portfolio-makrana-albeta-heritage-3",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/ornate-marble-mandir-product-showcase-27.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/ornate-marble-mandir-product-showcase-27",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/ornate-marble-mandir-showcase-2.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/ornate-marble-mandir-showcase-2",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/ornate-pink-marble-mandir-portfolio-15.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/ornate-pink-marble-mandir-portfolio-15",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/ornate-pink-marble-mandir-showcase-36.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/ornate-pink-marble-mandir-showcase-36",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/pink-marble-mandir-catalog-collage-16.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/pink-marble-mandir-catalog-collage-16",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/pink-marble-mandir-catalog-showcase-18.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/pink-marble-mandir-catalog-showcase-18",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/pink-marble-mandir-catalog-views-19.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/pink-marble-mandir-catalog-views-19",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/pink-marble-mandir-catalog-views-6.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/pink-marble-mandir-catalog-views-6",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/pink-marble-mandir-design-catalogue-38.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/pink-marble-mandir-design-catalogue-38",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/pink-marble-mandir-eight-view-showcase-34.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/pink-marble-mandir-eight-view-showcase-34",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/pink-marble-mandir-portfolio-collage-14.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/pink-marble-mandir-portfolio-collage-14",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/pink-marble-mandir-portfolio-collection-23.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/pink-marble-mandir-portfolio-collection-23",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/pink-marble-mandir-portfolio-showcase-13.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/pink-marble-mandir-portfolio-showcase-13",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/pink-marble-mandir-showcase-collection-37.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/pink-marble-mandir-showcase-collection-37",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/catalog-references/pink-marble-mandir-with-ganesha-10.webp": {
+    "w": 1312,
+    "h": 1199,
+    "base": "/opt/catalog-references/pink-marble-mandir-with-ganesha-10",
+    "widths": [
+      480,
+      960,
+      1312
+    ]
+  },
+  "/assets/catalog-references/white-marble-mandir-portfolio-montage-8.webp": {
+    "w": 1536,
+    "h": 1024,
+    "base": "/opt/catalog-references/white-marble-mandir-portfolio-montage-8",
+    "widths": [
+      480,
+      960,
+      1536
+    ]
+  },
+  "/assets/gallery/20260224-wa0018.jpg": {
+    "w": 960,
+    "h": 1280,
+    "base": "/opt/gallery/20260224-wa0018",
+    "widths": [
+      480,
+      960
+    ]
+  },
+  "/assets/gallery/20260224-wa0020.jpg": {
+    "w": 963,
+    "h": 1280,
+    "base": "/opt/gallery/20260224-wa0020",
+    "widths": [
+      480,
+      960,
+      963
+    ]
+  },
+  "/assets/gallery/20260224-wa0025.jpg": {
+    "w": 640,
+    "h": 1280,
+    "base": "/opt/gallery/20260224-wa0025",
+    "widths": [
+      480,
+      640
+    ]
+  },
+  "/assets/gallery/20260224-wa0027.jpg": {
+    "w": 735,
+    "h": 636,
+    "base": "/opt/gallery/20260224-wa0027",
+    "widths": [
+      480,
+      735
+    ]
+  },
+  "/assets/gallery/20260224-wa0028.jpg": {
+    "w": 1600,
+    "h": 1200,
+    "base": "/opt/gallery/20260224-wa0028",
+    "widths": [
+      480,
+      960,
+      1600
+    ]
+  },
+  "/assets/gallery/20260224-wa0029.jpg": {
+    "w": 1179,
+    "h": 1200,
+    "base": "/opt/gallery/20260224-wa0029",
+    "widths": [
+      480,
+      960,
+      1179
+    ]
+  },
+  "/assets/gallery/20260509-wa0043.jpg": {
+    "w": 1324,
+    "h": 1188,
+    "base": "/opt/gallery/20260509-wa0043",
+    "widths": [
+      480,
+      960,
+      1324
+    ]
+  },
+  "/assets/gallery/20260509-wa0044.jpg": {
+    "w": 1200,
+    "h": 1310,
+    "base": "/opt/gallery/20260509-wa0044",
+    "widths": [
+      480,
+      960,
+      1200
+    ]
+  },
+  "/assets/gallery/20260509-wa0055.jpg": {
+    "w": 853,
+    "h": 1280,
+    "base": "/opt/gallery/20260509-wa0055",
+    "widths": [
+      480,
+      853
+    ]
+  },
+  "/assets/gallery/20260513-wa0022.jpg": {
+    "w": 1306,
+    "h": 1205,
+    "base": "/opt/gallery/20260513-wa0022",
+    "widths": [
+      480,
+      960,
+      1306
+    ]
+  },
+  "/assets/gallery/20260514-wa0021.jpg": {
+    "w": 1402,
+    "h": 1122,
+    "base": "/opt/gallery/20260514-wa0021",
+    "widths": [
+      480,
+      960,
+      1402
+    ]
+  },
+  "/assets/gallery/20261009-whatsapp-175056.jpeg": {
+    "w": 1287,
+    "h": 1222,
+    "base": "/opt/gallery/20261009-whatsapp-175056",
+    "widths": [
+      480,
+      960,
+      1287
+    ]
+  },
+  "/assets/gallery/20261009-whatsapp-175739.jpeg": {
+    "w": 1086,
+    "h": 1448,
+    "base": "/opt/gallery/20261009-whatsapp-175739",
+    "widths": [
+      480,
+      960,
+      1086
+    ]
+  },
+  "/assets/products/20260224-wa0017.jpg": {
+    "w": 960,
+    "h": 1280,
+    "base": "/opt/products/20260224-wa0017",
+    "widths": [
+      480,
+      960
+    ]
+  },
+  "/assets/products/20260224-wa0021.jpg": {
+    "w": 468,
+    "h": 1040,
+    "base": "/opt/products/20260224-wa0021",
+    "widths": [
+      468
+    ]
+  },
+  "/assets/products/20260224-wa0022.jpg": {
+    "w": 1024,
+    "h": 1536,
+    "base": "/opt/products/20260224-wa0022",
+    "widths": [
+      480,
+      960,
+      1024
+    ]
+  },
+  "/assets/products/20260224-wa0022.webp": {
+    "w": 1024,
+    "h": 1536,
+    "base": "/opt/products/20260224-wa0022",
+    "widths": [
+      480,
+      960,
+      1024
+    ]
+  },
+  "/assets/products/20260224-wa0023.jpg": {
+    "w": 877,
+    "h": 836,
+    "base": "/opt/products/20260224-wa0023",
+    "widths": [
+      480,
+      877
+    ]
+  },
+  "/assets/products/ornate-marble-peacock-shrine-alcove.png": {
+    "w": 1285,
+    "h": 1224,
+    "base": "/opt/products/ornate-marble-peacock-shrine-alcove",
+    "widths": [
+      480,
+      960,
+      1285
+    ]
+  },
+  "/assets/products/ornate-marble-peacock-shrine-alcove.webp": {
+    "w": 1285,
+    "h": 1224,
+    "base": "/opt/products/ornate-marble-peacock-shrine-alcove",
+    "widths": [
+      480,
+      960,
+      1285
+    ]
+  },
+  "/assets/products/ornate-marble-temple-pavilion-courtyard.png": {
+    "w": 1086,
+    "h": 1448,
+    "base": "/opt/products/ornate-marble-temple-pavilion-courtyard",
+    "widths": [
+      480,
+      960,
+      1086
+    ]
+  },
+  "/assets/products/ornate-marble-temple-pavilion-courtyard.webp": {
+    "w": 1086,
+    "h": 1448,
+    "base": "/opt/products/ornate-marble-temple-pavilion-courtyard",
+    "widths": [
+      480,
+      960,
+      1086
+    ]
+  },
+  "/assets/products/ornate-white-marble-mandir-warm-lighting.png": {
+    "w": 1024,
+    "h": 1536,
+    "base": "/opt/products/ornate-white-marble-mandir-warm-lighting",
+    "widths": [
+      480,
+      960,
+      1024
+    ]
+  },
+  "/assets/products/ornate-white-marble-mandir-warm-lighting.webp": {
+    "w": 1024,
+    "h": 1536,
+    "base": "/opt/products/ornate-white-marble-mandir-warm-lighting",
+    "widths": [
+      480,
+      960,
+      1024
+    ]
+  },
+  "/assets/workshop/carved-detail-in-progress.webp": {
+    "w": 675,
+    "h": 900,
+    "base": "/opt/workshop/carved-detail-in-progress",
+    "widths": [
+      480,
+      675
+    ]
+  }
+}

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
+/* Fonts are loaded from index.html (non-blocking <link>). */
 
 :root {
   --ivory: #FBF7F0;
@@ -42,7 +42,7 @@ body {
   margin: 0;
   background: var(--ivory);
   color: var(--charcoal);
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--font-body);
   line-height: 1.7;
   overflow-x: hidden;
 }
@@ -147,7 +147,7 @@ button {
 }
 
 .brand-name {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: var(--font-heading);
   font-size: 1.7rem;
   font-weight: 600;
   letter-spacing: 0.01em;
@@ -330,7 +330,7 @@ button {
   padding-top: 1rem;
   border-top: 1px solid color-mix(in srgb, var(--maroon) 20%, transparent);
   color: var(--muted);
-  font-family: 'Cormorant Garamond', serif;
+  font-family: var(--font-heading);
   font-size: 1.2rem;
   font-style: italic;
 }
@@ -408,7 +408,7 @@ h2,
 h3 {
   margin: 0;
   color: var(--maroon);
-  font-family: 'Cormorant Garamond', serif;
+  font-family: var(--font-heading);
   font-weight: 600;
   line-height: 0.98;
 }
@@ -1377,7 +1377,7 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visib
 .about-note-band { padding: 3rem 0; background: var(--sand); }
 .about-note-inner { display: grid; grid-template-columns: 1fr 1.4fr auto; align-items: center; gap: 2rem; }
 .about-note-inner .eyebrow { margin: 0; }
-.about-note-inner > p { margin: 0; color: var(--maroon); font-family: 'Cormorant Garamond',serif; font-size: clamp(1.8rem,3vw,2.7rem); line-height: 1; }
+.about-note-inner > p { margin: 0; color: var(--maroon); font-family: var(--font-heading); font-size: clamp(1.8rem,3vw,2.7rem); line-height: 1; }
 
 /* Contact, FAQ, policies and footer */
 .contact-layout { grid-template-columns: .72fr 1.28fr; align-items: start; gap: clamp(2rem,5vw,5rem); }
@@ -1402,7 +1402,7 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visib
 .faq-list { gap: 0; border-top: 1px solid var(--line); }
 .faq-item { padding: 1.15rem .2rem; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; }
 .faq-item summary { position: relative; padding-right: 2rem; font-size: .88rem; }
-.faq-item summary::after { content: '+'; position: absolute; right: .25rem; top: -.35rem; color: var(--maroon); font-family: 'Cormorant Garamond',serif; font-size: 1.5rem; }
+.faq-item summary::after { content: '+'; position: absolute; right: .25rem; top: -.35rem; color: var(--maroon); font-family: var(--font-heading); font-size: 1.5rem; }
 .faq-item[open] summary::after { content: '−'; }
 .faq-item p { max-width: 40rem; margin: .8rem 2rem 0 0; color: var(--muted); font-size: .84rem; }
 .legal-copy { max-width: 850px; }
@@ -1411,7 +1411,7 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visib
 .legal-copy ol { display: grid; gap: .65rem; }
 .site-footer { padding: 2.5rem 0 2rem; }
 .footer-grid { grid-template-columns: 1.3fr .8fr .8fr 1fr; gap: clamp(1.5rem,4vw,4rem); }
-.footer-grid h3 { font-family: 'Montserrat',sans-serif; font-size: .72rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
+.footer-grid h3 { font-family: var(--font-body); font-size: .72rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
 .footer-links { gap: .55rem; font-size: .8rem; }
 .footer-copy, .footer-meta { color: color-mix(in srgb, var(--ivory) 72%, transparent); font-size: .8rem; }
 .footer-meta a { color: var(--ivory); }
@@ -1685,7 +1685,7 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visib
 .process-video-item { display: flex; min-width: 0; flex-direction: column; gap: .75rem; padding: 1rem; border: 1px solid color-mix(in srgb, var(--maroon) 18%, transparent); color: var(--charcoal); background: color-mix(in srgb, var(--ivory) 35%, transparent); }
 .process-video-item video { display: block; width: 100%; aspect-ratio: 16 / 10; background: var(--charcoal); object-fit: contain; }
 .process-video-item > span { color: var(--maroon); font-size: .66rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
-.process-video-item h3 { max-width: 16ch; margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; line-height: 1; }
+.process-video-item h3 { max-width: 16ch; margin: 0; font-family: var(--font-heading); font-size: 1.8rem; line-height: 1; }
 .process-video-item small { color: var(--muted); font-size: .7rem; }
 .process-video-item:hover { border-color: var(--gold); background: color-mix(in srgb, var(--ivory) 40%, transparent); }
 .reference-editorial.reference-editorial-text-only { grid-template-columns: minmax(0, 1fr); }
@@ -1778,7 +1778,7 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visib
 .about-values-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
 .about-value-card { display: flex; min-width: 0; min-height: 0; flex-direction: column; align-items: flex-start; padding: clamp(1.1rem, 2vw, 1.6rem); border: 1px solid var(--line); background: color-mix(in srgb, var(--ivory) 72%, transparent); }
 .about-value-number { color: var(--maroon); font-size: .7rem; font-weight: 700; letter-spacing: .14em; }
-.about-value-card h3 { margin: 1rem 0 .55rem; color: var(--maroon); font-family: 'Cormorant Garamond', serif; font-size: clamp(1.7rem, 2.3vw, 2.25rem); line-height: 1; }
+.about-value-card h3 { margin: 1rem 0 .55rem; color: var(--maroon); font-family: var(--font-heading); font-size: clamp(1.7rem, 2.3vw, 2.25rem); line-height: 1; }
 .about-value-card p { max-width: 34ch; margin: 0; color: var(--muted); font-size: .84rem; }
 .about-audience-section { background: var(--ivory); border-top: 1px solid var(--line); }
 .about-audience-inner { display: block; max-width: none; }
@@ -2000,7 +2000,7 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visib
 /* Quiet luxury design system: shared surfaces, type, and interaction states. */
 html { scroll-padding-top: 6rem; }
 body { background: var(--ivory); color: var(--charcoal); line-height: 1.72; }
-h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; }
+h1, h2, h3 { font-family: var(--font-heading); font-weight: 600; }
 h1 { font-size: clamp(3rem, 5.2vw, 5.8rem); line-height: .94; letter-spacing: -.035em; }
 h2 { font-size: clamp(2.25rem, 3.7vw, 4rem); line-height: 1.02; letter-spacing: -.025em; }
 h3 { line-height: 1.08; letter-spacing: -.015em; }

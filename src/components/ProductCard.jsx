@@ -1,19 +1,23 @@
 import { Link } from 'react-router-dom'
+import ResponsiveImage from './ResponsiveImage'
 
 export default function ProductCard({ product, index = 0 }) {
+  const detailsUrl = `/products/${product.id}`
+  const enquireUrl = `/contact?productId=${encodeURIComponent(product.id)}&productUrl=${encodeURIComponent(window.location.origin + detailsUrl)}`
+
   return (
-    <article className="product-card">
-      <Link to={`/products/${product.id}`} className="product-image-box" aria-label={`View ${product.name}`}>
-        <img className="product-photo" src={product.image} alt={product.imageAlt} width={product.imageWidth} height={product.imageHeight} loading="lazy" decoding="async" />
+    <article className="pcard">
+      <Link to={detailsUrl} className="pcard-media" tabIndex={-1} aria-hidden="true">
+        <ResponsiveImage src={product.image} alt={product.imageAlt} sizes="(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 25vw" />
+        <span className="pcard-tag">{product.category}</span>
       </Link>
-      <div className="product-card-body">
-        <p className="product-card-index" aria-hidden="true">Design {String(index + 1).padStart(2, '0')}</p>
-        <p className="product-category">{product.category}</p>
-        <h3><Link to={`/products/${product.id}`}>{product.name}</Link></h3>
-        <p className="product-description">{product.shortDescription}</p>
-        <div className="card-actions">
-          <Link to={`/products/${product.id}`} className="text-link">View Details</Link>
-          <Link to={`/contact?productId=${encodeURIComponent(product.id)}&productUrl=${encodeURIComponent(window.location.origin + `/products/${product.id}`)}`} className="text-link">Enquire</Link>
+      <div className="pcard-body">
+        <p className="pcard-index">Design {String(index + 1).padStart(2, '0')}</p>
+        <h3 className="pcard-title"><Link to={detailsUrl}>{product.name}</Link></h3>
+        <p className="pcard-text">{product.shortDescription}</p>
+        <div className="pcard-actions">
+          <Link to={enquireUrl} className="btn btn-primary btn-small" aria-label={`Enquire about ${product.name}`}>Enquire</Link>
+          <Link to={detailsUrl} className="pcard-link" aria-label={`View details of ${product.name}`}>View details <span aria-hidden="true">→</span></Link>
         </div>
       </div>
     </article>

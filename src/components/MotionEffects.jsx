@@ -14,7 +14,7 @@ const REVEALS = [
   ['.page-hero .eyebrow, .page-hero h1, .page-hero p', 'up', true],
   ['.section-heading', 'up', false],
   ['.section-heading-row .section-side-link', 'up', false],
-  ['.product-card', 'up', true],
+  ['.pcard', 'up', true],
   ['.project-steps li', 'left', true],
   ['.custom-feature-copy > .eyebrow, .custom-feature-copy > h2, .custom-feature-copy > p, .custom-feature-copy > .btn', 'up', true],
   ['.process-video-item', 'up', true],
@@ -27,6 +27,9 @@ const REVEALS = [
   ['.product-detail-gallery, .product-detail-copy', 'up', true],
   ['.contact-details, .enquiry-box', 'up', true],
   ['.about-editorial-image, .about-note-inner', 'up', true],
+  ['.home-custom-inner > div', 'left', false],
+  ['.home-steps li', 'right', true],
+  ['.masonry-item', 'up', true],
 ]
 
 const MAX_STAGGER = 5
