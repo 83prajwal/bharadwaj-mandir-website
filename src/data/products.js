@@ -10,6 +10,12 @@ const addedWorkshopVideos = [
   { id: 'video-20260513-184859-1', title: 'Marble mandir craftsmanship', category: 'Product and Craftsmanship', video: '/videos/20260513_184859%20%281%29.mp4', audioAvailable: true },
 ]
 
+// estimatedPriceUsd holds unconfirmed starting estimates made from the product
+// photos. `price` stays null until the owner confirms real prices, and the
+// website assistant deliberately reads neither field.
+export const formatEstimatedPrice = (usd) => `From $${usd.toLocaleString('en-US')}`
+export const estimatedPriceNote = 'Prices are estimated starting prices in US dollars. Final pricing is confirmed after size, carving and inlay are agreed.'
+
 export const products = [
   {
     id: 'white-marble-mandir',
@@ -27,6 +33,7 @@ export const products = [
     finish: null,
     dimensions: null,
     price: null,
+    estimatedPriceUsd: 1450,
     availability: null,
     customization: null,
     features: ['Open central shrine space', 'Ornate carved arch and side pillars', 'Carved drawer-front base'],
@@ -47,6 +54,7 @@ export const products = [
     finish: null,
     dimensions: null,
     price: null,
+    estimatedPriceUsd: 1900,
     availability: null,
     customization: null,
     features: ['Blue peacock motif on the back panel', 'Carved columns and ornamental arch', 'Wide lower platform'],
@@ -67,6 +75,7 @@ export const products = [
     finish: null,
     dimensions: null,
     price: null,
+    estimatedPriceUsd: 2600,
     availability: null,
     customization: null,
     features: ['Tall floral-style carved arch', 'Carved side columns', 'Lower cabinet with central shrine opening'],
@@ -87,6 +96,7 @@ export const products = [
     finish: null,
     dimensions: null,
     price: null,
+    estimatedPriceUsd: 4200,
     availability: null,
     customization: null,
     features: ['Open pavilion-like structure', 'Carved pillars and ornamental crest', 'Lattice side panels'],

@@ -437,6 +437,14 @@ html[data-home]:not([data-past-hero]) .assistant-widget:not(:has(.assistant-pane
 }
 
 /* ---------- reduced motion: calm and still ---------- */
+/* ---------- estimated prices ---------- */
+.price-from { margin: .55rem 0 .7rem; color: var(--maroon); font-size: 1.05rem; font-weight: 600; }
+.price-from small { color: var(--muted); font-size: .7rem; font-weight: 500; }
+.product-detail-copy .price-from { margin: 0 0 .9rem; color: var(--maroon); font-size: 1.35rem; }
+.price-note { margin: 1.1rem 0 0; color: var(--muted); font-size: .8rem; }
+.sort-control { display: flex; align-items: center; justify-content: flex-end; gap: .6rem; margin: 1.25rem 0 1rem; color: var(--maroon); font-size: .8rem; font-weight: 600; }
+.sort-control select { width: auto; min-height: 44px; padding: .45rem 2rem .45rem .8rem; border: 1px solid color-mix(in srgb, var(--maroon) 25%, transparent); border-radius: 5px; background-color: var(--white); color: var(--maroon); font: inherit; }
+
 @media (prefers-reduced-motion: reduce) {
   .petals { display: none; }
   .temple-hero-media { transform: none !important; }

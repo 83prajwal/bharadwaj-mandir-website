@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { products } from '../data/products'
+import { formatEstimatedPrice, products } from '../data/products'
 import { parseQuotationValidationResponse } from '../lib/quotation-response.mjs'
 
 const uploadLimit = 7 * 1024 * 1024
@@ -17,7 +17,8 @@ export default function EnquiryForm() {
   const location = useLocation()
   const query = new URLSearchParams(location.search)
   const sourceParams = new URLSearchParams(window.location.search)
-  const selectedProduct = products.find((product) => product.id === query.get('productId'))
+  const linkedProductId = query.get('productId') || ''
+  const [selectedProductId, setSelectedProductId] = useState(() => (products.some((product) => product.id === linkedProductId) ? linkedProductId : ''))
   const assistantQuestion = typeof location.state?.assistantQuestion === 'string' ? location.state.assistantQuestion.slice(0, 1200) : ''
   const designerConfig = location.state?.designerConfig && typeof location.state.designerConfig === 'object' ? location.state.designerConfig : null
   const designerQuote = Boolean(location.state?.designerQuote && designerConfig)
@@ -98,8 +99,7 @@ export default function EnquiryForm() {
       ) : (
         <form className="enquiry-form" name="enquiry" method="POST" action="/" data-netlify="true" data-netlify-honeypot="bot-field" encType="multipart/form-data" onSubmit={handleSubmit}>
           <input type="hidden" name="form-name" value="enquiry" />
-          <input type="hidden" name="productId" value={query.get('productId') || ''} />
-          <input type="hidden" name="productUrl" value={query.get('productUrl') || ''} />
+          <input type="hidden" name="productUrl" value={selectedProductId === linkedProductId ? query.get('productUrl') || '' : selectedProductId ? `${window.location.origin}/products/${selectedProductId}` : ''} />
         <input type="hidden" name="enquiryType" value={designerQuote ? '3D Studio quotation request' : 'Website enquiry'} />
         <input type="hidden" name="designId" value={designerQuote ? designerId : ''} />
         <input type="hidden" name="designName" value={designerQuote ? designerName : ''} />
@@ -110,7 +110,6 @@ export default function EnquiryForm() {
           <input type="hidden" name="landingPage" />
           {['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].map((name) => <input key={name} type="hidden" name={name} />)}
           <label className="honeypot" aria-hidden="true">Do not fill this out<input name="bot-field" tabIndex="-1" autoComplete="off" /></label>
-          {query.get('productId') && <p className="field-help">Enquiry about: {selectedProduct?.name || 'a selected design'}{selectedProduct ? ` (${selectedProduct.id})` : ''}</p>}
           {designerQuote && <div className="field-help"><strong>Quotation request for: {designerName}</strong><p>Your current design configuration will be included for review. This is a request for review, not an approved quotation.</p></div>}
           <div className="form-grid">
             <label><span>Full name *</span><input type="text" name="fullName" autoComplete="name" maxLength="120" required /></label>
@@ -121,6 +120,9 @@ export default function EnquiryForm() {
             {designerQuote && <label className="form-grid-wide"><span>Installation location *</span><input type="text" name="installationLocation" autoComplete="street-address" maxLength="240" required placeholder="Address, neighbourhood or site details" /></label>}
             <label><span>Buyer type</span><select name="buyerType" defaultValue=""><option value="">Select if known</option><option>Homeowner</option><option>Interior designer</option><option>Architect</option><option>Temple committee</option><option>Dealer</option><option>Other</option></select></label>
             <label><span>Project interest *</span><select name="interest" required defaultValue={query.get('interest') || ''}><option value="" disabled>Select an interest</option><option>Home mandir</option><option>Custom mandir</option><option>Pooja room</option><option>Jali or carving</option><option>Project enquiry</option></select></label>
+            {designerQuote
+              ? <input type="hidden" name="productId" value="" />
+              : <label><span>Design</span><select name="productId" value={selectedProductId} onChange={(event) => setSelectedProductId(event.target.value)}><option value="">Not sure yet / custom design</option>{products.map((product) => <option key={product.id} value={product.id}>{product.name} ({formatEstimatedPrice(product.estimatedPriceUsd)} est.)</option>)}</select></label>}
             <label><span>Approximate space or dimensions</span><input type="text" name="dimensions" maxLength="200" defaultValue={designerConfig ? `${designerConfig.width || ''} W × ${designerConfig.depth || ''} D × ${designerConfig.height || ''} H mm` : ''} /></label>
             <label><span>Budget range (optional)</span><input type="text" name="budget" maxLength="100" placeholder="Not sure yet" /></label>
             <label><span>Desired timeline</span><input type="text" name="timeline" maxLength="100" /></label>

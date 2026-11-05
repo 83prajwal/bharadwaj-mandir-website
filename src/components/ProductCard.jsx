@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import EstimatedPrice from './EstimatedPrice'
 import ResponsiveImage from './ResponsiveImage'
 
 export default function ProductCard({ product, index = 0 }) {
@@ -15,6 +16,7 @@ export default function ProductCard({ product, index = 0 }) {
         <p className="pcard-index">Design {String(index + 1).padStart(2, '0')}</p>
         <h3 className="pcard-title"><Link to={detailsUrl}>{product.name}</Link></h3>
         <p className="pcard-text">{product.shortDescription}</p>
+        <EstimatedPrice value={product.estimatedPriceUsd} />
         <div className="pcard-actions">
           <Link to={enquireUrl} className="btn btn-primary btn-small" aria-label={`Enquire about ${product.name}`}>Enquire</Link>
           <Link to={detailsUrl} className="pcard-link" aria-label={`View details of ${product.name}`}>View details <span aria-hidden="true">→</span></Link>

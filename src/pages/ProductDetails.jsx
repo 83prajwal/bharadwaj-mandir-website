@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import EstimatedPrice from '../components/EstimatedPrice'
 import { products } from '../data/products'
 
 export default function ProductDetails() {
@@ -34,6 +35,7 @@ export default function ProductDetails() {
           </figure>
           <div className="product-detail-copy">
             <p className="product-category">{product.category}</p>
+            <EstimatedPrice value={product.estimatedPriceUsd} />
             <p>{product.description}</p>
             <p className="quote-note">Share your space requirements and preferred design details through a custom enquiry. Product dimensions, material, finish and available customization can be confirmed individually.</p>
             {specifications.length > 0 ? (
@@ -41,7 +43,7 @@ export default function ProductDetails() {
                 {specifications.map(([label, value]) => <li key={label}><strong>{label}:</strong> {value}</li>)}
               </ul>
             ) : null}
-            <p className="quote-note">Pricing and availability are confirmed for each enquiry.</p>
+            <p className="quote-note">Estimated starting price in US dollars. Final pricing is confirmed after size, carving and inlay are agreed. Availability is confirmed for each enquiry.</p>
             {product.features?.length ? (
               <ul className="detail-list" aria-label="Features">
                 {product.features.map((feature) => <li key={feature}>{feature}</li>)}
