@@ -1,4 +1,9 @@
 {
+  "functions": {
+    "api/ai-assistant.js": {
+      "maxDuration": 45
+    }
+  },
   "rewrites": [
     { "source": "/(.*)", "destination": "/" }
   ]

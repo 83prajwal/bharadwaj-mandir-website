@@ -1,5 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import vercelHandler, { createVercelAiAssistantHandler } from '../api/ai-assistant.js'
 import aiAssistant from '../netlify/functions/ai-assistant.mjs'
 import { clearRateLimitForTests, clearProviderCooldownsForTests } from '../netlify/functions/lib/ai-assistant.mjs'
@@ -36,6 +38,11 @@ function shortTimeoutSignal(timeoutMs, delayMs) {
   setTimeout(() => controller.abort(new DOMException('Provider request timed out.', 'TimeoutError')), delayMs)
   return controller.signal
 }
+
+test('Vercel gives only the assistant function enough time for sequential provider fallback', () => {
+  const config = JSON.parse(readFileSync(join(process.cwd(), 'vercel.json'), 'utf8'))
+  assert.deepEqual(config.functions, { 'api/ai-assistant.js': { maxDuration: 45 } })
+})
 
 async function withAssistantEnv(values, callback) {
   const saved = Object.fromEntries(envNames.map((name) => [name, process.env[name]]))
@@ -237,6 +244,8 @@ test('provider timeout aborts the active fetch, logs safe stages, and falls back
     const logs = []
     const logger = Object.fromEntries(['info', 'warn', 'error'].map((level) => [level, (line) => logs.push(JSON.parse(line))]))
     let groqSignal
+    let groqCalls = 0
+    let mistralCalls = 0
     const handler = createVercelAiAssistantHandler({
       logger,
       assistantHandler: (request, context) => aiAssistant(request, {
@@ -246,6 +255,7 @@ test('provider timeout aborts the active fetch, logs safe stages, and falls back
     })
     globalThis.fetch = async (url, { signal }) => {
       if (url.includes('groq')) {
+        groqCalls += 1
         groqSignal = signal
         return new Promise((_, reject) => {
           const abort = () => reject(signal.reason)
@@ -253,12 +263,15 @@ test('provider timeout aborts the active fetch, logs safe stages, and falls back
           if (signal.aborted) abort()
         })
       }
+      mistralCalls += 1
       return providerResponse(200, 'product-peacock-design-mandir')
     }
 
     const response = await handler(request())
     assert.equal(response.status, 200)
     assert.equal(groqSignal.aborted, true)
+    assert.equal(groqCalls, 1)
+    assert.equal(mistralCalls, 1)
     assert.match((await response.json()).answer, /peacock/i)
     assert.ok(logs.some(({ event }) => event === 'ai_assistant_request_received'))
     assert.ok(logs.some(({ event }) => event === 'ai_assistant_handler_started'))

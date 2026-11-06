@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import aiAssistant from '../netlify/functions/ai-assistant.mjs'
+import aiAssistant, { readRequestBody } from '../netlify/functions/ai-assistant.mjs'
 import {
   acquireAssistantSubmission,
   getValidAssistantQuestion,
@@ -688,6 +688,58 @@ test('public handler rejects cross-origin and malformed requests before provider
   const wrongMethod = await aiAssistant(event({ method: 'GET' }))
   assert.equal(wrongMethod.status, 405)
   assert.equal(wrongMethod.headers.get('cache-control'), 'no-store')
+})
+
+test('bounded request reader reads a normal JSON body', async () => {
+  const request = event({ body: JSON.stringify({ messages }) })
+  assert.equal(await readRequestBody(request), JSON.stringify({ messages }))
+})
+
+test('empty and malformed JSON bodies return safe 400 responses', async () => {
+  for (const body of ['', '   ', '{']) {
+    const response = await aiAssistant(event({ body }))
+    assert.equal(response.status, 400)
+    assert.match(response.headers.get('content-type'), /application\/json/i)
+    assert.equal(typeof (await response.json()).error, 'string')
+  }
+})
+
+test('oversized streamed body is cancelled and returns 413', async () => {
+  let cancelled = false
+  const body = new ReadableStream({
+    start(controller) {
+      controller.enqueue(new Uint8Array(12_001))
+    },
+    cancel() { cancelled = true },
+  })
+  const request = new Request('https://example.netlify.app/.netlify/functions/ai-assistant', {
+    method: 'POST',
+    headers: { origin: 'https://example.netlify.app', 'content-type': 'application/json' },
+    body,
+    duplex: 'half',
+  })
+  const response = await aiAssistant(request)
+  assert.equal(response.status, 413)
+  assert.equal(cancelled, true)
+  assert.match(response.headers.get('content-type'), /application\/json/i)
+})
+
+test('never-completing request body times out, is cancelled, and returns safe JSON', async () => {
+  let cancelled = false
+  const body = new ReadableStream({ cancel() { cancelled = true } })
+  const request = new Request('https://example.netlify.app/.netlify/functions/ai-assistant', {
+    method: 'POST',
+    headers: { origin: 'https://example.netlify.app', 'content-type': 'application/json' },
+    body,
+    duplex: 'half',
+  })
+  const response = await aiAssistant(request, { requestBodyTimeoutMs: 10 })
+  const payload = await response.json()
+  assert.equal(response.status, 408)
+  assert.equal(cancelled, true)
+  assert.match(response.headers.get('content-type'), /application\/json/i)
+  assert.match(payload.error, /too long/i)
+  assert.doesNotMatch(JSON.stringify(payload), /stack|secret|internal/i)
 })
 
 test('handler fails safely when provider credentials are unavailable', async () => {

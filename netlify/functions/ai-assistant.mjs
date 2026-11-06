@@ -9,9 +9,64 @@ import {
 } from './lib/ai-assistant.mjs'
 
 const responseHeaders = { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' }
+const MAX_REQUEST_BODY_BYTES = 12_000
+const REQUEST_BODY_TIMEOUT_MS = 5_000
 
 function json(status, payload) {
   return new Response(JSON.stringify(payload), { status, headers: responseHeaders })
+}
+
+export async function readRequestBody(request, { maxBytes = MAX_REQUEST_BODY_BYTES, timeoutMs = REQUEST_BODY_TIMEOUT_MS } = {}) {
+  if (!request.body) return ''
+
+  const reader = request.body.getReader()
+  const decoder = new TextDecoder()
+  let bytesRead = 0
+  let rawBody = ''
+  let timeoutId
+  let timedOut = false
+  const cancelReader = () => {
+    try { void reader.cancel().catch(() => {}) } catch { /* cancellation is best effort */ }
+  }
+
+  const read = async () => {
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) return rawBody + decoder.decode()
+      bytesRead += value.byteLength
+      if (bytesRead > maxBytes) {
+        cancelReader()
+        const error = new Error('Request body exceeds the allowed size.')
+        error.code = 'BODY_TOO_LARGE'
+        throw error
+      }
+      rawBody += decoder.decode(value, { stream: true })
+    }
+  }
+
+  const timeout = new Promise((_, reject) => {
+    timeoutId = setTimeout(() => {
+      timedOut = true
+      cancelReader()
+      const error = new Error('Request body read timed out.')
+      error.code = 'BODY_READ_TIMEOUT'
+      reject(error)
+    }, timeoutMs)
+  })
+
+  try {
+    return await Promise.race([read(), timeout])
+  } catch (error) {
+    if (timedOut) {
+      const timeoutError = new Error('Request body read timed out.')
+      timeoutError.code = 'BODY_READ_TIMEOUT'
+      throw timeoutError
+    }
+    throw error
+  } finally {
+    clearTimeout(timeoutId)
+    try { reader.releaseLock() } catch { /* an in-flight read may still be settling */ }
+  }
 }
 
 function isSameOrigin(request) {
@@ -33,11 +88,14 @@ export default async function aiAssistant(request, context = {}) {
 
   let rawBody
   try {
-    rawBody = await request.text()
-  } catch {
+    rawBody = await readRequestBody(request, { timeoutMs: context.requestBodyTimeoutMs ?? REQUEST_BODY_TIMEOUT_MS })
+  } catch (error) {
+    if (error?.code === 'BODY_TOO_LARGE') return json(413, { error: 'The message is too large.' })
+    if (error?.code === 'BODY_READ_TIMEOUT') return json(408, { error: 'The message took too long to arrive. Please try again.' })
     return json(400, { error: 'The message could not be read.' })
   }
-  if (!rawBody || Buffer.byteLength(rawBody, 'utf8') > 12_000) return json(413, { error: 'The message is too large.' })
+  if (Buffer.byteLength(rawBody, 'utf8') > MAX_REQUEST_BODY_BYTES) return json(413, { error: 'The message is too large.' })
+  if (!rawBody.trim()) return json(400, { error: 'The message could not be read.' })
 
   let body
   try {
