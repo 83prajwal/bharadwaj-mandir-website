@@ -348,22 +348,9 @@ html[data-scrolled] .site-header { background: color-mix(in srgb, var(--cream) 9
 .footer-gopuram { position: absolute; left: 0; right: 0; bottom: 100%; height: clamp(34px, 5vw, 56px); padding: 0; color: var(--maroon-deep); pointer-events: none; }
 .footer-gopuram svg { width: 100%; height: 100%; }
 
-/* ---------- floating actions ---------- */
-.floating-stack { position: fixed; z-index: 45; left: max(1rem, env(safe-area-inset-left)); bottom: calc(4.5rem + env(safe-area-inset-bottom)); display: grid; gap: .6rem; justify-items: start; }
-.floating-stack { transition: opacity .35s ease, transform .35s var(--ease-out); }
-.floating-stack .floating-contact { position: relative; left: auto; bottom: auto; justify-content: center; width: 52px; height: 52px; min-height: 0; padding: 0; }
-/* Icon-only buttons; the label slides out on hover or keyboard focus. */
-.floating-stack .floating-contact span { position: absolute; left: calc(100% + .55rem); top: 50%; padding: .35rem .75rem; border-radius: 999px; background: var(--brown); color: var(--cream); font-size: .75rem; white-space: nowrap; opacity: 0; translate: -6px -50%; pointer-events: none; transition: opacity .25s ease, translate .25s ease; }
-.floating-stack .floating-contact:hover span, .floating-stack .floating-contact:focus-visible span { opacity: 1; translate: 0 -50%; }
-@media (max-width: 560px) { .floating-stack .floating-contact span { display: block; } .floating-stack .floating-contact { width: 48px; height: 48px; } }
-html[data-home]:not([data-past-hero]) .floating-stack { opacity: 0; transform: translateY(14px); pointer-events: none; }
-html[data-home]:not([data-past-hero]) .floating-stack * { visibility: hidden; }
+/* Keep the assistant hidden over the home hero until its actions are visible. */
 html[data-home]:not([data-past-hero]) .assistant-widget:not(:has(.assistant-panel)) { opacity: 0; pointer-events: none; visibility: hidden; }
 .assistant-widget { transition: opacity .35s ease; }
-.floating-call { background: linear-gradient(135deg, var(--maroon), var(--maroon-deep)); box-shadow: 0 12px 26px -10px rgba(78, 18, 27, .6); animation-delay: 1.4s; }
-.floating-call:hover { background: linear-gradient(135deg, var(--maroon-rich), var(--maroon)); }
-.floating-call::before { border-color: var(--maroon); }
-.floating-call svg { width: 22px; height: 22px; }
 .back-to-top {
   position: fixed; z-index: 44; right: max(1rem, env(safe-area-inset-right)); bottom: calc(5.4rem + env(safe-area-inset-bottom));
   display: grid; place-items: center; width: 46px; height: 46px; padding: 0;

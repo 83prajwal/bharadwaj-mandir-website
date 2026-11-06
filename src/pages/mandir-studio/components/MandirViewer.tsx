@@ -61,9 +61,9 @@ function PillarAssembly({ x, z, bottom, height, thickness, shape, style, materia
 function RoofAssembly({ w, d, y, h: totalH, roof, style, material, kalash, decorativeMaterial, config }: { config:any; w: number; d: number; y: number; h: number; roof: string; style: string; kalash: boolean; decorativeMaterial: THREE.Material } & MaterialProps) {
   const h = kalash ? totalH * .8 : totalH;
   const finialH = totalH - h;
-  const flat = ['Flat', 'Minimal', 'Cornice'].includes(roof);
+  const flat = ['Flat', 'Cornice'].includes(roof);
   return <group position={[0, y, 0]}>
-    <Block size={[w, Math.min(h, .07), d-.056]} at={[0, Math.min(h, .07) / 2, 0]} material={material} />
+    <Block size={[w, roof === 'Minimal' ? Math.min(h, .035) : Math.min(h, .07), d-.056]} at={[0, (roof === 'Minimal' ? Math.min(h, .035) : Math.min(h, .07)) / 2, 0]} material={material} />
     {flat && <Block size={[w * .97, Math.max(.01, h - .07), d * .97]} at={[0, .07 + Math.max(.01, h - .07) / 2, 0]} material={material} />}
     {(roof === 'Cornice' || style === 'Classical') && [0, 1, 2].map(i => <Block key={i} size={[w * (1 - i * .025), Math.min(.025,h*.15), d * (1 - i * .025)]} at={[0, h * .28 + i * h * .2, 0]} material={material} />)}
     {(roof === 'Shikhar' || roof === 'Stepped') && Array.from({ length: roof === 'Shikhar' ? 8 : 4 }, (_, i) => { const n = roof === 'Shikhar' ? 8 : 4; const scale = 1 - i / n * .78; const sh = (h - .07) / n; return <Block key={i} size={[w * scale * .86, sh, d * scale * .86]} at={[0, .07 + (i + .5) * sh, 0]} material={material} />; })}
@@ -73,10 +73,11 @@ function RoofAssembly({ w, d, y, h: totalH, roof, style, material, kalash, decor
   </group>;
 }
 function StorageAssembly({w,d,h,storage,material,config}:{w:number;d:number;h:number;storage:string;config:any}&MaterialProps){
- const n=storage==='Drawers'?Number(config.drawerCount||0):storage==='Single Drawer'?1:storage==='Double Drawer'||storage==='Cabinet'?2:0;
+ const n=storage==='Drawers'?Number(config.drawerCount||0):storage==='Single Drawer'?1:storage==='Double Drawer'?2:0;
  const faces=drawerFaces(w,h,n,config.drawerLayout||'Horizontal');
  return <group><Block size={[w,.05,d]} at={[0,.025,0]} material={material}/>{storage!=='None'&&<Block size={[w*.96,h-.055,d*.9]} at={[0,h/2,-d*.025]} material={material}/>}
  {faces.map((face,i)=>{const fw=face.width+.008,fh=face.height+.008;return <group key={i} position={[face.x,face.y,d/2-.048]}><Block size={[fw-.008,fh-.008,.018]} at={[0,0,0]} material={material}/><group position={[0,0,.01]}><OrnamentMesh config={config} zone="base" width={fw*.86} height={fh*.82} material={material}/></group>{config.drawerHandle==='Knob'?<mesh position={[0,fh*.3,.025]}><sphereGeometry args={[.012,12,8]}/><meshStandardMaterial color="#ac925d" metalness={.55} roughness={.4}/></mesh>:config.drawerHandle==='Recessed'?<mesh position={[0,fh*.3,.010]}><boxGeometry args={[Math.min(.09,fw*.3),.012,.002]}/><meshStandardMaterial color="#665846" roughness={.8}/></mesh>:<mesh position={[0,fh*.3,.025]}><boxGeometry args={[Math.min(.09,fw*.35),.009,.014]}/><meshStandardMaterial color="#ac925d" metalness={.55} roughness={.4}/></mesh>}</group>;})}
+ {storage==='Cabinet'&&[-1,1].map(sign=><group key={sign} position={[sign*w*.24,h*.52,d*.425]}><Block size={[w*.47,h*.84,.02]} at={[0,0,0]} material={material}/><Block size={[.014,.11,.025]} at={[-sign*w*.025,0,.014]} material={material}/></group>)}
  {!n&&storage!=='None'&&<group position={[0,h/2,d*.425+.001]}><OrnamentMesh config={config} zone="base" width={w*.9} height={h*.8} material={material}/></group>}
  {storage==='None'&&[-1,1].map(sign=><Block key={sign} size={[.055,h,d*.92]} at={[sign*(w/2-.05),h/2,0]} material={material}/>)}
  </group>;

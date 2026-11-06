@@ -14,7 +14,8 @@ export function createQuotationAcknowledgement({ fetchImpl = fetch, env = proces
 
     const apiKey = env.RESEND_API_KEY
     const from = env.CUSTOMER_ACK_FROM_EMAIL
-    if (!apiKey || !from) return
+    if (!apiKey) throw new Error('QUOTATION_ACK_CONFIG_MISSING_RESEND_API_KEY')
+    if (!from) throw new Error('QUOTATION_ACK_CONFIG_MISSING_CUSTOMER_ACK_FROM_EMAIL')
 
     const greeting = name ? `Hello ${name},` : 'Hello,'
     const subject = `We received your Bharadwaj Mandir quotation request (${reference})`
@@ -29,4 +30,14 @@ export function createQuotationAcknowledgement({ fetchImpl = fetch, env = proces
   }
 }
 
-export default { formSubmitted: createQuotationAcknowledgement() }
+async function fetchHandler() {
+  return Response.json(
+    { error: 'Quotation acknowledgements are sent only after a verified 3D Studio form submission.' },
+    { status: 404, headers: { 'cache-control': 'no-store' } },
+  )
+}
+
+export default {
+  fetch: fetchHandler,
+  formSubmitted: createQuotationAcknowledgement(),
+}

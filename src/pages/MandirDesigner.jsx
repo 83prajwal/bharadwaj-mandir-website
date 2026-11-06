@@ -7,7 +7,6 @@ import { createSpecificationPdf, safePdfFilename } from './mandir-studio/lib/spe
 import './mandir-designer.css'
 
 const MandirViewer = lazy(() => import('./mandir-studio/components/MandirViewer.tsx'))
-const OriginalPrototype = lazy(() => import('./mandir-studio/components/OriginalPrototype.jsx'))
 const SAVE_KEY = 'bharadwaj-mandir-local-designs-v1'
 const DESIGN_API = '/.netlify/functions/designs'
 const TABS = ['Structure', 'Marble', 'Components', 'Carving & inlay', 'Your space']
@@ -56,7 +55,6 @@ export default function MandirDesigner() {
   const [designName, setDesignName] = useState('My mandir design')
   const [loadedId, setLoadedId] = useState('')
   const [status, setStatus] = useState('')
-  const [showOriginal, setShowOriginal] = useState(false)
   const [sharedReadOnly, setSharedReadOnly] = useState(() => Boolean(window.location.hash.match(/^#share=/)))
   const [sharedLoaded, setSharedLoaded] = useState(false)
   const [shareUrl, setShareUrl] = useState('')
@@ -81,6 +79,12 @@ export default function MandirDesigner() {
   function update(key, value) {
     setConfig((current) => {
       const next = { ...current, [key]: value }
+      // Wall-mounted mandirs cannot use floor storage. Clear it as part of
+      // the installation change so the preview remains renderable.
+      if (key === 'installation' && value === 'Wall' && !['None', 'Solid'].includes(next.storage)) {
+        next.storage = 'None'
+        next.drawerCount = 0
+      }
       if (key === 'storage' && value !== 'Drawers') next.drawerCount = 0
       if (key === 'drawerCount') next.storage = Number(value) === 0 ? 'None' : 'Drawers'
       return next
@@ -330,11 +334,7 @@ export default function MandirDesigner() {
             {(!sharedReadOnly || sharedLoaded) && <dl className="mandir-studio-summary">{activeConfigEntries(config).filter(([key]) => !key.startsWith('reference') && key !== 'requirements').map(([key, value]) => <div key={key}><dt>{key.replace(/([A-Z])/g, ' $1')}</dt><dd>{String(value)}</dd></div>)}</dl>}
           </div>
         </div>
-        {!sharedReadOnly && <details className="mandir-original-details" onToggle={(event) => setShowOriginal(event.currentTarget.open)}>
-          <summary>View the supplied GLB prototype</summary>
-          {showOriginal && <Suspense fallback={<div className="mandir-studio-viewer-fallback">Loading the supplied model…</div>}><OriginalPrototype /></Suspense>}
-        </details>}
-        <p className="designer-viewer-note">Visual design study only. Dimensions are not fabrication or engineering approval. Indicative pricing is not available; price is confirmed on request.</p>
+        <p className="designer-viewer-note mandir-studio-disclaimer">Visual design study only. Dimensions are not fabrication or engineering approval. Indicative pricing is not available; price is confirmed on request.</p>
       </section>
     </main>
   )

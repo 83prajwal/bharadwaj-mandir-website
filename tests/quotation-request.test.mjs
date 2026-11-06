@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { defaults } from '../src/pages/mandir-studio/lib/config.ts'
 import { validateQuotationRequest } from '../netlify/functions/lib/quotation-request.mjs'
 import handler from '../netlify/functions/quotation-validate.mjs'
-import { createQuotationAcknowledgement } from '../netlify/functions/quotation-acknowledgement.mjs'
+import quotationAcknowledgement, { createQuotationAcknowledgement } from '../netlify/functions/quotation-acknowledgement.mjs'
 import { createSpecificationPdf, safePdfFilename } from '../src/pages/mandir-studio/lib/specification-pdf.mjs'
 import { activeConfigEntries } from '../src/pages/mandir-studio/lib/config.ts'
 import { parseQuotationValidationResponse } from '../src/lib/quotation-response.mjs'
@@ -119,10 +119,25 @@ test('customer acknowledgement sends only after a verified Studio form event and
   assert.doesNotMatch(payload.text, /\+91-private/)
 })
 
+test('acknowledgement export supports HTTP requests without exposing an email-sending endpoint', async () => {
+  assert.equal(typeof quotationAcknowledgement.fetch, 'function')
+  assert.equal(typeof quotationAcknowledgement.formSubmitted, 'function')
+  const response = await quotationAcknowledgement.fetch(new Request('https://site.test/.netlify/functions/quotation-acknowledgement'))
+  assert.equal(response.status, 404)
+  assert.match((await response.json()).error, /only after a verified 3D Studio form submission/)
+})
+
 test('customer acknowledgement does not claim delivery when sender configuration is missing and reports provider errors', async () => {
   let calls = 0
   const event = { data: { 'form-name': 'enquiry', enquiryType: '3D Studio quotation request', email: 'asha@example.com', quotationReference: 'request-124' } }
-  await createQuotationAcknowledgement({ env: {}, fetchImpl: async () => { calls += 1 } })(event)
+  await assert.rejects(
+    createQuotationAcknowledgement({ env: {}, fetchImpl: async () => { calls += 1 } })(event),
+    /QUOTATION_ACK_CONFIG_MISSING_RESEND_API_KEY/,
+  )
+  await assert.rejects(
+    createQuotationAcknowledgement({ env: { RESEND_API_KEY: 'secret' }, fetchImpl: async () => { calls += 1 } })(event),
+    /QUOTATION_ACK_CONFIG_MISSING_CUSTOMER_ACK_FROM_EMAIL/,
+  )
   assert.equal(calls, 0)
   const send = createQuotationAcknowledgement({ env: { RESEND_API_KEY: 'secret', CUSTOMER_ACK_FROM_EMAIL: 'studio@example.com' }, fetchImpl: async () => new Response('', { status: 503 }) })
   await assert.rejects(send(event), /QUOTATION_ACK_EMAIL_HTTP_503/)

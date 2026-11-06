@@ -115,18 +115,10 @@ html[data-scrolled] .navbar { min-height: 66px; }
 .enquiry-form input:not([type="checkbox"]):not([type="file"]), .enquiry-form select, .enquiry-form textarea { transition: border-color .25s ease, box-shadow .25s ease; }
 .enquiry-form input:not([type="checkbox"]):not([type="file"]):focus, .enquiry-form select:focus, .enquiry-form textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 28%, transparent); outline: none; }
 
-/* ---------- floating WhatsApp ---------- */
-.floating-contact { position: fixed; z-index: 45; left: max(1rem, env(safe-area-inset-left)); bottom: calc(4.5rem + env(safe-area-inset-bottom)); display: inline-flex; align-items: center; gap: .6rem; min-height: 46px; padding: .55rem 1.05rem .55rem .8rem; border-radius: 999px; background: #1B7F43; color: #fff; text-decoration: none; font-size: .8rem; font-weight: 700; letter-spacing: .03em; box-shadow: 0 12px 26px -10px rgba(10, 60, 30, .6); transition: transform .3s var(--ease-out), background-color .25s ease; animation: m-rise .8s 1.6s var(--ease-out) both; }
-.floating-contact:hover { transform: translateY(-3px); background: #17703B; }
-.floating-contact svg { width: 24px; height: 24px; flex: 0 0 auto; }
-.floating-contact::before { content: ''; position: absolute; inset: 0; border-radius: inherit; border: 2px solid #1B7F43; opacity: 0; animation: m-ring 5s 3s ease-out infinite; pointer-events: none; }
-@keyframes m-ring { 0% { opacity: .55; scale: 1; } 30%, 100% { opacity: 0; scale: 1.35; } }
-@media (max-width: 560px) { .floating-contact span { display: none; } .floating-contact { padding: .55rem; } }
-
 /* ---------- reduced motion: everything stays visible and still ---------- */
 @media (prefers-reduced-motion: reduce) {
   [data-reveal], [data-reveal]:not([data-in]) { opacity: 1 !important; transform: none !important; transition: none !important; }
-  .scroll-progress span, #main-content > main, .hero-inner::before, .hero-copy .eyebrow, .hero-copy .eyebrow-rule, .hero-copy h1 span, .hero-copy .hero-text, .hero-copy .button-row, .hero-copy .hero-signature, .hero-photo-panel, .hero-photo-panel img, .story-band::before, .cta-band::before, .floating-contact, .floating-contact::before { animation: none !important; }
+  .scroll-progress span, #main-content > main, .hero-inner::before, .hero-copy .eyebrow, .hero-copy .eyebrow-rule, .hero-copy h1 span, .hero-copy .hero-text, .hero-copy .button-row, .hero-copy .hero-signature, .hero-photo-panel, .hero-photo-panel img, .story-band::before, .cta-band::before { animation: none !important; }
   .ticker-track { animation: none !important; flex-wrap: wrap; width: auto; }
   .ticker-row[aria-hidden] { display: none; }
   .project-steps li::before, .story-band-bottom::before { transition: none !important; transform: none !important; width: 100% !important; }
