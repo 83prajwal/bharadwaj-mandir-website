@@ -19,6 +19,7 @@ import {
   composeUnknownResponse,
   configuredProviders,
   selectKnowledgeFacts,
+  assistantSystemConfig,
   validateChatRequest,
 } from '../netlify/functions/lib/ai-assistant.mjs'
 
@@ -31,6 +32,14 @@ const event = ({ method = 'POST', origin = 'https://example.netlify.app', body =
   })
 const provider = (name, url = `https://api.${name}.example/v1/chat/completions`) => ({ name, url, apiKey: `${name}-test-key`, model: `${name}-test-model` })
 const providerResponse = (status, payload) => ({ ok: status >= 200 && status < 300, status, json: async () => payload })
+
+test('provider timeout budgets cap slow serial fallback without changing provider priority', () => {
+  assert.deepEqual(assistantSystemConfig.PROVIDER_TIMEOUT_MS, {
+    groq: 8_000,
+    mistral: 7_000,
+    nvidia_nim: 7_000,
+  })
+})
 
 test('knowledge includes published catalog and FAQs but excludes unconfirmed fields and references', () => {
   const facts = buildKnowledge()
