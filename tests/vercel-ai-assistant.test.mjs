@@ -96,6 +96,17 @@ test('Groq failure without Mistral returns a safe provider error', async () => {
   })
 })
 
+test('both providers failing returns a consistent JSON error response', async () => {
+  await withAssistantEnv({ GROQ_API_KEY: 'synthetic-groq-key', MISTRAL_API_KEY: 'synthetic-mistral-key' }, async () => {
+    globalThis.fetch = async () => providerResponse(503)
+    const response = await vercelHandler(request())
+    const payload = await response.json()
+    assert.equal(response.status, 502)
+    assert.match(response.headers.get('content-type'), /application\/json/i)
+    assert.equal(typeof payload.error, 'string')
+  })
+})
+
 test('no configured providers returns service unavailable', async () => {
   await withAssistantEnv({}, async () => {
     const response = await vercelHandler(request())
@@ -152,6 +163,18 @@ test('unexpected handler errors return a generic response and log no details', a
   assert.equal(response.status, 500)
   assert.doesNotMatch(body, /private stack|secret|Error/)
   assert.deepEqual(logs, ['{"event":"ai_assistant_request_failed"}'])
+})
+
+test('empty or malformed assistant handler responses become safe JSON errors', async () => {
+  for (const invalidResponse of [undefined, new Response('', { status: 200 }), new Response('<html>upstream failure</html>', { status: 200 })]) {
+    const handler = createVercelAiAssistantHandler({ assistantHandler: async () => invalidResponse })
+    const response = await handler(request())
+    const payload = await response.json()
+    assert.equal(response.status, 502)
+    assert.match(response.headers.get('content-type'), /application\/json/i)
+    assert.equal(typeof payload.error, 'string')
+    assert.doesNotMatch(JSON.stringify(payload), /upstream failure|stack|secret/i)
+  }
 })
 
 test('same-origin validation remains enforced on Vercel', async () => {

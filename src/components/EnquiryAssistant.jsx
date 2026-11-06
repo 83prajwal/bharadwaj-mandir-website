@@ -83,7 +83,7 @@ export default function EnquiryAssistant() {
         const isLocalPreview = ['localhost', '127.0.0.1', '::1'].includes(window.location.hostname)
         setError(isLocalPreview
           ? 'The local assistant endpoint is unavailable. Check that Netlify Dev and its Functions process are running, then try again.'
-          : 'The assistant service returned an unreadable response. Please try again or continue with the enquiry form.')
+          : sendError.message)
       } else {
         setError(sendError instanceof Error ? sendError.message : 'The assistant is temporarily unavailable.')
       }

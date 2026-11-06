@@ -5,6 +5,40 @@ const jsonHeaders = {
   'cache-control': 'no-store',
 }
 
+function jsonResponse(status, payload) {
+  return new Response(JSON.stringify(payload), { status, headers: jsonHeaders })
+}
+
+async function normalizeAssistantResponse(response) {
+  if (!(response instanceof Response)) {
+    return jsonResponse(502, { error: 'The assistant returned an invalid response. Please try again or use the enquiry form.' })
+  }
+
+  let payload
+  try {
+    payload = await response.json()
+  } catch {
+    payload = null
+  }
+
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+    return jsonResponse(502, { error: 'The assistant could not complete that response. Please try again or use the enquiry form.' })
+  }
+
+  if (response.ok) {
+    if (typeof payload.answer !== 'string' || !payload.answer.trim()) {
+      return jsonResponse(502, { error: 'The assistant could not complete that response. Please try again or use the enquiry form.' })
+    }
+    return jsonResponse(response.status, { answer: payload.answer, handoff: payload.handoff === true })
+  }
+
+  return jsonResponse(response.status, {
+    error: typeof payload.error === 'string' && payload.error.trim()
+      ? payload.error
+      : 'The assistant is temporarily unavailable. Please use the enquiry form.',
+  })
+}
+
 function clientAddress(request) {
   const realIp = request.headers.get('x-real-ip')
   if (realIp) return realIp.trim()
@@ -14,13 +48,11 @@ function clientAddress(request) {
 export function createVercelAiAssistantHandler({ assistantHandler = aiAssistant, logger = console } = {}) {
   return async function handleVercelAiAssistant(request) {
     try {
-      return await assistantHandler(request, { ip: clientAddress(request) })
+      const response = await assistantHandler(request, { ip: clientAddress(request) })
+      return await normalizeAssistantResponse(response)
     } catch {
       logger.error(JSON.stringify({ event: 'ai_assistant_request_failed' }))
-      return new Response(JSON.stringify({ error: 'The assistant is temporarily unavailable. Please use the enquiry form.' }), {
-        status: 500,
-        headers: jsonHeaders,
-      })
+      return jsonResponse(500, { error: 'The assistant is temporarily unavailable. Please use the enquiry form.' })
     }
   }
 }

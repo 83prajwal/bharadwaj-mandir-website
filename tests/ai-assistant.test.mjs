@@ -736,11 +736,19 @@ test('public production assets do not contain provider credentials or server end
 test('assistant client handles empty Vite 404 responses without exposing JSON parse errors', async () => {
   await assert.rejects(
     readAssistantResponse(new Response('', { status: 404 })),
-    (error) => error.code === 'ASSISTANT_ENDPOINT_UNAVAILABLE',
+    (error) => error.code === 'ASSISTANT_ENDPOINT_UNAVAILABLE' && error.message.includes('route was not found'),
   )
   await assert.rejects(
     readAssistantResponse(new Response('<!doctype html>', { status: 200, headers: { 'content-type': 'text/html' } })),
-    (error) => error.code === 'ASSISTANT_ENDPOINT_UNAVAILABLE',
+    (error) => error.code === 'ASSISTANT_RESPONSE_INVALID',
+  )
+  await assert.rejects(
+    readAssistantResponse(new Response('<!doctype html>', { status: 502, headers: { 'content-type': 'text/html' } })),
+    (error) => error.message.includes('temporarily unavailable') && error.code !== 'ASSISTANT_ENDPOINT_UNAVAILABLE',
+  )
+  await assert.rejects(
+    readAssistantResponse(new Response(JSON.stringify({ answer: '' }), { status: 200 })),
+    (error) => error.code === 'ASSISTANT_RESPONSE_INVALID',
   )
   assert.deepEqual(
     await readAssistantResponse(new Response(JSON.stringify({ answer: 'Confirmed text', handoff: false }), { status: 200 })),
