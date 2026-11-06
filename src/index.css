@@ -1817,7 +1817,28 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visib
   gap: .7rem;
   color: var(--maroon);
 }
-.assistant-close:focus-visible, .assistant-composer textarea:focus-visible, .assistant-composer .btn:focus-visible, .assistant-handoff:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+.assistant-launcher {
+  display: inline-flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  gap: .55rem;
+  padding: .65rem 1rem;
+  border: 1px solid var(--gold);
+  border-radius: 999px;
+  background: var(--maroon);
+  color: var(--ivory);
+  box-shadow: 0 5px 16px color-mix(in srgb, var(--maroon-deep) 20%, transparent);
+  font: inherit;
+  font-size: .9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.assistant-launcher:hover { transform: translateY(-1px); background: var(--maroon-rich); box-shadow: 0 7px 20px color-mix(in srgb, var(--maroon-deep) 24%, transparent); }
+.assistant-launcher:active { transform: translateY(0); }
+.assistant-launcher:focus-visible, .assistant-close:focus-visible, .assistant-composer textarea:focus-visible, .assistant-composer .btn:focus-visible, .assistant-handoff:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+.assistant-launcher-icon { width: 18px; height: 18px; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.7; }
 .assistant-panel {
   display: flex;
   width: min(390px, calc(100vw - 2rem));

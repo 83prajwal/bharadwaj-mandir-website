@@ -111,6 +111,19 @@ export default function EnquiryAssistant() {
           <p className="assistant-limit">Up to 1,200 characters. The team confirms project specifications and availability.</p>
         </section>
       )}
+      <button
+        className="assistant-launcher"
+        type="button"
+        aria-expanded={open}
+        aria-controls="assistant-widget-panel"
+        onClick={() => {
+          if (!open) openerRef.current = document.activeElement
+          setOpen((value) => !value)
+        }}
+      >
+        {!open && <svg className="assistant-launcher-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-3 2v-6.5a7.5 7.5 0 1 1 17-3Z" /></svg>}
+        {open ? 'Close assistant' : 'Ask us'}
+      </button>
     </div>
   )
 }

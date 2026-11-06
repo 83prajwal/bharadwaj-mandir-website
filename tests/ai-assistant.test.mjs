@@ -649,6 +649,21 @@ test('assistant handler logs no provider exception or response details', () => {
   assert.doesNotMatch(handlerSource, /error\.message/)
 })
 
+test('assistant launcher is rendered independently of the closed chat panel', () => {
+  const componentSource = readFileSync(join(process.cwd(), 'src', 'components', 'EnquiryAssistant.jsx'), 'utf8')
+  const panelPosition = componentSource.indexOf('className="assistant-panel"')
+  const launcherPosition = componentSource.indexOf('className="assistant-launcher"')
+  assert.ok(panelPosition >= 0)
+  assert.ok(launcherPosition > panelPosition)
+  assert.match(componentSource, /aria-expanded=\{open\}/)
+  assert.match(componentSource, /\{open && \([\s\S]*className="assistant-panel"/)
+  assert.match(componentSource.slice(launcherPosition), /className="assistant-launcher"/)
+
+  const styles = readFileSync(join(process.cwd(), 'src', 'index.css'), 'utf8')
+  assert.match(styles, /\.assistant-widget\s*\{[^}]*position:\s*fixed;[^}]*z-index:\s*99;/s)
+  assert.match(styles, /\.assistant-launcher\s*\{/)
+})
+
 test('per-client limit blocks the eleventh request in a ten-minute window', () => {
   clearRateLimitForTests()
   for (let index = 0; index < 10; index += 1) assert.equal(checkRateLimit('test-client', 1000), true)
