@@ -219,11 +219,7 @@ const FACT_SELECTION_JSON_SCHEMA = {
   required: ['factIds', 'unknown'],
   additionalProperties: false,
 }
-const PROVIDER_TIMEOUT_MS = {
-  groq: 8_000,
-  mistral: 7_000,
-  nvidia_nim: 7_000,
-}
+const PROVIDER_TIMEOUT_MS = 10_000
 const PERMANENT_ERROR_COOLDOWN_MS = 60_000
 const RETRYABLE_STATUS_CODES = new Set([408, 425, 429, 500, 502, 503, 504])
 const providerCooldowns = new Map()
@@ -314,7 +310,7 @@ async function sendProviderSelection({ provider, messages, facts, fetchImpl, res
       temperature: 0,
       ...providerGenerationOptions(provider),
     }),
-    signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS[provider.name] || 7_000),
+    signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
   })
   if (!response.ok) {
     const error = new Error('Provider request failed.')

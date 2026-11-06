@@ -1,6 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import vercelHandler, { createVercelAiAssistantHandler } from '../api/ai-assistant.js'
+import aiAssistant from '../netlify/functions/ai-assistant.mjs'
 import { clearRateLimitForTests, clearProviderCooldownsForTests } from '../netlify/functions/lib/ai-assistant.mjs'
 import { buildKnowledge } from '../netlify/functions/lib/ai-assistant.mjs'
 
@@ -65,6 +66,78 @@ test('Vercel endpoint returns a grounded Groq answer', async () => {
     assert.equal(typeof payload.answer, 'string')
     assert.match(payload.answer, /peacock/i)
     assert.equal(calls, 1)
+  })
+})
+
+test('Vercel preserves Netlify deterministic greeting and conversational responses', async () => {
+  await withAssistantEnv({}, async () => {
+    for (const [index, content] of ['Hello', 'How are you?'].entries()) {
+      const body = JSON.stringify({ messages: [{ role: 'user', content }] })
+      const netlifyResponse = await aiAssistant(request({ body }), { ip: `netlify-acceptance-${index}` })
+      const vercelResponse = await vercelHandler(request({ body }))
+      assert.equal(vercelResponse.status, netlifyResponse.status)
+      assert.deepEqual(await vercelResponse.json(), await netlifyResponse.json())
+    }
+  })
+})
+
+test('Vercel preserves grounded catalogue and enquiry answers from the Netlify handler', async () => {
+  await withAssistantEnv({ GROQ_API_KEY: 'synthetic-groq-key' }, async () => {
+    const facts = buildKnowledge()
+    const productIds = facts.filter(({ kind }) => kind === 'product').map(({ id }) => id)
+    const acceptanceCases = [
+      ['What types of marble mandirs do you offer?', productIds],
+      ['Can I customize my mandir?', ['faq-1']],
+      ['What are the available designs?', productIds],
+      ['Can you explain the customization process?', ['faq-1', 'faq-2']],
+      ['How can I request a quotation?', ['faq-3']],
+    ]
+
+    globalThis.fetch = async (_url, options) => {
+      const providerRequest = JSON.parse(options.body)
+      const question = providerRequest.messages.at(-1).content
+      const factIds = acceptanceCases.find(([content]) => content === question)?.[1]
+      assert.ok(factIds, `Unexpected assistant question: ${question}`)
+      return new Response(JSON.stringify({
+        choices: [{ message: { content: JSON.stringify({ factIds, unknown: false }) } }],
+      }), { status: 200, headers: { 'content-type': 'application/json' } })
+    }
+
+    for (const [index, [content]] of acceptanceCases.entries()) {
+      const body = JSON.stringify({ messages: [{ role: 'user', content }] })
+      const netlifyResponse = await aiAssistant(request({ body }), { ip: `netlify-catalog-${index}` })
+      const vercelResponse = await vercelHandler(request({ body }))
+      assert.equal(vercelResponse.status, 200, content)
+      assert.deepEqual(await vercelResponse.json(), await netlifyResponse.json(), content)
+    }
+  })
+})
+
+test('Vercel forwards the full recent conversation to the original provider logic', async () => {
+  await withAssistantEnv({ GROQ_API_KEY: 'synthetic-groq-key' }, async () => {
+    const conversation = [
+      { role: 'user', content: 'Tell me about the peacock design.' },
+      { role: 'assistant', content: 'It has a blue peacock motif on the back panel.' },
+      { role: 'user', content: 'Can it be customized?' },
+    ]
+    const expectedFactIds = ['faq-1']
+    let netlifyProviderMessages
+    let vercelProviderMessages
+    globalThis.fetch = async (_url, options) => {
+      const messagesInRequest = JSON.parse(options.body).messages
+      if (!netlifyProviderMessages) netlifyProviderMessages = messagesInRequest
+      else vercelProviderMessages = messagesInRequest
+      return new Response(JSON.stringify({
+        choices: [{ message: { content: JSON.stringify({ factIds: expectedFactIds, unknown: false }) } }],
+      }), { status: 200, headers: { 'content-type': 'application/json' } })
+    }
+
+    const body = JSON.stringify({ messages: conversation })
+    const netlifyResponse = await aiAssistant(request({ body }), { ip: 'netlify-history-acceptance' })
+    const vercelResponse = await vercelHandler(request({ body }))
+    assert.deepEqual(await vercelResponse.json(), await netlifyResponse.json())
+    assert.deepEqual(vercelProviderMessages.slice(1), conversation)
+    assert.deepEqual(vercelProviderMessages, netlifyProviderMessages)
   })
 })
 

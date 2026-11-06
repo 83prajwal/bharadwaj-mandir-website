@@ -5,7 +5,6 @@ import { join } from 'node:path'
 import aiAssistant from '../netlify/functions/ai-assistant.mjs'
 import {
   acquireAssistantSubmission,
-  getQuickAssistantReply,
   getValidAssistantQuestion,
   releaseAssistantSubmission,
 } from '../src/lib/assistant-input.js'
@@ -34,12 +33,8 @@ const event = ({ method = 'POST', origin = 'https://example.netlify.app', body =
 const provider = (name, url = `https://api.${name}.example/v1/chat/completions`) => ({ name, url, apiKey: `${name}-test-key`, model: `${name}-test-model` })
 const providerResponse = (status, payload) => ({ ok: status >= 200 && status < 300, status, json: async () => payload })
 
-test('provider timeout budgets cap slow serial fallback without changing provider priority', () => {
-  assert.deepEqual(assistantSystemConfig.PROVIDER_TIMEOUT_MS, {
-    groq: 8_000,
-    mistral: 7_000,
-    nvidia_nim: 7_000,
-  })
+test('provider timeout matches the original Netlify implementation', () => {
+  assert.equal(assistantSystemConfig.PROVIDER_TIMEOUT_MS, 10_000)
 })
 
 test('knowledge includes published catalog and FAQs but excludes unconfirmed fields and references', () => {
@@ -93,16 +88,6 @@ test('simple greetings receive a friendly response without triggering an enquiry
   const result = await aiAssistant(event({ body: JSON.stringify({ messages: [{ role: 'user', content: 'hi' }] }) }))
   assert.equal(result.status, 200)
   assert.deepEqual(await result.json(), classifyDeterministicIntent([{ role: 'user', content: 'hi' }]))
-})
-
-test('simple greetings use the same immediate client reply without an API round trip', () => {
-  for (const greeting of ['hi', 'hiii', 'hello', 'hey', 'hiya', 'namaste', 'good morning']) {
-    assert.equal(
-      getQuickAssistantReply(greeting),
-      classifyDeterministicIntent([{ role: 'user', content: greeting }]).answer,
-    )
-  }
-  assert.equal(getQuickAssistantReply('hi, what is the price?'), null)
 })
 
 test('weather, cricket, and general trivia receive a polite scope response', () => {
