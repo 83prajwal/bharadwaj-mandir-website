@@ -316,6 +316,50 @@ test('provider timeout aborts and ends the request with a safe JSON failure with
   })
 })
 
+test('stalled Groq response body is bounded and falls back to Mistral', async () => {
+  await withAssistantEnv({ GROQ_API_KEY: 'synthetic-groq-key', MISTRAL_API_KEY: 'synthetic-mistral-key' }, async () => {
+    let groqSignal
+    const handler = createVercelAiAssistantHandler({
+      logger: { info() {}, warn() {}, error() {} },
+      assistantHandler: (request, context) => aiAssistant(request, {
+        ...context,
+        timeoutSignal: (timeoutMs) => shortTimeoutSignal(timeoutMs, 10),
+      }),
+    })
+    globalThis.fetch = async (url, { signal }) => {
+      if (url.includes('groq')) {
+        groqSignal = signal
+        return { ok: true, status: 200, json: () => new Promise(() => {}) }
+      }
+      return providerResponse(200, 'product-peacock-design-mandir')
+    }
+
+    const response = await handler(request())
+    assert.equal(response.status, 200)
+    assert.equal(groqSignal.aborted, true)
+    assert.match((await response.json()).answer, /peacock/i)
+  })
+})
+
+test('overall Vercel deadline aborts work and returns a safe JSON response', async () => {
+  let deadlineSignal
+  const handler = createVercelAiAssistantHandler({
+    totalTimeoutMs: 10,
+    logger: { info() {}, warn() {}, error() {} },
+    assistantHandler: (_request, context) => {
+      deadlineSignal = context.deadlineSignal
+      return new Promise(() => {})
+    },
+  })
+  const response = await handler(request())
+  const payload = await response.json()
+  assert.equal(response.status, 504)
+  assert.equal(deadlineSignal.aborted, true)
+  assert.match(response.headers.get('content-type'), /application\/json/i)
+  assert.match(payload.error, /too long/i)
+  assert.doesNotMatch(JSON.stringify(payload), /stack|secret|internal/i)
+})
+
 test('unexpected handler errors return a generic response and log no details', async () => {
   const logs = []
   const handler = createVercelAiAssistantHandler({

@@ -220,6 +220,7 @@ const FACT_SELECTION_JSON_SCHEMA = {
   additionalProperties: false,
 }
 const PROVIDER_TIMEOUT_MS = 10_000
+export const ASSISTANT_TOTAL_TIMEOUT_MS = 40_000
 const PERMANENT_ERROR_COOLDOWN_MS = 60_000
 const RETRYABLE_STATUS_CODES = new Set([408, 425, 429, 500, 502, 503, 504])
 const providerCooldowns = new Map()
@@ -304,8 +305,41 @@ function writeProviderLog(logger, fields) {
   }
 }
 
-async function sendProviderSelection({ provider, messages, facts, fetchImpl, responseFormat, logger, requestId, attempt = 1, timeoutSignal = AbortSignal.timeout }) {
+function combineAbortSignals(signals = []) {
+  const controller = new AbortController()
+  const listeners = []
+  for (const signal of signals.filter(Boolean)) {
+    if (signal.aborted) {
+      controller.abort(signal.reason)
+      break
+    }
+    const onAbort = () => controller.abort(signal.reason)
+    signal.addEventListener('abort', onAbort, { once: true })
+    listeners.push(() => signal.removeEventListener('abort', onAbort))
+  }
+  return { signal: controller.signal, cleanup: () => listeners.forEach((remove) => remove()) }
+}
+
+function waitForAbort(promise, signal) {
+  if (signal.aborted) return Promise.reject(signal.reason || new DOMException('Operation aborted.', 'AbortError'))
+  return new Promise((resolve, reject) => {
+    const cleanup = () => signal.removeEventListener('abort', onAbort)
+    const onAbort = () => {
+      cleanup()
+      reject(signal.reason || new DOMException('Operation aborted.', 'AbortError'))
+    }
+    signal.addEventListener('abort', onAbort, { once: true })
+    Promise.resolve(promise).then(
+      (value) => { cleanup(); resolve(value) },
+      (error) => { cleanup(); reject(error) },
+    )
+    if (signal.aborted) onAbort()
+  })
+}
+
+async function sendProviderSelection({ provider, messages, facts, fetchImpl, responseFormat, logger, requestId, attempt = 1, timeoutSignal = AbortSignal.timeout, deadlineSignal }) {
   const startedAt = Date.now()
+  const combined = combineAbortSignals([timeoutSignal(PROVIDER_TIMEOUT_MS), deadlineSignal])
   writeProviderLog(logger, {
     event: 'ai_assistant_provider_request_started',
     ...(requestId ? { requestId } : {}),
@@ -314,7 +348,7 @@ async function sendProviderSelection({ provider, messages, facts, fetchImpl, res
   })
 
   try {
-    const response = await fetchImpl(provider.url, {
+    const response = await waitForAbort(fetchImpl(provider.url, {
       method: 'POST',
       headers: { authorization: `Bearer ${provider.apiKey}`, 'content-type': 'application/json' },
       body: JSON.stringify({
@@ -327,14 +361,14 @@ async function sendProviderSelection({ provider, messages, facts, fetchImpl, res
         temperature: 0,
         ...providerGenerationOptions(provider),
       }),
-      signal: timeoutSignal(PROVIDER_TIMEOUT_MS),
-    })
+      signal: combined.signal,
+    }), combined.signal)
     if (!response.ok) {
       const error = new Error('Provider request failed.')
       error.status = response.status
       if (provider.name === 'groq') {
         try {
-          const payload = await response.json()
+          const payload = await waitForAbort(response.json(), combined.signal)
           const details = payload?.error
           if (details && typeof details === 'object') {
             error.providerError = {
@@ -350,12 +384,13 @@ async function sendProviderSelection({ provider, messages, facts, fetchImpl, res
             }
           }
         } catch {
+          if (combined.signal.aborted) throw combined.signal.reason
           // Non-JSON or unreadable error bodies do not affect provider handling.
         }
       }
       throw error
     }
-    const data = await response.json()
+    const data = await waitForAbort(response.json(), combined.signal)
     const content = data.choices?.[0]?.message?.content
     if (typeof content !== 'string') throw new Error('Provider returned an invalid response.')
     const selection = JSON.parse(content)
@@ -381,10 +416,12 @@ async function sendProviderSelection({ provider, messages, facts, fetchImpl, res
       durationMs: Date.now() - startedAt,
     })
     throw error
+  } finally {
+    combined.cleanup()
   }
 }
 
-async function requestProviderSelection({ provider, messages, facts, fetchImpl, logger, requestId, timeoutSignal }) {
+async function requestProviderSelection({ provider, messages, facts, fetchImpl, logger, requestId, timeoutSignal, deadlineSignal }) {
   try {
     return await sendProviderSelection({
       provider,
@@ -395,6 +432,7 @@ async function requestProviderSelection({ provider, messages, facts, fetchImpl, 
       logger,
       requestId,
       timeoutSignal,
+      deadlineSignal,
     })
   } catch (error) {
     if (provider.name !== 'groq' || error.status !== 400 || error.providerError?.code !== 'json_validate_failed') {
@@ -403,6 +441,7 @@ async function requestProviderSelection({ provider, messages, facts, fetchImpl, 
 
     logger.warn(JSON.stringify({
       event: 'ai_assistant_json_schema_retry',
+      ...(requestId ? { requestId } : {}),
       provider: 'groq',
       responseFormat: 'json_object',
       statusCode: error.status,
@@ -420,6 +459,7 @@ async function requestProviderSelection({ provider, messages, facts, fetchImpl, 
         requestId,
         attempt: 2,
         timeoutSignal,
+        deadlineSignal,
       })
     } catch (retryError) {
       retryError.jsonSchemaRetryAttempted = true
@@ -431,7 +471,7 @@ async function requestProviderSelection({ provider, messages, facts, fetchImpl, 
   }
 }
 
-export async function selectKnowledgeFacts({ messages, facts, providers = configuredProviders(), fetchImpl = fetch, logger = console, requestId, timeoutSignal = AbortSignal.timeout }) {
+export async function selectKnowledgeFacts({ messages, facts, providers = configuredProviders(), fetchImpl = fetch, logger = console, requestId, timeoutSignal = AbortSignal.timeout, deadlineSignal }) {
   if (!providers.length) throw new Error('No AI providers are configured.')
   let lastError
   for (const [index, provider] of providers.entries()) {
@@ -450,7 +490,7 @@ export async function selectKnowledgeFacts({ messages, facts, providers = config
     }
     const providerStartedAt = Date.now()
     try {
-      const selection = await requestProviderSelection({ provider, messages, facts, fetchImpl, logger, requestId, timeoutSignal })
+      const selection = await requestProviderSelection({ provider, messages, facts, fetchImpl, logger, requestId, timeoutSignal, deadlineSignal })
       logger.info(JSON.stringify({ event: 'ai_assistant_provider_success', ...(requestId ? { requestId } : {}), provider: provider.name, fallback: index > 0 }))
       if (index > 0) {
         writeProviderLog(logger, {
