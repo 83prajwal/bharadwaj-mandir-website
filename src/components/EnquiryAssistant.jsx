@@ -4,6 +4,7 @@ import { readAssistantResponse } from '../lib/assistant-response'
 import { openAssistantEvent } from '../lib/siteEvents'
 import {
   acquireAssistantSubmission,
+  getQuickAssistantReply,
   getValidAssistantQuestion,
   releaseAssistantSubmission,
 } from '../lib/assistant-input'
@@ -54,6 +55,12 @@ export default function EnquiryAssistant() {
     setDraft('')
     setError('')
     setHandoff(false)
+    const quickReply = getQuickAssistantReply(content)
+    if (quickReply) {
+      setMessages([...nextMessages, { role: 'assistant', content: quickReply }])
+      releaseAssistantSubmission(submissionLockRef)
+      return
+    }
     setBusy(true)
     try {
       const recentMessages = []
