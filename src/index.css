@@ -2312,3 +2312,10 @@ section.gallery-page-section { padding-top: clamp(1.5rem, 2.5vw, 2.25rem); }
 /* Avoid doubled vertical padding between the custom enquiry steps and archive. */
 section.custom-journey-section { padding-bottom: clamp(2rem, 3vw, 3rem); }
 section.reference-section { padding-top: clamp(2rem, 3vw, 3rem); }
+
+/* Keep long product names on one line in the collection hero. */
+.product-page-hero .back-link { margin-bottom: .75rem; }
+.product-page-hero h1 { max-width: none; margin-top: 0; font-size: clamp(2.25rem, 4vw, 4rem); line-height: 1.08; white-space: nowrap; text-wrap: nowrap; }
+@media (max-width: 760px) {
+  .product-page-hero h1 { font-size: clamp(2rem, 8vw, 3rem); white-space: normal; text-wrap: balance; }
+}

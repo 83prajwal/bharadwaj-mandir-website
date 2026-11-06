@@ -63,7 +63,7 @@ export default function EnquiryAssistant() {
         recentMessages.unshift(message)
         recentLength += message.content.length
       }
-      const response = await fetch('/.netlify/functions/ai-assistant', {
+      const response = await fetch('/api/ai-assistant', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ messages: recentMessages.map(({ role, content: text }) => ({ role, content: text })) }),

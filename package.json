@@ -16,7 +16,7 @@
     "check:assets": "node scripts/check-assets.mjs",
     "images:optimize": "node scripts/optimize-images.mjs",
     "test:lead": "node --test tests/lead-management.test.mjs tests/lead-scheduled-operations.test.mjs tests/apps-script-coordinator.test.mjs tests/apps-script-coordinator-runtime.test.mjs",
-    "test:assistant": "node --test tests/ai-assistant.test.mjs",
+    "test:assistant": "node --test tests/ai-assistant.test.mjs tests/vercel-ai-assistant.test.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

@@ -24,7 +24,6 @@ export default function ProductDetails() {
       <section className="page-hero small-hero product-page-hero">
         <div className="container">
           <Link to="/products" className="back-link">← The collection</Link>
-          <p className="eyebrow">The collection</p>
           <h1>{product.name}</h1>
         </div>
       </section>
