@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import vercelHandler, { createVercelAiAssistantHandler } from '../api/ai-assistant.js'
+import nodeVercelHandler, { createAssistantResponseHandler as createVercelAiAssistantHandler, createVercelAiAssistantHandler as createNodeAiAssistantHandler } from '../api/ai-assistant.js'
 import aiAssistant from '../netlify/functions/ai-assistant.mjs'
 import { clearRateLimitForTests, clearProviderCooldownsForTests } from '../netlify/functions/lib/ai-assistant.mjs'
 import { buildKnowledge } from '../netlify/functions/lib/ai-assistant.mjs'
@@ -13,6 +13,31 @@ const envNames = [
 ]
 const messages = [{ role: 'user', content: 'Do you have a mandir with a peacock motif?' }]
 let clientId = 0
+const vercelHandler = createVercelAiAssistantHandler()
+
+async function invokeNodeHandler(handler, webRequest) {
+  const requestUrl = new URL(webRequest.url)
+  const nodeRequest = {
+    method: webRequest.method,
+    url: `${requestUrl.pathname}${requestUrl.search}`,
+    headers: { ...Object.fromEntries(webRequest.headers.entries()), host: requestUrl.host, 'x-forwarded-proto': requestUrl.protocol.slice(0, -1) },
+    body: ['GET', 'HEAD'].includes(webRequest.method) ? undefined : await webRequest.clone().json(),
+  }
+  const headers = new Map()
+  const nodeResponse = {
+    statusCode: 200,
+    setHeader(name, value) { headers.set(name.toLowerCase(), value) },
+    end(body) { this.body = body },
+  }
+  const returned = await handler(nodeRequest, nodeResponse)
+  return {
+    returned,
+    status: nodeResponse.statusCode,
+    headers,
+    async json() { return JSON.parse(nodeResponse.body) },
+    text() { return nodeResponse.body },
+  }
+}
 
 function request({ method = 'POST', body = JSON.stringify({ messages }), origin = 'https://bharadwaj-mandir-website.vercel.app', contentType = 'application/json' } = {}) {
   return new Request('https://bharadwaj-mandir-website.vercel.app/api/ai-assistant', {
@@ -80,6 +105,51 @@ test('Vercel endpoint returns a grounded Groq answer', async () => {
     assert.equal(typeof payload.answer, 'string')
     assert.match(payload.answer, /peacock/i)
     assert.equal(calls, 1)
+  })
+})
+
+test('Vercel Node handler sends JSON through res and returns no Web Response', async () => {
+  await withAssistantEnv({ GROQ_API_KEY: 'synthetic-groq-key' }, async () => {
+    globalThis.fetch = async () => providerResponse(200, 'product-peacock-design-mandir')
+    const result = await invokeNodeHandler(nodeVercelHandler, request())
+    assert.equal(result.returned, undefined)
+    assert.equal(result.status, 200)
+    assert.match(result.headers.get('content-type'), /application\/json/i)
+    assert.match((await result.json()).answer, /peacock/i)
+  })
+})
+
+test('Vercel Node handler sends safe JSON for provider failures', async () => {
+  await withAssistantEnv({ GROQ_API_KEY: 'synthetic-groq-key' }, async () => {
+    globalThis.fetch = async () => providerResponse(503)
+    const result = await invokeNodeHandler(nodeVercelHandler, request())
+    assert.equal(result.returned, undefined)
+    assert.equal(result.status, 502)
+    assert.match(result.headers.get('content-type'), /application\/json/i)
+    assert.match((await result.json()).error, /try again/i)
+  })
+})
+
+test('Vercel Node handler returns controlled JSON when its deadline expires', async () => {
+  const handler = createNodeAiAssistantHandler({
+    totalTimeoutMs: 10,
+    assistantHandler: () => new Promise(() => {}),
+    logger: { info() {}, warn() {}, error() {} },
+  })
+  const result = await invokeNodeHandler(handler, request())
+  assert.equal(result.returned, undefined)
+  assert.equal(result.status, 504)
+  assert.match(result.headers.get('content-type'), /application\/json/i)
+  assert.match((await result.json()).error, /too long/i)
+})
+
+test('Vercel Node handler preserves Netlify deterministic responses', async () => {
+  await withAssistantEnv({}, async () => {
+    const body = JSON.stringify({ messages: [{ role: 'user', content: 'Hello' }] })
+    const nodeResponse = await invokeNodeHandler(nodeVercelHandler, request({ body }))
+    const netlifyResponse = await aiAssistant(request({ body }), { ip: 'netlify-node-adapter-equivalence' })
+    assert.equal(nodeResponse.status, netlifyResponse.status)
+    assert.deepEqual(await nodeResponse.json(), await netlifyResponse.json())
   })
 })
 
