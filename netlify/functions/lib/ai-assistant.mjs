@@ -296,55 +296,95 @@ function classifyProviderError(error) {
   return { failureType: 'invalid_provider_response', retryable: false }
 }
 
-async function sendProviderSelection({ provider, messages, facts, fetchImpl, responseFormat }) {
-  const response = await fetchImpl(provider.url, {
-    method: 'POST',
-    headers: { authorization: `Bearer ${provider.apiKey}`, 'content-type': 'application/json' },
-    body: JSON.stringify({
-      model: provider.model,
-      messages: [
-        { role: 'system', content: providerSystemPrompt(facts) },
-        ...messages.map(({ role, content }) => ({ role, content })),
-      ],
-      response_format: responseFormat,
-      temperature: 0,
-      ...providerGenerationOptions(provider),
-    }),
-    signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
-  })
-  if (!response.ok) {
-    const error = new Error('Provider request failed.')
-    error.status = response.status
-    if (provider.name === 'groq') {
-      try {
-        const payload = await response.json()
-        const details = payload?.error
-        if (details && typeof details === 'object') {
-          error.providerError = {
-            ...(typeof details.message === 'string'
-              ? { message: details.message.trim().slice(0, 300) }
-              : {}),
-            ...(typeof details.type === 'string'
-              ? { type: details.type.trim().slice(0, 100) }
-              : {}),
-            ...(typeof details.code === 'string'
-              ? { code: details.code.trim().slice(0, 100) }
-              : {}),
-          }
-        }
-      } catch {
-        // Non-JSON or unreadable error bodies do not affect provider handling.
-      }
-    }
-    throw error
+function writeProviderLog(logger, fields) {
+  try {
+    logger.info(JSON.stringify(fields))
+  } catch {
+    // Provider diagnostics must not alter request handling.
   }
-  const data = await response.json()
-  const content = data.choices?.[0]?.message?.content
-  if (typeof content !== 'string') throw new Error('Provider returned an invalid response.')
-  return JSON.parse(content)
 }
 
-async function requestProviderSelection({ provider, messages, facts, fetchImpl, logger }) {
+async function sendProviderSelection({ provider, messages, facts, fetchImpl, responseFormat, logger, requestId, attempt = 1, timeoutSignal = AbortSignal.timeout }) {
+  const startedAt = Date.now()
+  writeProviderLog(logger, {
+    event: 'ai_assistant_provider_request_started',
+    ...(requestId ? { requestId } : {}),
+    provider: provider.name,
+    attempt,
+  })
+
+  try {
+    const response = await fetchImpl(provider.url, {
+      method: 'POST',
+      headers: { authorization: `Bearer ${provider.apiKey}`, 'content-type': 'application/json' },
+      body: JSON.stringify({
+        model: provider.model,
+        messages: [
+          { role: 'system', content: providerSystemPrompt(facts) },
+          ...messages.map(({ role, content }) => ({ role, content })),
+        ],
+        response_format: responseFormat,
+        temperature: 0,
+        ...providerGenerationOptions(provider),
+      }),
+      signal: timeoutSignal(PROVIDER_TIMEOUT_MS),
+    })
+    if (!response.ok) {
+      const error = new Error('Provider request failed.')
+      error.status = response.status
+      if (provider.name === 'groq') {
+        try {
+          const payload = await response.json()
+          const details = payload?.error
+          if (details && typeof details === 'object') {
+            error.providerError = {
+              ...(typeof details.message === 'string'
+                ? { message: details.message.trim().slice(0, 300) }
+                : {}),
+              ...(typeof details.type === 'string'
+                ? { type: details.type.trim().slice(0, 100) }
+                : {}),
+              ...(typeof details.code === 'string'
+                ? { code: details.code.trim().slice(0, 100) }
+                : {}),
+            }
+          }
+        } catch {
+          // Non-JSON or unreadable error bodies do not affect provider handling.
+        }
+      }
+      throw error
+    }
+    const data = await response.json()
+    const content = data.choices?.[0]?.message?.content
+    if (typeof content !== 'string') throw new Error('Provider returned an invalid response.')
+    const selection = JSON.parse(content)
+    writeProviderLog(logger, {
+      event: 'ai_assistant_provider_request_completed',
+      ...(requestId ? { requestId } : {}),
+      provider: provider.name,
+      attempt,
+      outcome: 'success',
+      statusCode: response.status,
+      durationMs: Date.now() - startedAt,
+    })
+    return selection
+  } catch (error) {
+    writeProviderLog(logger, {
+      event: 'ai_assistant_provider_request_completed',
+      ...(requestId ? { requestId } : {}),
+      provider: provider.name,
+      attempt,
+      outcome: 'failure',
+      ...(Number.isInteger(error?.status) ? { statusCode: error.status } : {}),
+      failureType: classifyProviderError(error).failureType,
+      durationMs: Date.now() - startedAt,
+    })
+    throw error
+  }
+}
+
+async function requestProviderSelection({ provider, messages, facts, fetchImpl, logger, requestId, timeoutSignal }) {
   try {
     return await sendProviderSelection({
       provider,
@@ -352,6 +392,9 @@ async function requestProviderSelection({ provider, messages, facts, fetchImpl, 
       facts,
       fetchImpl,
       responseFormat: providerResponseFormat(provider),
+      logger,
+      requestId,
+      timeoutSignal,
     })
   } catch (error) {
     if (provider.name !== 'groq' || error.status !== 400 || error.providerError?.code !== 'json_validate_failed') {
@@ -373,6 +416,10 @@ async function requestProviderSelection({ provider, messages, facts, fetchImpl, 
         facts,
         fetchImpl,
         responseFormat: { type: 'json_object' },
+        logger,
+        requestId,
+        attempt: 2,
+        timeoutSignal,
       })
     } catch (retryError) {
       retryError.jsonSchemaRetryAttempted = true
@@ -384,24 +431,53 @@ async function requestProviderSelection({ provider, messages, facts, fetchImpl, 
   }
 }
 
-export async function selectKnowledgeFacts({ messages, facts, providers = configuredProviders(), fetchImpl = fetch, logger = console }) {
+export async function selectKnowledgeFacts({ messages, facts, providers = configuredProviders(), fetchImpl = fetch, logger = console, requestId, timeoutSignal = AbortSignal.timeout }) {
   if (!providers.length) throw new Error('No AI providers are configured.')
   let lastError
   for (const [index, provider] of providers.entries()) {
     const disabledUntil = providerCooldowns.get(provider.name) || 0
     if (disabledUntil > Date.now()) {
-      logger.warn(JSON.stringify({ event: 'ai_assistant_provider_skipped', provider: provider.name, reason: 'configuration_cooldown' }))
+      logger.warn(JSON.stringify({ event: 'ai_assistant_provider_skipped', ...(requestId ? { requestId } : {}), provider: provider.name, reason: 'configuration_cooldown' }))
       continue
     }
+    if (index > 0) {
+      writeProviderLog(logger, {
+        event: 'ai_assistant_fallback_started',
+        ...(requestId ? { requestId } : {}),
+        provider: provider.name,
+        fromProvider: providers[index - 1].name,
+      })
+    }
+    const providerStartedAt = Date.now()
     try {
-      const selection = await requestProviderSelection({ provider, messages, facts, fetchImpl, logger })
-      logger.info(JSON.stringify({ event: 'ai_assistant_provider_success', provider: provider.name, fallback: index > 0 }))
+      const selection = await requestProviderSelection({ provider, messages, facts, fetchImpl, logger, requestId, timeoutSignal })
+      logger.info(JSON.stringify({ event: 'ai_assistant_provider_success', ...(requestId ? { requestId } : {}), provider: provider.name, fallback: index > 0 }))
+      if (index > 0) {
+        writeProviderLog(logger, {
+          event: 'ai_assistant_fallback_completed',
+          ...(requestId ? { requestId } : {}),
+          provider: provider.name,
+          outcome: 'success',
+          durationMs: Date.now() - providerStartedAt,
+        })
+      }
       return { selection, provider: provider.name }
     } catch (error) {
       lastError = error
       const failure = classifyProviderError(error)
+      if (index > 0) {
+        writeProviderLog(logger, {
+          event: 'ai_assistant_fallback_completed',
+          ...(requestId ? { requestId } : {}),
+          provider: provider.name,
+          outcome: 'failure',
+          failureType: failure.failureType,
+          durationMs: Date.now() - providerStartedAt,
+        })
+      }
       logger.warn(JSON.stringify({
         event: 'ai_assistant_provider_failure',
+        ...(requestId ? { requestId } : {}),
         provider: provider.name,
         failureType: failure.failureType,
         ...(failure.statusCode ? { statusCode: failure.statusCode } : {}),

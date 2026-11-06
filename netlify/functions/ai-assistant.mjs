@@ -24,6 +24,7 @@ function isSameOrigin(request) {
 }
 
 export default async function aiAssistant(request, context = {}) {
+  const logger = context.logger || console
   if (request.method !== 'POST') return json(405, { error: 'Use POST for assistant messages.' })
   if (!isSameOrigin(request)) return json(403, { error: 'This request could not be accepted.' })
   if (!(request.headers.get('content-type') || '').toLowerCase().startsWith('application/json')) {
@@ -55,21 +56,28 @@ export default async function aiAssistant(request, context = {}) {
 
   const providers = configuredProviders()
   if (process.env.NVIDIA_NIM_ENABLED === 'true' && (!process.env.NVIDIA_NIM_API_KEY || !process.env.NVIDIA_NIM_MODEL)) {
-    console.warn(JSON.stringify({ event: 'ai_assistant_provider_config_incomplete', provider: 'nvidia_nim' }))
+    logger.warn(JSON.stringify({ event: 'ai_assistant_provider_config_incomplete', provider: 'nvidia_nim' }))
   }
   if (!providers.length) {
-    console.warn(JSON.stringify({ event: 'ai_assistant_unavailable', reason: 'no_providers_configured' }))
+    logger.warn(JSON.stringify({ event: 'ai_assistant_unavailable', reason: 'no_providers_configured' }))
     return json(503, { error: 'The assistant is temporarily unavailable. Please use the enquiry form.' })
   }
 
   try {
     const facts = buildKnowledge()
-    const { selection } = await selectKnowledgeFacts({ messages, facts, providers })
+    const { selection } = await selectKnowledgeFacts({
+      messages,
+      facts,
+      providers,
+      logger,
+      requestId: context.requestId,
+      ...(context.timeoutSignal ? { timeoutSignal: context.timeoutSignal } : {}),
+    })
     const result = composeGroundedAnswer(selection, facts, messages)
     if (!result) throw new Error('AI provider returned an invalid fact selection.')
     return json(200, result)
   } catch {
-    console.error(JSON.stringify({ event: 'ai_assistant_request_failed' }))
+    logger.error(JSON.stringify({ event: 'ai_assistant_request_failed', ...(context.requestId ? { requestId: context.requestId } : {}) }))
     return json(502, { error: 'I could not complete that response. Please try again or use the enquiry form.' })
   }
 }

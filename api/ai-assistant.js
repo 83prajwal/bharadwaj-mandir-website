@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto'
 import aiAssistant from '../netlify/functions/ai-assistant.mjs'
 
 const jsonHeaders = {
@@ -7,6 +8,14 @@ const jsonHeaders = {
 
 function jsonResponse(status, payload) {
   return new Response(JSON.stringify(payload), { status, headers: jsonHeaders })
+}
+
+function writeLog(logger, level, fields) {
+  try {
+    logger[level]?.(JSON.stringify(fields))
+  } catch {
+    // Logging must never change the assistant response.
+  }
 }
 
 async function normalizeAssistantResponse(response) {
@@ -47,12 +56,28 @@ function clientAddress(request) {
 
 export function createVercelAiAssistantHandler({ assistantHandler = aiAssistant, logger = console } = {}) {
   return async function handleVercelAiAssistant(request) {
+    const requestId = randomUUID()
+    const startedAt = Date.now()
+    let responseStatus = 500
+    writeLog(logger, 'info', { event: 'ai_assistant_request_received', requestId })
     try {
-      const response = await assistantHandler(request, { ip: clientAddress(request) })
-      return await normalizeAssistantResponse(response)
+      writeLog(logger, 'info', { event: 'ai_assistant_handler_started', requestId })
+      const response = await assistantHandler(request, { ip: clientAddress(request), requestId, logger })
+      const normalized = await normalizeAssistantResponse(response)
+      responseStatus = normalized.status
+      return normalized
     } catch {
-      logger.error(JSON.stringify({ event: 'ai_assistant_request_failed' }))
-      return jsonResponse(500, { error: 'The assistant is temporarily unavailable. Please use the enquiry form.' })
+      writeLog(logger, 'error', { event: 'ai_assistant_request_failed', requestId })
+      const response = jsonResponse(500, { error: 'The assistant is temporarily unavailable. Please use the enquiry form.' })
+      responseStatus = response.status
+      return response
+    } finally {
+      writeLog(logger, 'info', {
+        event: 'ai_assistant_response_returned',
+        requestId,
+        status: responseStatus,
+        durationMs: Date.now() - startedAt,
+      })
     }
   }
 }

@@ -650,7 +650,7 @@ test('invalid credentials fail fast without retrying or calling the fallback', a
 
 test('assistant handler logs no provider exception or response details', () => {
   const handlerSource = readFileSync(join(process.cwd(), 'netlify', 'functions', 'ai-assistant.mjs'), 'utf8')
-  assert.match(handlerSource, /console\.error\(JSON\.stringify\(\{ event: 'ai_assistant_request_failed' \}\)\)/)
+  assert.match(handlerSource, /logger\.error\(JSON\.stringify\(\{ event: 'ai_assistant_request_failed'/)
   assert.doesNotMatch(handlerSource, /error\.message/)
 })
 

@@ -30,6 +30,13 @@ function providerResponse(status, factId = buildKnowledge().find((fact) => fact.
   }), { status, headers: { 'content-type': 'application/json' } })
 }
 
+function shortTimeoutSignal(timeoutMs, delayMs) {
+  assert.equal(timeoutMs, 10_000)
+  const controller = new AbortController()
+  setTimeout(() => controller.abort(new DOMException('Provider request timed out.', 'TimeoutError')), delayMs)
+  return controller.signal
+}
+
 async function withAssistantEnv(values, callback) {
   const saved = Object.fromEntries(envNames.map((name) => [name, process.env[name]]))
   const originalFetch = globalThis.fetch
@@ -225,6 +232,77 @@ test('provider timeouts fall back to Mistral', async () => {
   })
 })
 
+test('provider timeout aborts the active fetch, logs safe stages, and falls back to Mistral', async () => {
+  await withAssistantEnv({ GROQ_API_KEY: 'synthetic-groq-key', MISTRAL_API_KEY: 'synthetic-mistral-key' }, async () => {
+    const logs = []
+    const logger = Object.fromEntries(['info', 'warn', 'error'].map((level) => [level, (line) => logs.push(JSON.parse(line))]))
+    let groqSignal
+    const handler = createVercelAiAssistantHandler({
+      logger,
+      assistantHandler: (request, context) => aiAssistant(request, {
+        ...context,
+        timeoutSignal: (timeoutMs) => shortTimeoutSignal(timeoutMs, 15),
+      }),
+    })
+    globalThis.fetch = async (url, { signal }) => {
+      if (url.includes('groq')) {
+        groqSignal = signal
+        return new Promise((_, reject) => {
+          const abort = () => reject(signal.reason)
+          signal.addEventListener('abort', abort, { once: true })
+          if (signal.aborted) abort()
+        })
+      }
+      return providerResponse(200, 'product-peacock-design-mandir')
+    }
+
+    const response = await handler(request())
+    assert.equal(response.status, 200)
+    assert.equal(groqSignal.aborted, true)
+    assert.match((await response.json()).answer, /peacock/i)
+    assert.ok(logs.some(({ event }) => event === 'ai_assistant_request_received'))
+    assert.ok(logs.some(({ event }) => event === 'ai_assistant_handler_started'))
+    assert.ok(logs.some(({ event, provider }) => event === 'ai_assistant_provider_request_started' && provider === 'groq'))
+    assert.ok(logs.some(({ event, provider, outcome }) => event === 'ai_assistant_provider_request_completed' && provider === 'groq' && outcome === 'failure'))
+    assert.ok(logs.some(({ event, provider }) => event === 'ai_assistant_fallback_started' && provider === 'mistral'))
+    assert.ok(logs.some(({ event, provider, outcome }) => event === 'ai_assistant_provider_request_completed' && provider === 'mistral' && outcome === 'success'))
+    assert.ok(logs.some(({ event, provider, outcome }) => event === 'ai_assistant_fallback_completed' && provider === 'mistral' && outcome === 'success'))
+    assert.ok(logs.some(({ event, status }) => event === 'ai_assistant_response_returned' && status === 200))
+    const requestIds = new Set(logs.map(({ requestId }) => requestId).filter(Boolean))
+    assert.equal(requestIds.size, 1)
+    const serializedLogs = JSON.stringify(logs)
+    assert.doesNotMatch(serializedLogs, /synthetic-(?:groq|mistral)-key|peacock motif/i)
+  })
+})
+
+test('provider timeout aborts and ends the request with a safe JSON failure without fallback', async () => {
+  await withAssistantEnv({ GROQ_API_KEY: 'synthetic-groq-key' }, async () => {
+    let groqSignal
+    const handler = createVercelAiAssistantHandler({
+      assistantHandler: (request, context) => aiAssistant(request, {
+        ...context,
+        timeoutSignal: (timeoutMs) => shortTimeoutSignal(timeoutMs, 10),
+      }),
+      logger: { info() {}, warn() {}, error() {} },
+    })
+    globalThis.fetch = async (_url, { signal }) => {
+      groqSignal = signal
+      return new Promise((_, reject) => {
+        const abort = () => reject(signal.reason)
+        signal.addEventListener('abort', abort, { once: true })
+        if (signal.aborted) abort()
+      })
+    }
+
+    const response = await handler(request())
+    const payload = await response.json()
+    assert.equal(groqSignal.aborted, true)
+    assert.equal(response.status, 502)
+    assert.match(response.headers.get('content-type'), /application\/json/i)
+    assert.match(payload.error, /could not complete/i)
+  })
+})
+
 test('unexpected handler errors return a generic response and log no details', async () => {
   const logs = []
   const handler = createVercelAiAssistantHandler({
@@ -235,7 +313,10 @@ test('unexpected handler errors return a generic response and log no details', a
   const body = await response.text()
   assert.equal(response.status, 500)
   assert.doesNotMatch(body, /private stack|secret|Error/)
-  assert.deepEqual(logs, ['{"event":"ai_assistant_request_failed"}'])
+  assert.equal(logs.length, 1)
+  const failureLog = JSON.parse(logs[0])
+  assert.equal(failureLog.event, 'ai_assistant_request_failed')
+  assert.match(failureLog.requestId, /^[0-9a-f-]{36}$/i)
 })
 
 test('empty or malformed assistant handler responses become safe JSON errors', async () => {
