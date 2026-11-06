@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { navLinks } from '../data/products'
 import BellToggle from './BellToggle'
+import WhatsAppLink from './WhatsAppLink'
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -72,6 +73,8 @@ export default function Navbar() {
               </li>
             ))}
           </ul>
+
+          <WhatsAppLink className="nav-whatsapp" label="Chat with Bharadwaj Mandir on WhatsApp" iconSize={20} onClick={() => setMenuOpen(false)}><span>WhatsApp</span></WhatsAppLink>
 
           <Link to="/contact" className="btn btn-primary nav-cta" onClick={() => setMenuOpen(false)}>
             Request a Quote

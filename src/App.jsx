@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation, Link } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useLocation, useNavigate, Link } from 'react-router-dom'
 import { lazy, Suspense, useEffect, useLayoutEffect } from 'react'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
@@ -19,10 +19,24 @@ import EnquiryAssistant from './components/EnquiryAssistant'
 import MotionEffects from './components/MotionEffects'
 import FloatingContact from './components/FloatingContact'
 
-const MandirDesigner = lazy(() => import('./pages/MandirDesigner.jsx'))
+const StudioGate = lazy(() => import('./pages/StudioGate.jsx'))
+const AUTH_LINK_HASH = /^#(confirmation_token|recovery_token|invite_token|email_change_token|access_token)=/
 
 function DesignerRouteFallback() {
   return <main className="page-shell designer-route-loading" aria-live="polite">Opening the 3D studio…</main>
+}
+
+// Account emails link to the site root. Finish the step, then open the Studio.
+function AccountLinkHandler() {
+  const navigate = useNavigate()
+  useEffect(() => {
+    if (!AUTH_LINK_HASH.test(window.location.hash)) return
+    import('@netlify/identity')
+      .then(({ handleAuthCallback }) => handleAuthCallback())
+      .then((result) => navigate('/mandir-designer', { replace: true, state: { setPassword: result?.type === 'recovery', confirmed: result?.type === 'confirmation' } }))
+      .catch(() => navigate('/mandir-designer', { replace: true, state: { authLinkFailed: true } }))
+  }, [navigate])
+  return null
 }
 
 function NotFound() {
@@ -112,6 +126,7 @@ function App() {
     <BrowserRouter>
       <div className="app-shell">
         <a className="skip-link" href="#main-content">Skip to main content</a>
+        <AccountLinkHandler />
         <PageMetadata />
         <ScrollToTop />
         <AttributionCapture />
@@ -125,7 +140,7 @@ function App() {
             <Route path="/products/:id" element={<ProductDetails />} />
             <Route path="/custom-mandir" element={<CustomMandir />} />
             <Route path="/gallery" element={<GalleryPage />} />
-            <Route path="/mandir-designer" element={<Suspense fallback={<DesignerRouteFallback />}><MandirDesigner /></Suspense>} />
+            <Route path="/mandir-designer" element={<Suspense fallback={<DesignerRouteFallback />}><StudioGate /></Suspense>} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/faq" element={<FAQ />} />

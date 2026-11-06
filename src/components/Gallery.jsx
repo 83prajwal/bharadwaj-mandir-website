@@ -5,6 +5,7 @@ import ResponsiveImage from './ResponsiveImage'
 import Lightbox from './Lightbox'
 import TempleIcon from './TempleIcons'
 
+const PAGE_SIZE = 12
 const filterLabel = (filter) => (filter === 'Our Images' ? 'Designs' : filter)
 
 function VideoLightbox({ items, index, onClose, onIndexChange }) {
@@ -79,12 +80,15 @@ function VideoLightbox({ items, index, onClose, onIndexChange }) {
   )
 }
 
-// Masonry gallery with category filters. Photos open in a lightbox with
-// swipe, zoom and captions; workshop videos open in a full-size viewer.
+// Uniform card grid with category chips and "Load more". Photos open in a
+// lightbox with swipe, zoom and captions; videos open in a full-size viewer.
 export default function Gallery({ items = [], showFilters = true }) {
   const [activeFilter, setActiveFilter] = useState('All')
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
   const [lightboxIndex, setLightboxIndex] = useState(null)
   const [videoIndex, setVideoIndex] = useState(null)
+
+  const filters = useMemo(() => ['All', ...galleryCategories.filter((category) => items.some((item) => item.category === category))], [items])
 
   const filteredItems = useMemo(() => {
     if (activeFilter === 'All') return items
@@ -93,18 +97,25 @@ export default function Gallery({ items = [], showFilters = true }) {
 
   const photos = useMemo(() => filteredItems.filter((item) => !item.video), [filteredItems])
   const videos = useMemo(() => filteredItems.filter((item) => item.video), [filteredItems])
+  const visibleItems = filteredItems.slice(0, visibleCount)
+  const remaining = filteredItems.length - visibleItems.length
+
+  function chooseFilter(filter) {
+    setActiveFilter(filter)
+    setVisibleCount(PAGE_SIZE)
+  }
 
   return (
     <div className="media-gallery">
       {showFilters ? (
         <div className="gallery-filters" role="group" aria-label="Gallery categories">
-          {['All', ...galleryCategories].map((filter) => (
+          {filters.map((filter) => (
             <button
               key={filter}
               type="button"
               className={filter === activeFilter ? 'active' : ''}
               aria-pressed={filter === activeFilter}
-              onClick={() => setActiveFilter(filter)}
+              onClick={() => chooseFilter(filter)}
             >
               {filterLabel(filter)}
             </button>
@@ -113,33 +124,34 @@ export default function Gallery({ items = [], showFilters = true }) {
       ) : null}
 
       {filteredItems.length ? (
-        <div className="masonry-grid">
-          {filteredItems.map((item) => item.video ? (
-            <figure key={item.id} className="gallery-item masonry-item gallery-item-video">
-              {/* The tile is only a preview: playback always happens in the viewer. */}
-              <button type="button" className="masonry-open gallery-video-open" onClick={() => setVideoIndex(videos.indexOf(item))} aria-label={`Play full video: ${item.title}`}>
-                <video muted playsInline preload="metadata" tabIndex={-1} aria-hidden="true">
-                  <source src={`${normalizeMediaUrl(item.video)}#t=0.1`} type="video/mp4" />
-                </video>
-                <span className="gallery-video-play" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" focusable="false"><path d="M8 5v14l11-7z" /></svg></span>
-              </button>
-              <figcaption className="gallery-caption"><span>{item.title}</span><small className="video-audio-label">{item.audioAvailable ? 'Audio available' : 'No audio'}</small></figcaption>
-            </figure>
-          ) : (
-            <figure key={item.id} className="gallery-item masonry-item gallery-item-photo">
-              <button type="button" className="masonry-open" onClick={() => setLightboxIndex(photos.indexOf(item))} aria-label={`Open larger view: ${item.title}`}>
-                <ResponsiveImage src={item.image} alt={item.alt} width={item.width} height={item.height} sizes="(max-width: 600px) 50vw, (max-width: 1024px) 33vw, 25vw" />
-              </button>
-              <figcaption className="gallery-caption">
-                <span>{item.title}</span>
-                {item.detail ? <small className="gallery-caption-detail">{item.detail}</small> : null}
-              </figcaption>
+        <div className="gallery-cards">
+          {visibleItems.map((item) => (
+            <figure key={item.id} className="gallery-card">
+              {item.video ? (
+                <button type="button" className="gallery-card-open gallery-card-video" onClick={() => setVideoIndex(videos.indexOf(item))} aria-label={`Play full video: ${item.title}`}>
+                  <video muted playsInline preload="metadata" tabIndex={-1} aria-hidden="true">
+                    <source src={`${normalizeMediaUrl(item.video)}#t=0.1`} type="video/mp4" />
+                  </video>
+                  <span className="gallery-video-play" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" focusable="false"><path d="M8 5v14l11-7z" /></svg></span>
+                </button>
+              ) : (
+                <button type="button" className="gallery-card-open" onClick={() => setLightboxIndex(photos.indexOf(item))} aria-label={`Open larger view: ${item.title}`}>
+                  <ResponsiveImage src={item.image} alt={item.alt} width={item.width} height={item.height} sizes="(max-width: 479px) 100vw, (max-width: 767px) 50vw, (max-width: 1023px) 33vw, 25vw" />
+                </button>
+              )}
+              <figcaption className="gallery-card-caption">{item.title}</figcaption>
             </figure>
           ))}
         </div>
       ) : (
         <p className="gallery-empty" role="status">No images or videos are available in this category.</p>
       )}
+
+      {remaining > 0 ? (
+        <div className="gallery-more">
+          <button type="button" className="btn btn-secondary" onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}>Load more ({remaining})</button>
+        </div>
+      ) : null}
 
       <Lightbox items={photos} index={lightboxIndex} onClose={() => setLightboxIndex(null)} onIndexChange={setLightboxIndex} />
       <VideoLightbox items={videos} index={videoIndex} onClose={() => setVideoIndex(null)} onIndexChange={setVideoIndex} />

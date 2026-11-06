@@ -1,5 +1,8 @@
 import { Suspense, lazy, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { refreshSession } from '@netlify/identity'
+import WhatsAppLink from '../components/WhatsAppLink'
+import { postStudioLead } from '../lib/studioLead'
 import { activeConfigEntries, defaults, normalizeConfig, validate } from './mandir-studio/lib/config.ts'
 import DetailStudio from './mandir-studio/components/DetailStudio.tsx'
 import { brandedCanvas } from './mandir-studio/lib/export-branding.ts'
@@ -55,6 +58,8 @@ export default function MandirDesigner() {
   const [designName, setDesignName] = useState('My mandir design')
   const [loadedId, setLoadedId] = useState('')
   const [status, setStatus] = useState('')
+  const [quoteBusy, setQuoteBusy] = useState(false)
+  const [quoteFailed, setQuoteFailed] = useState(false)
   const [sharedReadOnly, setSharedReadOnly] = useState(() => Boolean(window.location.hash.match(/^#share=/)))
   const [sharedLoaded, setSharedLoaded] = useState(false)
   const [shareUrl, setShareUrl] = useState('')
@@ -227,7 +232,7 @@ export default function MandirDesigner() {
     } catch { setStatus('The print-ready specification could not be created. Please try again.') }
   }
 
-  function requestQuotation() {
+  function openQuotationForm() {
     navigate('/contact?interest=Project%20enquiry', {
       state: {
         designerQuote: true,
@@ -237,6 +242,23 @@ export default function MandirDesigner() {
         designerShareUrl: shareUrl,
       },
     })
+  }
+
+  // Saves the lead first; if that fails the customer can still continue or use WhatsApp.
+  async function requestQuotation() {
+    if (quoteBusy) return
+    setQuoteBusy(true)
+    setQuoteFailed(false)
+    try {
+      await refreshSession()
+      const { width, height, style, material, pillars } = config
+      await postStudioLead({ action: 'quotation', designName, design: { width, height, style, material, pillars } })
+      openQuotationForm()
+    } catch {
+      setQuoteFailed(true)
+    } finally {
+      setQuoteBusy(false)
+    }
   }
 
   function renderTab() {
@@ -298,7 +320,7 @@ export default function MandirDesigner() {
           <button type="button" onClick={() => persistDesign(config, designName)}>Save design</button>
           <button type="button" onClick={duplicateDesign}>Duplicate</button>
           <button type="button" onClick={() => shareDesign()}>Create share link</button>
-          <button type="button" className="mandir-studio-quote-action" onClick={requestQuotation}>Request a Quotation</button>
+          <button type="button" className="mandir-studio-quote-action" onClick={requestQuotation} disabled={quoteBusy}>{quoteBusy ? 'Saving…' : 'Request a Quotation'}</button>
           <button type="button" onClick={downloadSpecification}>Download PDF</button>
           <button type="button" onClick={printSpecification}>Print specification</button>
           {loadedId && <button type="button" onClick={renameDesign}>Rename selected</button>}
@@ -321,6 +343,11 @@ export default function MandirDesigner() {
               {entry.localOnly && <small>Browser-only copy · save again when Netlify storage is available</small>}
             </article>)}
           </div>
+        </div>}
+        {quoteFailed && <div className="form-error studio-gate-fallback" role="alert">
+          <p>We could not save your quotation request just now. Please message us on WhatsApp, or continue to the enquiry form.</p>
+          <WhatsAppLink className="btn btn-whatsapp" message={`Hi, I would like a quotation for my 3D Studio design: ${designName}.`} label="Message Bharadwaj Mandir about your quotation" iconSize={20}><span>Message us on WhatsApp</span></WhatsAppLink>
+          <button type="button" className="btn btn-secondary" onClick={openQuotationForm}>Continue to the enquiry form</button>
         </div>}
         <div className="mandir-studio-layout">
           {!sharedReadOnly && <aside className="mandir-studio-controls">

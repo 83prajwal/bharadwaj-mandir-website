@@ -8,7 +8,8 @@
     "dev:netlify": "netlify dev",
     "build": "vite build && node scripts/generate-seo.mjs",
     "lint": "eslint .",
-    "test": "npm run test:lead && npm run test:assistant && npm run test:design && npm run test:quotation && npm run test:prices",
+    "test": "npm run test:lead && npm run test:assistant && npm run test:design && npm run test:quotation && npm run test:prices && npm run test:studio-leads",
+    "test:studio-leads": "node --test tests/studio-leads.test.mjs tests/contact-config.test.mjs",
     "test:prices": "node --test tests/product-prices.test.mjs",
     "test:quotation": "node --experimental-strip-types --test tests/quotation-request.test.mjs",
     "test:design": "node --experimental-strip-types --test tests/design-storage.test.mjs",
@@ -20,6 +21,7 @@
   },
   "dependencies": {
     "@netlify/blobs": "^11.1.7",
+    "@netlify/identity": "^2.0.0",
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.2",
     "jspdf": "^4.2.1",

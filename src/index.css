@@ -71,7 +71,6 @@ select {
 .cookie-banner p { margin: .25rem 0; font-size: .9rem; }
 .cookie-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
 .cookie-actions .btn { white-space: nowrap; }
-.cookie-settings { position: fixed; z-index: 50; right: max(1rem, env(safe-area-inset-right)); bottom: calc(1rem + env(safe-area-inset-bottom)); padding: .55rem .8rem; border: 1px solid var(--maroon); border-radius: 999px; color: var(--maroon); background: var(--ivory); }
 
 @media (max-width: 720px) {
   .cookie-banner { left: .5rem; right: .5rem; bottom: .5rem; display: block; padding: .9rem; }
@@ -1818,28 +1817,7 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visib
   gap: .7rem;
   color: var(--maroon);
 }
-.assistant-launcher {
-  display: inline-flex;
-  min-height: 46px;
-  align-items: center;
-  justify-content: center;
-  gap: .55rem;
-  padding: .65rem 1rem;
-  border: 1px solid var(--gold);
-  border-radius: 999px;
-  background: var(--maroon);
-  color: var(--ivory);
-  box-shadow: 0 5px 16px color-mix(in srgb, var(--maroon-deep) 20%, transparent);
-  font: inherit;
-  font-size: .9rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background-color .18s ease, box-shadow .18s ease, transform .18s ease;
-}
-.assistant-launcher:hover { transform: translateY(-1px); background: var(--maroon-rich); box-shadow: 0 7px 20px color-mix(in srgb, var(--maroon-deep) 24%, transparent); }
-.assistant-launcher:active { transform: translateY(0); }
-.assistant-launcher:focus-visible, .assistant-close:focus-visible, .assistant-composer textarea:focus-visible, .assistant-composer .btn:focus-visible, .assistant-handoff:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
-.assistant-launcher-icon { width: 18px; height: 18px; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.7; }
+.assistant-close:focus-visible, .assistant-composer textarea:focus-visible, .assistant-composer .btn:focus-visible, .assistant-handoff:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
 .assistant-panel {
   display: flex;
   width: min(390px, calc(100vw - 2rem));
@@ -2150,11 +2128,6 @@ section:is(.story-band, .faq-section, .about-audience-section, .about-invitation
 /* Floating preferences and assistant controls. */
 .cookie-banner { border-color: color-mix(in srgb, var(--gold) 42%, transparent); border-radius: 9px; background: color-mix(in srgb, var(--ivory) 97%, transparent); box-shadow: var(--shadow-elevated); backdrop-filter: blur(14px); }
 .cookie-banner strong { color: var(--maroon); }
-.cookie-settings { padding: .45rem .7rem; border-color: color-mix(in srgb, var(--maroon) 45%, transparent); background: color-mix(in srgb, var(--ivory) 92%, transparent); box-shadow: var(--shadow-card); font-size: .75rem; transition: color .2s ease, background-color .2s ease, border-color .2s ease; }
-.cookie-settings:hover { border-color: var(--gold); background: var(--maroon); color: var(--ivory); }
-.cookie-settings { right: auto; left: max(1rem, env(safe-area-inset-left)); border-color: transparent; background: transparent; box-shadow: none; color: var(--maroon); text-decoration: underline; text-underline-offset: .2em; }
-.cookie-settings:hover { border-color: transparent; background: transparent; color: var(--maroon-rich); }
-.assistant-launcher { box-shadow: 0 7px 20px color-mix(in srgb, var(--maroon-deep) 24%, transparent); }
 .assistant-panel { border-color: color-mix(in srgb, var(--gold) 40%, transparent); border-radius: 12px; box-shadow: var(--shadow-elevated); }
 .assistant-message { background: var(--ivory); }
 .assistant-message-user { background: var(--marble); }
@@ -2203,7 +2176,6 @@ section:is(.story-band, .faq-section, .about-audience-section, .about-invitation
   .products-page .section-heading h2, .craft-section .section-heading h2, .gallery-page .small-hero h1, .collection-bottom-cta h2 { white-space: normal; text-wrap: balance; }
   .collection-bottom-cta h2 { font-size: clamp(2.35rem, 8vw, 3.4rem); }
   .cookie-banner { bottom: calc(.5rem + env(safe-area-inset-bottom)); border-radius: 8px; }
-  .cookie-settings { bottom: calc(.75rem + env(safe-area-inset-bottom)); }
 }
 @media (max-width: 480px) {
   :root { --container: calc(100% - 1.5rem); }

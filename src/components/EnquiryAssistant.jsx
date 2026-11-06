@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { readAssistantResponse } from '../lib/assistant-response'
+import { openAssistantEvent } from '../lib/siteEvents'
 import {
   acquireAssistantSubmission,
   getValidAssistantQuestion,
@@ -20,7 +21,7 @@ export default function EnquiryAssistant() {
   const [error, setError] = useState('')
   const [handoff, setHandoff] = useState(false)
   const transcriptRef = useRef(null)
-  const launcherRef = useRef(null)
+  const openerRef = useRef(null)
   const composerRef = useRef(null)
   const submissionLockRef = useRef(false)
 
@@ -29,8 +30,20 @@ export default function EnquiryAssistant() {
       composerRef.current?.focus()
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
       transcriptRef.current?.scrollTo({ top: transcriptRef.current.scrollHeight, behavior: reduceMotion ? 'auto' : 'smooth' })
-    } else launcherRef.current?.focus()
+    } else if (openerRef.current) {
+      openerRef.current.focus()
+      openerRef.current = null
+    }
   }, [messages, open])
+
+  useEffect(() => {
+    function openPanel() {
+      openerRef.current = document.activeElement
+      setOpen(true)
+    }
+    window.addEventListener(openAssistantEvent, openPanel)
+    return () => window.removeEventListener(openAssistantEvent, openPanel)
+  }, [])
 
   async function sendMessage(event) {
     event.preventDefault()
@@ -98,10 +111,6 @@ export default function EnquiryAssistant() {
           <p className="assistant-limit">Up to 1,200 characters. The team confirms project specifications and availability.</p>
         </section>
       )}
-      <button ref={launcherRef} className="assistant-launcher" type="button" aria-expanded={open} aria-controls="assistant-widget-panel" onClick={() => setOpen((value) => !value)}>
-        {!open && <svg className="assistant-launcher-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-3 2v-6.5a7.5 7.5 0 1 1 17-3Z" /></svg>}
-        {open ? 'Close assistant' : 'Ask us'}
-      </button>
     </div>
   )
 }

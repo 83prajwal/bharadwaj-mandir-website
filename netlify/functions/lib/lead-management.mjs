@@ -411,7 +411,7 @@ function requiredEnv(name) {
   return value
 }
 
-async function getGoogleAccessToken(fetchImpl = fetch) {
+export async function getGoogleAccessToken(fetchImpl = fetch) {
   if (tokenCache && tokenCache.expiresAt > Date.now() + 60000) return tokenCache.value
   const email = requiredEnv('GOOGLE_SERVICE_ACCOUNT_EMAIL')
   const privateKey = requiredEnv('GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY').replace(/\\n/g, '\n')

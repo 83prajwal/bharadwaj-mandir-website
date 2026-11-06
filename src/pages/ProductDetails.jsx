@@ -1,6 +1,8 @@
 import { useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import EstimatedPrice from '../components/EstimatedPrice'
+import WhatsAppLink from '../components/WhatsAppLink'
+import { designWhatsappMessage } from '../config/contact'
 import { products } from '../data/products'
 
 export default function ProductDetails() {
@@ -51,6 +53,7 @@ export default function ProductDetails() {
             ) : null}
             <div className="button-row">
               <Link to={`/contact?productId=${encodeURIComponent(product.id)}&productUrl=${encodeURIComponent(window.location.origin + window.location.pathname)}`} className="btn btn-primary">Enquire About This Mandir</Link>
+              <WhatsAppLink className="btn btn-whatsapp" message={designWhatsappMessage(products.indexOf(product), product.name)} label={`Enquire on WhatsApp about ${product.name}`} iconSize={20}><span>Enquire on WhatsApp</span></WhatsAppLink>
               <Link to="/products" className="btn btn-secondary">Back to Products</Link>
             </div>
           </div>

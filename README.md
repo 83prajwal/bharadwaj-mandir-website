@@ -38,6 +38,10 @@ The app submits the static `enquiry` form to Netlify. The hidden form definition
 
 The UI reports success only after the Netlify POST returns an OK response. Netlify Forms does not provide this app with a confirmed reference ID, so the success message does not invent one. The existing Netlify notification workflow is unchanged. Lead-register sync and scheduled reports require the server-side configuration in the setup guide; local checks do not verify delivery to production mailboxes.
 
+## 3D Studio accounts
+
+`/mandir-designer` requires a Netlify Identity login. Sign-ups and quotation requests are saved to a private Google Sheet by `netlify/functions/studio-lead.mjs`. See [STUDIO_LEADS_SETUP.md](STUDIO_LEADS_SETUP.md).
+
 ## Lead management
 
 See [LEAD_MANAGEMENT_SETUP.md](LEAD_MANAGEMENT_SETUP.md) for the Netlify Forms-to-Sheets data flow, credentials/configuration, spreadsheet schema and dropdowns, 48-hour reporting, retry/recovery behavior, test coverage and deployment instructions. The existing Netlify form remains the customer intake and notification path; a scheduled server-side process copies accepted submissions into the private register.

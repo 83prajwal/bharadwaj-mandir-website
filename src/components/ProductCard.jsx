@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
 import EstimatedPrice from './EstimatedPrice'
+import WhatsAppLink from './WhatsAppLink'
+import { designWhatsappMessage } from '../config/contact'
 import ResponsiveImage from './ResponsiveImage'
 
 export default function ProductCard({ product, index = 0 }) {
@@ -21,6 +23,7 @@ export default function ProductCard({ product, index = 0 }) {
           <Link to={enquireUrl} className="btn btn-primary btn-small" aria-label={`Enquire about ${product.name}`}>Enquire</Link>
           <Link to={detailsUrl} className="pcard-link" aria-label={`View details of ${product.name}`}>View details <span aria-hidden="true">→</span></Link>
         </div>
+        <WhatsAppLink className="btn btn-whatsapp btn-small" message={designWhatsappMessage(index, product.name)} label={`Enquire on WhatsApp about ${product.name}`} iconSize={18}><span>Enquire on WhatsApp</span></WhatsAppLink>
       </div>
     </article>
   )

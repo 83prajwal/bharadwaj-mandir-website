@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom'
 import TempleIcon from './TempleIcons'
 import { Divider } from './Ornaments'
+import WhatsAppLink from './WhatsAppLink'
 import { blessingLine, socialLinks, visitInfo } from '../data/siteContent'
+import { openAssistantEvent, openCookieSettingsEvent } from '../lib/siteEvents'
 
 export default function Footer() {
   return (
@@ -49,6 +51,8 @@ export default function Footer() {
             <li><Link to="/international-delivery">International enquiries</Link></li>
             <li><Link to="/privacy">Privacy notice</Link></li>
             <li><Link to="/terms">Website terms</Link></li>
+            <li><button type="button" className="footer-link-button" onClick={() => window.dispatchEvent(new Event(openAssistantEvent))}>Ask our assistant</button></li>
+            <li><button type="button" className="footer-link-button" onClick={() => window.dispatchEvent(new Event(openCookieSettingsEvent))}>Cookie settings</button></li>
           </ul>
         </div>
 
@@ -59,6 +63,7 @@ export default function Footer() {
             {!visitInfo.confirmed ? <small className="footer-sample">(sample address)</small> : null}
           </address>
           <p className="footer-meta"><a href="tel:+919953836555">+91-9953836555</a></p>
+          <p className="footer-meta"><WhatsAppLink className="footer-whatsapp" label="Chat with Bharadwaj Mandir on WhatsApp" iconSize={18}><span>WhatsApp</span></WhatsAppLink></p>
           <p className="footer-meta"><a href="mailto:Bharadwajmandir@gmail.com">Bharadwajmandir@gmail.com</a></p>
           <Link to="/contact" className="text-link footer-contact-link">Send an enquiry</Link>
         </div>

@@ -1,4 +1,5 @@
 import providedGalleryImages from './providedGalleryImages.json' with { type: 'json' }
+import { galleryExcludedIds } from './galleryExclusions.js'
 
 const videoPath = '/videos/'
 
@@ -128,7 +129,7 @@ export const galleryCategories = [
 ]
 
 export const galleryImages = [
-  ...providedGalleryImages,
+  ...providedGalleryImages.filter((item) => !galleryExcludedIds.has(item.id)),
   { id: 'video-carving', title: 'Stone carving in progress', category: 'Product and Craftsmanship', video: `${videoPath}stone-carving.mp4`, audioAvailable: true },
   { id: 'video-detail', title: 'Carved detail work', category: 'Product and Craftsmanship', video: `${videoPath}carving-detail.mp4`, audioAvailable: true },
   ...addedWorkshopVideos,
