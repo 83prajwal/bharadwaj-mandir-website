@@ -59,7 +59,7 @@ export default function EnquiryForm() {
       }
       const body = new FormData(form)
       if (designerQuote) {
-        const validationResponse = await fetch('/.netlify/functions/quotation-validate', { method: 'POST', body })
+        const validationResponse = await fetch('/api/quotation-validate', { method: 'POST', body })
         await parseQuotationValidationResponse(validationResponse)
       }
       const request = file

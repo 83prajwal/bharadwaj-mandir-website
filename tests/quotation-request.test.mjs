@@ -1,8 +1,10 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { Readable } from 'node:stream'
 import { defaults } from '../src/pages/mandir-studio/lib/config.ts'
 import { validateQuotationRequest } from '../netlify/functions/lib/quotation-request.mjs'
 import handler from '../netlify/functions/quotation-validate.mjs'
+import vercelQuotationValidate from '../api/quotation-validate.js'
 import quotationAcknowledgement, { createQuotationAcknowledgement } from '../netlify/functions/quotation-acknowledgement.mjs'
 import { createSpecificationPdf, safePdfFilename } from '../src/pages/mandir-studio/lib/specification-pdf.mjs'
 import { activeConfigEntries } from '../src/pages/mandir-studio/lib/config.ts'
@@ -18,6 +20,44 @@ function validForm(overrides = {}) {
   }
   for (const [key, value] of Object.entries({ ...fields, ...overrides })) form.set(key, value)
   return form
+}
+
+async function callVercelNodeHandler(request) {
+  const url = new URL(request.url)
+  const input = request.method === 'GET' || request.method === 'HEAD'
+    ? Readable.from([])
+    : Readable.from([Buffer.from(await request.clone().arrayBuffer())])
+  input.method = request.method
+  input.url = `${url.pathname}${url.search}`
+  input.headers = {
+    ...Object.fromEntries(request.headers.entries()),
+    host: url.host,
+    'x-forwarded-proto': url.protocol.slice(0, -1),
+  }
+
+  const responseHeaders = new Headers()
+  const output = {
+    statusCode: 200,
+    setHeader(name, value) { responseHeaders.set(name, value) },
+    end(body) { this.body = body },
+  }
+  const returned = await vercelQuotationValidate(input, output)
+  return {
+    returned,
+    response: new Response(output.body, { status: output.statusCode, headers: responseHeaders }),
+  }
+}
+
+async function compareNetlifyAndVercel(request) {
+  const { returned, response: vercelResponse } = await callVercelNodeHandler(request)
+  const netlifyResponse = await handler(request)
+  assert.equal(returned, undefined, 'Vercel Node handler must send through res, not return a Web Response')
+  assert.equal(vercelResponse.status, netlifyResponse.status)
+  assert.deepEqual([...vercelResponse.headers], [...netlifyResponse.headers])
+  assert.equal(await vercelResponse.clone().text(), await netlifyResponse.clone().text())
+  const [vercelPayload, netlifyPayload] = await Promise.all([vercelResponse.json(), netlifyResponse.json()])
+  assert.deepEqual(vercelPayload, netlifyPayload)
+  return { netlifyResponse, netlifyPayload, vercelResponse, vercelPayload }
 }
 
 test('frontend accepts JSON validation success and surfaces JSON validation errors', async () => {
@@ -95,6 +135,61 @@ test('validation function rejects bad method and cross-origin requests and accep
   const response = await handler(request)
   assert.equal(response.status, 200)
   assert.equal((await response.json()).designName, 'Home Mandir')
+})
+
+test('Vercel quotation endpoint matches Netlify for a valid multipart quotation', async () => {
+  const form = validForm()
+  form.set('referenceFile', new File([Uint8Array.from([0xff, 0xd8, 0xff, 0xd9])], 'room.jpg', { type: 'image/jpeg' }))
+  const request = new Request('https://site.test/api/quotation-validate', {
+    method: 'POST', headers: { origin: 'https://site.test' }, body: form,
+  })
+  const { vercelResponse, vercelPayload } = await compareNetlifyAndVercel(request)
+  assert.equal(vercelPayload.designName, 'Home Mandir')
+})
+
+test('Vercel quotation endpoint matches Netlify for missing required fields', async () => {
+  const form = validForm({ city: '' })
+  const request = new Request('https://site.test/api/quotation-validate', {
+    method: 'POST', headers: { origin: 'https://site.test' }, body: form,
+  })
+  const { vercelResponse, vercelPayload } = await compareNetlifyAndVercel(request)
+  assert.equal(vercelResponse.status, 400)
+  assert.match(vercelPayload.error, /installation city/i)
+})
+
+test('Vercel quotation endpoint matches Netlify for invalid and oversized reference files', async () => {
+  const invalidFile = validForm()
+  invalidFile.set('referenceFile', new File(['bad signature'], 'sketch.svg', { type: 'image/svg+xml' }))
+  const invalidRequest = new Request('https://site.test/api/quotation-validate', {
+    method: 'POST', headers: { origin: 'https://site.test' }, body: invalidFile,
+  })
+  const invalid = await compareNetlifyAndVercel(invalidRequest)
+  assert.equal(invalid.vercelResponse.status, 400)
+  assert.match(invalid.vercelPayload.error, /Upload a JPG, PNG, WebP or PDF/)
+
+  const oversizedFile = validForm()
+  oversizedFile.set('referenceFile', new File([new Uint8Array(3 * 1024 * 1024 + 1)], 'large.pdf', { type: 'application/pdf' }))
+  const oversizedRequest = new Request('https://site.test/api/quotation-validate', {
+    method: 'POST', headers: { origin: 'https://site.test' }, body: oversizedFile,
+  })
+  const oversized = await compareNetlifyAndVercel(oversizedRequest)
+  assert.equal(oversized.vercelResponse.status, 400)
+  assert.match(oversized.vercelPayload.error, /3 MB or smaller/)
+})
+
+test('Vercel quotation endpoint matches Netlify for method, origin and malformed multipart errors', async () => {
+  const wrongMethod = await compareNetlifyAndVercel(new Request('https://site.test/api/quotation-validate'))
+  assert.equal(wrongMethod.vercelResponse.status, 405)
+
+  const wrongOrigin = await compareNetlifyAndVercel(new Request('https://site.test/api/quotation-validate', {
+    method: 'POST', headers: { origin: 'https://attacker.test', 'content-type': 'multipart/form-data; boundary=example' }, body: 'ignored',
+  }))
+  assert.equal(wrongOrigin.vercelResponse.status, 403)
+
+  const malformed = await compareNetlifyAndVercel(new Request('https://site.test/api/quotation-validate', {
+    method: 'POST', headers: { origin: 'https://site.test', 'content-type': 'multipart/form-data; boundary=example' }, body: 'not multipart data',
+  }))
+  assert.equal(malformed.vercelResponse.status, 400)
 })
 
 test('customer acknowledgement sends only after a verified Studio form event and is idempotent', async () => {
