@@ -5,6 +5,7 @@ import { parseQuotationValidationResponse } from '../lib/quotation-response.mjs'
 
 const uploadLimit = 7 * 1024 * 1024
 const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf']
+const formSubmissionUrl = import.meta.env.VITE_ENQUIRY_SUBMISSION_URL || '/'
 
 export default function EnquiryForm() {
   const [submitted, setSubmitted] = useState(false)
@@ -69,7 +70,7 @@ export default function EnquiryForm() {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams([...body.entries()].filter(([name]) => name !== 'referenceFile')).toString(),
           }
-      const response = await fetch('/', request)
+      const response = await fetch(formSubmissionUrl, request)
       if (!response.ok) {
         console.error(`Netlify Forms returned HTTP ${response.status} for the enquiry submission.`)
         setError(`The form service returned an HTTP ${response.status} response. Your enquiry was not confirmed; please try again later.`)

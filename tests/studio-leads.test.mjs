@@ -1,5 +1,12 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { Readable } from 'node:stream'
+import {
+  createVercelStudioLeadHandler,
+  createVercelStudioLeadNodeHandler,
+} from '../api/studio-lead.js'
 
 import {
   appendStudioLeadRow,
@@ -47,6 +54,44 @@ const signup = (overrides = {}) => ({ action: 'signup', fullName: 'Asha Rao', ph
 const quote = (overrides = {}) => ({ action: 'quotation', designName: 'Pooja room', design: { width: 1200, height: 2100, style: 'Heritage', material: 'White', pillars: 2 }, ...overrides })
 const member = { id: 'u1', email: 'asha@example.com', userMetadata: { full_name: 'Asha Rao', phone: '+919876543210', contact_consent: true } }
 
+async function invokeVercelNode(handler, webRequest) {
+  const url = new URL(webRequest.url)
+  const input = webRequest.method === 'GET' || webRequest.method === 'HEAD'
+    ? Readable.from([])
+    : Readable.from([Buffer.from(await webRequest.clone().arrayBuffer())])
+  input.method = webRequest.method
+  input.url = `${url.pathname}${url.search}`
+  input.headers = {
+    ...Object.fromEntries(webRequest.headers.entries()),
+    host: url.host,
+    'x-forwarded-proto': url.protocol.slice(0, -1),
+    'x-real-ip': '203.0.113.21',
+  }
+  const headers = new Headers()
+  const output = {
+    statusCode: 200,
+    setHeader(name, value) { headers.set(name, value) },
+    end(body) { this.body = body },
+  }
+  const returned = await handler(input, output)
+  return { returned, response: new Response(output.body, { status: output.statusCode, headers }) }
+}
+
+function vercelRequest(body, headers = {}) {
+  return new Request('https://site.test/api/studio-lead', {
+    method: 'POST',
+    headers: { origin: 'https://site.test', 'content-type': 'application/json', ...headers },
+    body: typeof body === 'string' ? body : JSON.stringify(body),
+  })
+}
+
+function vercelSetup({ currentUser = async () => null, createAccount = async () => ({ confirmedAt: null }), appendRow = async () => {} } = {}) {
+  const store = memoryStore()
+  const leadHandler = createVercelStudioLeadHandler({ store, currentUser, createAccount, appendRow })
+  const nodeHandler = createVercelStudioLeadNodeHandler({ getHandler: () => leadHandler, logger: { error() {} } })
+  return { store, leadHandler, nodeHandler }
+}
+
 test('Indian phone numbers accept an optional country code and are normalised', () => {
   for (const value of ['9876543210', '98765 43210', '+91 98765-43210', '919876543210', '09876543210']) {
     assert.equal(normalizeIndianPhone(value), '+919876543210', value)
@@ -80,6 +125,115 @@ test('a valid sign-up creates one account and exactly one row', async () => {
   assert.equal(rows[0][6], 'Yes')
   assert.equal(rows[0][7], 'New')
   assert.doesNotMatch(JSON.stringify(rows[0]), /long-enough/)
+})
+
+test('Vercel Node endpoint accepts a valid sign-up and sends a JSON response', async () => {
+  const rows = []
+  const accounts = []
+  const { nodeHandler } = vercelSetup({
+    createAccount: async (...args) => { accounts.push(args); return { confirmedAt: null } },
+    appendRow: async (row) => rows.push(row),
+  })
+  const { returned, response } = await invokeVercelNode(nodeHandler, vercelRequest(signup()))
+  assert.equal(returned, undefined)
+  assert.equal(response.status, 200)
+  assert.match(response.headers.get('content-type'), /application\/json/i)
+  assert.deepEqual(await response.json(), { ok: true, saved: true, confirmationRequired: true })
+  assert.equal(accounts.length, 1)
+  assert.equal(accounts[0][0], 'asha@example.com')
+  assert.equal(rows.length, 1)
+})
+
+test('Vercel registration adapter preserves Netlify request, validation and error responses', async () => {
+  const cases = [
+    [request(signup(), { origin: 'https://evil.test' }), 403],
+    [new Request('https://site.test/.netlify/functions/studio-lead', { method: 'GET' }), 405],
+    [request(signup(), { 'content-type': 'text/plain' }), 415],
+    [request('{not json'), 400],
+    [request(signup({ fullName: 'x'.repeat(20_000) })), 413],
+    [request(signup({ phone: '123' })), 400],
+    [request({ action: 'unknown' }), 400],
+  ]
+  for (const [netlifyRequest, expectedStatus] of cases) {
+    const netlifyHandler = setup().handler
+    const { nodeHandler } = vercelSetup()
+    const vercelUrl = new URL(netlifyRequest.url)
+    const vercelReq = new Request(`https://site.test/api/studio-lead${vercelUrl.search}`, {
+      method: netlifyRequest.method,
+      headers: new Headers(netlifyRequest.headers),
+      ...(netlifyRequest.method === 'GET' ? {} : { body: await netlifyRequest.clone().text() }),
+    })
+    const netlifyResponse = await netlifyHandler(netlifyRequest)
+    const { response: vercelResponse } = await invokeVercelNode(nodeHandler, vercelReq)
+    assert.equal(netlifyResponse.status, expectedStatus)
+    assert.equal(vercelResponse.status, netlifyResponse.status)
+    assert.deepEqual(await vercelResponse.json(), await netlifyResponse.json())
+  }
+})
+
+test('Vercel quotation action keeps authorization and reads the existing Netlify Identity user', async () => {
+  const rows = []
+  let requestedUrl
+  const { nodeHandler } = vercelSetup({
+    appendRow: async (row) => rows.push(row),
+  })
+  const leadHandler = createVercelStudioLeadHandler({
+    store: memoryStore(),
+    appendRow: async (row) => rows.push(row),
+    identityUrl: 'https://identity.test/.netlify/identity',
+    fetchImpl: async (url, options) => {
+      requestedUrl = String(url)
+      assert.equal(options.headers.authorization, 'Bearer identity-session-token')
+      return Response.json({ id: 'u1', email: 'asha@example.com', name: 'Asha Rao', user_metadata: { full_name: 'Asha Rao', phone: '+919876543210', contact_consent: true } })
+    },
+  })
+  const authenticatedNodeHandler = createVercelStudioLeadNodeHandler({ getHandler: () => leadHandler, logger: { error() {} } })
+  const quoteRequest = vercelRequest(quote(), { cookie: 'nf_jwt=identity-session-token' })
+  const { response } = await invokeVercelNode(authenticatedNodeHandler, quoteRequest)
+  assert.equal(response.status, 200)
+  assert.deepEqual(await response.json(), { ok: true, saved: true })
+  assert.match(requestedUrl, /identity\.test\/.netlify\/identity\/user$/)
+  assert.equal(rows.length, 1)
+  assert.equal(rows[0][3], 'asha@example.com')
+
+  const { response: unauthorized } = await invokeVercelNode(nodeHandler, vercelRequest(quote()))
+  assert.equal(unauthorized.status, 401)
+  assert.match((await unauthorized.json()).error, /log in/i)
+})
+
+test('Vercel Identity signup adapter forwards the existing Identity payload and duplicate status', async () => {
+  const store = memoryStore()
+  let identityRequest
+  const leadHandler = createVercelStudioLeadHandler({
+    store,
+    appendRow: async () => {},
+    identityUrl: 'https://identity.test/.netlify/identity',
+    fetchImpl: async (url, options) => {
+      identityRequest = { url: String(url), options }
+      return Response.json({ msg: 'A user with this email address has already been registered' }, { status: 422 })
+    },
+  })
+  const nodeHandler = createVercelStudioLeadNodeHandler({ getHandler: () => leadHandler, logger: { error() {} } })
+  const { response } = await invokeVercelNode(nodeHandler, vercelRequest(signup()))
+  assert.equal(response.status, 409)
+  assert.match((await response.json()).error, /already exists.*log in/i)
+  assert.equal(identityRequest.url, 'https://identity.test/.netlify/identity/signup')
+  assert.deepEqual(JSON.parse(identityRequest.options.body), {
+    email: 'asha@example.com',
+    password: 'long-enough',
+    data: { full_name: 'Asha Rao', phone: '+919876543210', contact_consent: true },
+  })
+})
+
+test('Studio registration frontend uses the Vercel endpoint and Identity remains routed to Netlify', () => {
+  const caller = readFileSync(join(process.cwd(), 'src', 'lib', 'studioLead.js'), 'utf8')
+  assert.match(caller, /STUDIO_LEAD_API\s*=\s*'\/api\/studio-lead'/)
+  const config = JSON.parse(readFileSync(join(process.cwd(), 'vercel.json'), 'utf8'))
+  const identityRewriteIndex = config.rewrites.findIndex(({ source }) => source === '/.netlify/identity')
+  const spaRewriteIndex = config.rewrites.findIndex(({ source }) => source === '/(.*)')
+  assert.ok(identityRewriteIndex >= 0)
+  assert.ok(config.rewrites.some(({ source, destination }) => source === '/.netlify/identity/:path*' && destination.includes('.netlify.app/.netlify/identity/:path*')))
+  assert.ok(identityRewriteIndex < spaRewriteIndex)
 })
 
 test('repeating a sign-up never adds a second row', async () => {
