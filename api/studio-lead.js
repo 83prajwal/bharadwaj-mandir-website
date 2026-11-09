@@ -5,6 +5,7 @@ import { createStudioLeadHandler } from '../netlify/functions/lib/studio-leads.m
 
 const REQUEST_TIMEOUT_MS = 5_000
 const identityRequestContext = new AsyncLocalStorage()
+const REQUIRED_STUDIO_LEAD_CONFIG = ['NETLIFY_BLOBS_SITE_ID', 'NETLIFY_BLOBS_TOKEN', 'NETLIFY_IDENTITY_URL']
 
 function writeJson(response, status, payload) {
   response.statusCode = status
@@ -130,10 +131,19 @@ export function createVercelStudioLeadHandler({
 }
 
 let productionHandler
+export function getMissingStudioLeadConfiguration(env = process.env) {
+  return REQUIRED_STUDIO_LEAD_CONFIG.filter((name) => !env[name]?.trim())
+}
+
 function getProductionHandler() {
   if (productionHandler) return productionHandler
-  const required = ['NETLIFY_BLOBS_SITE_ID', 'NETLIFY_BLOBS_TOKEN', 'NETLIFY_IDENTITY_URL']
-  if (required.some((name) => !process.env[name]?.trim())) throw new Error('Studio lead service configuration is incomplete.')
+  const missing = getMissingStudioLeadConfiguration()
+  if (missing.length) {
+    const error = new Error('Studio lead service configuration is incomplete.')
+    error.code = 'STUDIO_LEAD_CONFIG_MISSING'
+    error.missingVariables = missing
+    throw error
+  }
   productionHandler = createVercelStudioLeadHandler()
   return productionHandler
 }
@@ -154,13 +164,21 @@ export function createVercelStudioLeadNodeHandler({ getHandler = getProductionHa
       return
     }
 
+    let failureStage = 'handler_initialization'
     try {
-      const result = await getHandler()(webRequest, { ip: getClientAddress(request) })
+      const handler = getHandler()
+      failureStage = 'shared_handler'
+      const result = await handler(webRequest, { ip: getClientAddress(request) })
+      failureStage = 'response_transfer'
       response.statusCode = result.status
       for (const [name, value] of result.headers.entries()) response.setHeader(name, value)
       response.end(await result.text())
-    } catch {
-      logger.error?.('Studio lead Vercel adapter failed.')
+    } catch (error) {
+      const diagnostic = { stage: failureStage }
+      if (error?.code === 'STUDIO_LEAD_CONFIG_MISSING' && Array.isArray(error.missingVariables)) {
+        diagnostic.missingVariables = error.missingVariables.filter((name) => REQUIRED_STUDIO_LEAD_CONFIG.includes(name))
+      }
+      logger.error?.('Studio lead Vercel adapter failed.', diagnostic)
       writeJson(response, 503, { error: 'The service is temporarily unavailable.' })
     }
   }
