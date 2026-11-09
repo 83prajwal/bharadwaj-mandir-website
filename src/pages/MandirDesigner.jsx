@@ -11,7 +11,7 @@ import './mandir-designer.css'
 
 const MandirViewer = lazy(() => import('./mandir-studio/components/MandirViewer.tsx'))
 const SAVE_KEY = 'bharadwaj-mandir-local-designs-v1'
-const DESIGN_API = '/.netlify/functions/designs'
+const DESIGN_API = '/api/designs'
 const TABS = ['Structure', 'Marble', 'Components', 'Carving & inlay', 'Your space']
 const MATERIALS = ['White', 'Green', 'Pink', 'Beige', 'Black']
 
