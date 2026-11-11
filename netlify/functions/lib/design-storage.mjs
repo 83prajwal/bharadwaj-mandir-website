@@ -99,9 +99,21 @@ function publicDesign(record) {
 const designKey = (id) => `design:${id}`
 const shareKey = (tokenHash) => `share:${tokenHash}`
 
-export function createDesignHandler({ store, now = () => new Date(), customerAccess = null }) {
+export function createDesignHandler({ store, now = () => new Date(), customerAccess = null, onDiagnostic = null }) {
   const json = (status, data) => new Response(JSON.stringify(data), { status, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', 'referrer-policy': 'no-referrer' } })
   const requests = new Map()
+  const writeDesignRecord = async (id, record) => {
+    try {
+      await store.set(designKey(id), JSON.stringify(record))
+    } catch (error) {
+      if (typeof onDiagnostic !== 'function') throw error
+      try { onDiagnostic({ stage: 'netlify_blobs_design_configuration_write', error }) } catch { /* Diagnostics must not affect storage behavior. */ }
+      throw Object.assign(new Error('Design storage is temporarily unavailable.'), {
+        ...(Number.isInteger(error?.status) ? { status: error.status } : {}),
+        internalFailure: true,
+      })
+    }
+  }
   const getDesign = async (id) => {
     if (typeof id !== 'string' || !/^[0-9a-f-]{36}$/.test(id)) return null
     return (await store.get(designKey(id), { type: 'json' })) || null
@@ -123,7 +135,7 @@ export function createDesignHandler({ store, now = () => new Date(), customerAcc
   const linkVerifiedLegacy = async (record, customer) => {
     const linked = { ...record, customerProfileId: customer.id }
     const metadata = await saveMetadata(linked, customer, { legacy_design_id: record.id, created_at: record.createdAt })
-    await store.set(designKey(record.id), JSON.stringify(linked))
+    await writeDesignRecord(record.id, linked)
     return { record: linked, metadata }
   }
   return async function handler(request, context = {}) {
@@ -220,7 +232,7 @@ export function createDesignHandler({ store, now = () => new Date(), customerAcc
         const issuedSecret = prior && !restoringBlob ? null : secret()
         if (issuedSecret) saved.ownerHash = hash(issuedSecret)
         if (customer && (customerAuthorizedForWrite || !id)) await saveMetadata(saved, customer, existingMetadata || (verifiedLegacyOwner ? { legacy_design_id: id, created_at: record.createdAt } : null))
-        await store.set(designKey(saved.id), JSON.stringify(saved))
+        await writeDesignRecord(saved.id, saved)
         return json(200, { design: { id: saved.id, name: saved.name, createdAt: saved.createdAt, updatedAt: saved.updatedAt, hasShare: Boolean(saved.shareHash), ...(customer && (customerAuthorizedForWrite || !id) ? { customerOwned: true } : {}), config: saved.config }, ...(issuedSecret ? { ownerSecret: issuedSecret } : {}) })
       }
       let record = await getDesign(id)
@@ -255,7 +267,7 @@ export function createDesignHandler({ store, now = () => new Date(), customerAcc
                 shareExpiresAt: duplicateMetadata.share_expires_at,
                 customerProfileId: customer.id,
               }
-              await store.set(designKey(requestedId), JSON.stringify(duplicateRecord))
+              await writeDesignRecord(requestedId, duplicateRecord)
             }
             return json(200, { design: { id: requestedId, name: duplicateRecord.name, createdAt: duplicateRecord.createdAt, updatedAt: duplicateRecord.updatedAt, hasShare: Boolean(duplicateRecord.shareHash), customerOwned: true, config: duplicateRecord.config }, ...(ownerToken ? { ownerSecret: ownerToken } : {}) })
           }
@@ -267,7 +279,7 @@ export function createDesignHandler({ store, now = () => new Date(), customerAcc
         const timestamp = now().toISOString(); const ownerToken = secret()
         const copy = { ...source, id: (customer && body.clientDesignId) || randomUUID(), name: `${source.name} copy`, createdAt: timestamp, updatedAt: timestamp, ownerHash: hash(ownerToken), shareHash: null, ...(customer ? { shareExpiresAt: null, customerProfileId: customer.id } : {}) }
         if (customer) await saveMetadata(copy, customer)
-        await store.set(designKey(copy.id), JSON.stringify(copy))
+        await writeDesignRecord(copy.id, copy)
         return json(200, { design: { id: copy.id, name: copy.name, createdAt: timestamp, updatedAt: timestamp, hasShare: false, ...(customer ? { customerOwned: true } : {}), config: copy.config }, ownerSecret: ownerToken })
       }
       if (operation === 'delete') {
@@ -281,7 +293,7 @@ export function createDesignHandler({ store, now = () => new Date(), customerAcc
         const token = secret(); const tokenHash = hash(token)
         const expiresAt = new Date(now().getTime() + 90 * 24 * 60 * 60 * 1000).toISOString()
         const updated = { ...source, shareHash: tokenHash, shareExpiresAt: expiresAt, updatedAt: now().toISOString() }
-        await store.set(designKey(id), JSON.stringify(updated))
+        await writeDesignRecord(id, updated)
         await store.set(shareKey(tokenHash), JSON.stringify({ designId: id, expiresAt }))
         if (owned) await saveMetadata(updated, customer, owned)
         return json(200, { token, expiresAt })
@@ -289,12 +301,13 @@ export function createDesignHandler({ store, now = () => new Date(), customerAcc
       if (operation === 'revoke') {
         if (source.shareHash) await store.delete(shareKey(source.shareHash))
         const updated = { ...source, shareHash: null, shareExpiresAt: null, updatedAt: now().toISOString() }
-        await store.set(designKey(id), JSON.stringify(updated))
+        await writeDesignRecord(id, updated)
         if (owned) await saveMetadata(updated, customer, owned)
         return json(200, { revoked: true })
       }
       return json(400, { error: 'Unknown design operation.' })
     } catch (error) {
+      if (error?.internalFailure) return json(Number.isInteger(error.status) ? error.status : 500, { error: 'Design storage is temporarily unavailable.' })
       return json(Number.isInteger(error?.status) ? error.status : 500, { error: Number.isInteger(error?.status) ? error.message : 'Design storage is temporarily unavailable.' })
     }
   }

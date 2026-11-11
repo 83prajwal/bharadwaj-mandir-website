@@ -10,6 +10,34 @@ const JSON_HEADERS = {
   'referrer-policy': 'no-referrer',
 }
 
+function safeProviderCode(value) {
+  if (typeof value !== 'string') return undefined
+  const knownCodes = new Set([
+    'invalid_token', 'invalid_grant', 'invalid_credentials', 'user_not_found', 'email_not_confirmed',
+    'ETIMEDOUT', 'ECONNABORTED', 'ECONNRESET', 'ECONNREFUSED', 'ENOTFOUND', 'EAI_AGAIN', 'UND_ERR_CONNECT_TIMEOUT',
+  ])
+  if (knownCodes.has(value) || /^[0-9A-Z]{5}$/.test(value) || /^PGRST\d{3}$/.test(value) || /^BLOBS_[A-Z0-9_]{1,32}$/.test(value)) return value
+  return undefined
+}
+
+async function getProviderCode(response) {
+  try { return safeProviderCode((await response.clone().json())?.code) } catch { return undefined }
+}
+
+function logDesignFailure(logger, { stage, category, status, providerCode } = {}) {
+  const details = { stage, category }
+  if (Number.isInteger(status) && status >= 100 && status <= 599) details.status = status
+  const safeCode = safeProviderCode(providerCode)
+  if (safeCode) details.providerCode = safeCode
+  try { logger.error?.('Vercel design operation failed.', details) } catch { /* Logging must not change request behavior. */ }
+}
+
+function classifyError(error) {
+  if (error?.name === 'TimeoutError' || error?.name === 'AbortError' || ['ETIMEDOUT', 'ECONNABORTED'].includes(error?.code)) return 'timeout'
+  if (error?.code && /^[A-Za-z][A-Za-z0-9_-]{0,39}$/.test(error.code)) return 'provider_error'
+  return 'network_error'
+}
+
 function writeJson(response, status, payload) {
   response.statusCode = status
   for (const [name, value] of Object.entries(JSON_HEADERS)) response.setHeader(name, value)
@@ -53,7 +81,7 @@ function getIdentityUrl(value) {
   return url.href.replace(/\/$/, '')
 }
 
-export function createVercelDesignHandler({ env = process.env, getStoreFn = getStore, store, customerRepository, fetchImpl = fetch, identityUrl } = {}) {
+export function createVercelDesignHandler({ env = process.env, getStoreFn = getStore, store, customerRepository, fetchImpl = fetch, identityUrl, logger = console } = {}) {
   let designStore = store
   if (!designStore) {
     const siteID = env.NETLIFY_BLOBS_SITE_ID?.trim()
@@ -65,14 +93,21 @@ export function createVercelDesignHandler({ env = process.env, getStoreFn = getS
   const hasSupabaseSetting = Boolean(env.SUPABASE_URL?.trim() || env.SUPABASE_SECRET_KEY?.trim())
   if (hasSupabaseSetting && (!env.SUPABASE_URL?.trim() || !env.SUPABASE_SECRET_KEY?.trim())) throw new Error('Supabase customer storage configuration is incomplete.')
   if (customerRepository || (env.SUPABASE_URL?.trim() && env.SUPABASE_SECRET_KEY?.trim())) {
-    const repository = customerRepository || createSupabaseCustomerRepository({ env, fetchImpl })
+    const repository = customerRepository || createSupabaseCustomerRepository({
+      env,
+      fetchImpl,
+      onError: (details) => logDesignFailure(logger, details),
+    })
     const identityEndpoint = getIdentityUrl(identityUrl || env.NETLIFY_IDENTITY_URL)
     customerAccess = {
       repository,
       async getCustomer(request) {
         const cookie = request.headers.get('cookie') || ''
         const cookieValue = cookie.split(';').map((part) => part.trim()).find((part) => part.startsWith('nf_jwt='))
-        if (!cookieValue) return null
+        if (!cookieValue) {
+          logDesignFailure(logger, { stage: 'netlify_identity_authentication', category: 'missing_session' })
+          return null
+        }
         let jwt = cookieValue.slice('nf_jwt='.length)
         try { jwt = decodeURIComponent(jwt) } catch { /* Netlify Identity may use a raw cookie token. */ }
         let response
@@ -82,10 +117,27 @@ export function createVercelDesignHandler({ env = process.env, getStoreFn = getS
             headers: { authorization: `Bearer ${jwt}` },
             signal: AbortSignal.timeout(5_000),
           })
-          if (!response.ok) return null
-          user = await response.json()
-        } catch { return null }
-        if (!user?.id || !user?.email) return null
+          if (!response.ok) {
+            logDesignFailure(logger, {
+              stage: 'netlify_identity_authentication',
+              category: 'identity_rejected',
+              status: response.status,
+              providerCode: await getProviderCode(response),
+            })
+            return null
+          }
+          try { user = await response.json() } catch {
+            logDesignFailure(logger, { stage: 'netlify_identity_authentication', category: 'invalid_identity_response', status: response.status })
+            return null
+          }
+        } catch (error) {
+          logDesignFailure(logger, { stage: 'netlify_identity_authentication', category: classifyError(error), providerCode: error?.code })
+          return null
+        }
+        if (!user?.id || !user?.email) {
+          logDesignFailure(logger, { stage: 'netlify_identity_authentication', category: 'invalid_identity_response', status: response.status })
+          return null
+        }
         const metadata = user.user_metadata || {}
         return repository.upsertProfile({
           identityId: user.id,
@@ -97,7 +149,16 @@ export function createVercelDesignHandler({ env = process.env, getStoreFn = getS
       },
     }
   }
-  return createDesignHandler({ store: designStore, customerAccess })
+  return createDesignHandler({
+    store: designStore,
+    customerAccess,
+    onDiagnostic: ({ stage, error }) => logDesignFailure(logger, {
+      stage,
+      category: classifyError(error),
+      status: error?.status ?? error?.statusCode,
+      providerCode: error?.code,
+    }),
+  })
 }
 
 let productionHandler
@@ -111,7 +172,7 @@ function getProductionHandler() {
   return productionHandler
 }
 
-export function createVercelDesignNodeHandler({ getHandler = getProductionHandler } = {}) {
+export function createVercelDesignNodeHandler({ getHandler = getProductionHandler, logger = console } = {}) {
   return async function designStorageVercelFunction(request, response) {
     let webRequest
     try {
@@ -127,6 +188,7 @@ export function createVercelDesignNodeHandler({ getHandler = getProductionHandle
       for (const [name, value] of webResponse.headers.entries()) response.setHeader(name, value)
       response.end(await webResponse.text())
     } catch {
+      logDesignFailure(logger, { stage: 'vercel_design_handler', category: 'internal_error' })
       writeJson(response, 503, { error: 'Design storage is temporarily unavailable.' })
     }
   }

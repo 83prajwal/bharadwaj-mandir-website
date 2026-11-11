@@ -124,6 +124,7 @@ test('Vercel adapter preserves request validation, method handling and safe erro
 
   const missingCredentials = createVercelDesignNodeHandler({
     getHandler: () => createVercelDesignHandler({ env: {}, getStoreFn: () => assert.fail('Store must not initialize without credentials') }),
+    logger: { error() {} },
   })
   response = makeNodeResponse()
   await missingCredentials(makeNodeRequest('load'), response)
@@ -164,7 +165,7 @@ function customerRepository() {
   }
 }
 
-function customerDesignHandler({ store, repository }) {
+function customerDesignHandler({ store, repository, logger = { error() {} } }) {
   const fetchImpl = async (_url, options) => {
     const token = options.headers.authorization.slice('Bearer '.length)
     const id = token === 'identity-a' ? 'netlify-user-a' : token === 'identity-b' ? 'netlify-user-b' : null
@@ -179,8 +180,23 @@ function customerDesignHandler({ store, repository }) {
     store,
     customerRepository: repository,
     fetchImpl,
+    logger,
   })
-  return createVercelDesignNodeHandler({ getHandler: () => handler })
+  return createVercelDesignNodeHandler({ getHandler: () => handler, logger })
+}
+
+function diagnosticDesignHandler({ store, fetchImpl, logger }) {
+  const handler = createVercelDesignHandler({
+    env: {
+      NETLIFY_BLOBS_SITE_ID: 'site-id', NETLIFY_BLOBS_TOKEN: 'blob-token',
+      NETLIFY_IDENTITY_URL: 'https://identity.test/.netlify/identity',
+      SUPABASE_URL: 'https://project.supabase.co', SUPABASE_SECRET_KEY: 'server-key',
+    },
+    store,
+    fetchImpl,
+    logger,
+  })
+  return createVercelDesignNodeHandler({ getHandler: () => handler, logger })
 }
 
 test('customer designs use verified Netlify Identity, persist metadata idempotently and list across devices', async () => {
@@ -222,6 +238,84 @@ test('customer designs use verified Netlify Identity, persist metadata idempoten
   }
   assert.equal(repository.designs.size, 1)
   assert.equal(JSON.parse(store.values.get(`design:${id}`)).name, 'Family mandir')
+})
+
+test('Identity authentication failures log only a safe stage, category, status and provider code', async () => {
+  const logs = []
+  const handler = diagnosticDesignHandler({
+    store: new MemoryStore(),
+    logger: { error: (...args) => logs.push(args) },
+    fetchImpl: async () => Response.json({ code: 'invalid_token', message: 'private customer@example.com' }, { status: 401 }),
+  })
+  const result = await call(handler, 'save', {
+    clientDesignId: '230ae006-5f61-4df2-99f3-026adca40d91',
+    name: 'Private design', config: structuredClone(defaults),
+  }, { headers: { cookie: 'nf_jwt=private-session-token' } })
+
+  assert.equal(result.response.statusCode, 401)
+  assert.deepEqual(logs, [[
+    'Vercel design operation failed.',
+    { stage: 'netlify_identity_authentication', category: 'identity_rejected', status: 401, providerCode: 'invalid_token' },
+  ]])
+  assert.doesNotMatch(JSON.stringify(logs), /private-session-token|customer@example\.com|Private design|requirements/)
+})
+
+test('Supabase customer-profile lookup failures return generic JSON and log no provider message', async () => {
+  const logs = []
+  const handler = diagnosticDesignHandler({
+    store: new MemoryStore(),
+    logger: { error: (...args) => logs.push(args) },
+    fetchImpl: async (url) => {
+      if (String(url).endsWith('/user')) return Response.json({ id: 'identity-1', email: 'private@example.com', user_metadata: {} })
+      return Response.json({ code: 'PGRST999', message: 'private@example.com and private request details' }, { status: 503 })
+    },
+  })
+  const result = await call(handler, 'save', {
+    clientDesignId: '330ae006-5f61-4df2-99f3-026adca40d91',
+    name: 'Private design', config: structuredClone(defaults),
+  }, { headers: { cookie: 'nf_jwt=private-session-token' } })
+
+  assert.equal(result.response.statusCode, 503)
+  assert.deepEqual(result.data, { error: 'Design storage is temporarily unavailable.' })
+  assert.deepEqual(logs, [[
+    'Vercel design operation failed.',
+    { stage: 'supabase_customer_profile_lookup', category: 'provider_http_error', status: 503, providerCode: 'PGRST999' },
+  ]])
+  assert.doesNotMatch(JSON.stringify(logs), /private-session-token|private@example\.com|private request details|Private design/)
+  assert.doesNotMatch(JSON.stringify(result.data), /PGRST999|private@example\.com|private request details/)
+})
+
+test('Supabase saved-design metadata insertion failures return generic JSON and log safe provider details', async () => {
+  const logs = []
+  const handler = diagnosticDesignHandler({
+    store: new MemoryStore(),
+    logger: { error: (...args) => logs.push(args) },
+    fetchImpl: async (url, options) => {
+      const endpoint = String(url)
+      if (endpoint.endsWith('/user')) return Response.json({ id: 'identity-1', email: 'private@example.com', user_metadata: {} })
+      if (endpoint.includes('/customer_profiles?') && options.method === 'GET') return Response.json([])
+      if (endpoint.includes('/customer_profiles?') && options.method === 'POST') return Response.json([{
+        id: 'customer-1', netlify_identity_id: 'identity-1', full_name: '', email: 'private@example.com', phone: '', contact_consent: false,
+      }], { status: 201 })
+      if (endpoint.includes('/saved_designs?') && options.method === 'GET') return Response.json([])
+      if (endpoint.includes('/saved_designs?') && options.method === 'POST') {
+        return Response.json({ code: '23514', message: 'private design payload and customer@example.com' }, { status: 400 })
+      }
+      assert.fail(`Unexpected provider request: ${endpoint}`)
+    },
+  })
+  const result = await call(handler, 'save', {
+    clientDesignId: '430ae006-5f61-4df2-99f3-026adca40d91',
+    name: 'Private design', config: structuredClone(defaults),
+  }, { headers: { cookie: 'nf_jwt=private-session-token' } })
+
+  assert.equal(result.response.statusCode, 400)
+  assert.deepEqual(result.data, { error: 'Design storage is temporarily unavailable.' })
+  assert.deepEqual(logs, [[
+    'Vercel design operation failed.',
+    { stage: 'supabase_saved_design_metadata_write', category: 'provider_http_error', status: 400, providerCode: '23514' },
+  ]])
+  assert.doesNotMatch(JSON.stringify(logs), /private-session-token|private@example\.com|customer@example\.com|private design payload|Private design/)
 })
 
 test('concurrent different customers cannot claim or overwrite the same design ID', async () => {
@@ -277,23 +371,35 @@ test('legacy owner-secret designs are not auto-linked to a signed-in customer', 
 test('a design save retry after a Blobs write failure recovers the claimed ID without creating a second design', async () => {
   const store = new MemoryStore()
   const repository = customerRepository()
+  const logs = []
   const originalSet = store.set.bind(store)
   let failOnce = true
   store.set = async (...args) => {
-    if (failOnce) { failOnce = false; throw new Error('temporary Blobs failure') }
+    if (failOnce) {
+      failOnce = false
+      throw Object.assign(new Error('private token and private@example.com'), { code: 'BLOBS_WRITE_DENIED', statusCode: 503 })
+    }
     return originalSet(...args)
   }
-  const handler = customerDesignHandler({ store, repository })
+  const handler = customerDesignHandler({ store, repository, logger: { error: (...args) => logs.push(args) } })
   const id = 'b25e5b38-c31b-4fca-9e0f-529af68e2cc4'
   const options = { headers: { cookie: 'nf_jwt=identity-a' } }
   let result = await call(handler, 'save', { clientDesignId: id, name: 'Retryable', config: structuredClone(defaults) }, options)
   assert.equal(result.response.statusCode, 500)
+  assert.deepEqual(result.data, { error: 'Design storage is temporarily unavailable.' })
   assert.equal(repository.designs.size, 1)
   assert.equal(store.values.has(`design:${id}`), false)
+  assert.deepEqual(repository.designs.get(id).design_configuration, defaults)
+  assert.deepEqual(logs, [[
+    'Vercel design operation failed.',
+    { stage: 'netlify_blobs_design_configuration_write', category: 'provider_error', status: 503, providerCode: 'BLOBS_WRITE_DENIED' },
+  ]])
+  assert.doesNotMatch(JSON.stringify(logs), /private token|private@example\.com|Retryable|requirements/)
   result = await call(handler, 'save', { clientDesignId: id, name: 'Retryable', config: structuredClone(defaults) }, options)
   assert.equal(result.response.statusCode, 200)
   assert.equal(repository.designs.size, 1)
   assert.equal(repository.designs.get(id).customer_id, 'customer-netlify-user-a')
+  assert.ok(store.values.has(`design:${id}`))
 })
 
 test('customer-owned designs preserve rename, duplicate, share, revoke and delete operations', async () => {

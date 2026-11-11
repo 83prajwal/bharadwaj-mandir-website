@@ -1,10 +1,30 @@
 const REQUIRED_ENV = ['SUPABASE_URL', 'SUPABASE_SECRET_KEY']
 
+function getRequestStage(table, method) {
+  if (table === 'customer_profiles') return method === 'GET' ? 'supabase_customer_profile_lookup' : 'supabase_customer_profile_write'
+  if (table === 'saved_designs') return method === 'GET' ? 'supabase_saved_design_metadata_lookup' : 'supabase_saved_design_metadata_write'
+  return 'supabase_request'
+}
+
+function safeProviderCode(value) {
+  if (typeof value !== 'string') return undefined
+  const knownCodes = new Set([
+    'invalid_token', 'invalid_grant', 'invalid_credentials', 'user_not_found', 'email_not_confirmed',
+    'ETIMEDOUT', 'ECONNABORTED', 'ECONNRESET', 'ECONNREFUSED', 'ENOTFOUND', 'EAI_AGAIN', 'UND_ERR_CONNECT_TIMEOUT',
+  ])
+  if (knownCodes.has(value) || /^[0-9A-Z]{5}$/.test(value) || /^PGRST\d{3}$/.test(value) || /^BLOBS_[A-Z0-9_]{1,32}$/.test(value)) return value
+  return undefined
+}
+
+function reportFailure(onError, fields) {
+  try { onError?.(fields) } catch { /* Diagnostics must not affect the request. */ }
+}
+
 export function getMissingSupabaseCustomerConfig(env = process.env) {
   return REQUIRED_ENV.filter((name) => !env[name]?.trim())
 }
 
-export function createSupabaseCustomerRepository({ env = process.env, fetchImpl = fetch } = {}) {
+export function createSupabaseCustomerRepository({ env = process.env, fetchImpl = fetch, onError } = {}) {
   const missing = getMissingSupabaseCustomerConfig(env)
   if (missing.length) throw new Error('Supabase customer storage configuration is incomplete.')
   const baseUrl = env.SUPABASE_URL.trim().replace(/\/$/, '')
@@ -15,19 +35,58 @@ export function createSupabaseCustomerRepository({ env = process.env, fetchImpl 
     throw new Error('Supabase customer storage configuration is invalid.')
   }
 
-  async function request(table, query, { method = 'GET', body, prefer } = {}) {
-    const response = await fetchImpl(`${baseUrl}/rest/v1/${table}?${query}`, {
-      method,
-      headers: {
-        apikey: secretKey,
-        'content-type': 'application/json',
-        ...(prefer ? { prefer } : {}),
-      },
-      ...(body === undefined ? {} : { body: JSON.stringify(body) }),
-      signal: AbortSignal.timeout(10_000),
-    })
-    if (!response.ok) throw Object.assign(new Error(`Supabase ${table} request failed (HTTP ${response.status}).`), { status: response.status })
-    return response.status === 204 ? [] : response.json()
+  async function request(table, query, { method = 'GET', body, prefer, expectedConflict = false } = {}) {
+    const stage = getRequestStage(table, method)
+    let response
+    try {
+      response = await fetchImpl(`${baseUrl}/rest/v1/${table}?${query}`, {
+        method,
+        headers: {
+          apikey: secretKey,
+          'content-type': 'application/json',
+          ...(prefer ? { prefer } : {}),
+        },
+        ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+        signal: AbortSignal.timeout(10_000),
+      })
+    } catch (error) {
+      const timeout = error?.name === 'TimeoutError' || error?.name === 'AbortError' || ['ETIMEDOUT', 'ECONNABORTED'].includes(error?.code)
+      reportFailure(onError, {
+        stage,
+        category: timeout ? 'timeout' : 'network_error',
+        providerCode: safeProviderCode(error?.code),
+      })
+      throw Object.assign(new Error(`Supabase ${table} request failed.`), { code: 'SUPABASE_REQUEST_FAILED', internalFailure: true })
+    }
+    if (!response.ok) {
+      let providerCode
+      try { providerCode = safeProviderCode((await response.clone().json())?.code) } catch { /* Provider error text is intentionally ignored. */ }
+      const status = response.status
+      // Insert conflicts are an expected control path when the caller handles
+      // them with a scoped read/update. Other conflicts are diagnostic failures.
+      if (status !== 409 || !expectedConflict) reportFailure(onError, {
+        stage,
+        category: 'provider_http_error',
+        status,
+        providerCode,
+      })
+      throw Object.assign(new Error(`Supabase ${table} request failed (HTTP ${status}).`), {
+        status,
+        providerCode,
+        code: 'SUPABASE_REQUEST_FAILED',
+        internalFailure: true,
+      })
+    }
+    if (response.status === 204) return []
+    try {
+      return await response.json()
+    } catch {
+      reportFailure(onError, { stage, category: 'invalid_provider_response', status: response.status })
+      throw Object.assign(new Error(`Supabase ${table} returned an unreadable response.`), {
+        code: 'SUPABASE_INVALID_RESPONSE',
+        internalFailure: true,
+      })
+    }
   }
 
   return {
@@ -45,7 +104,7 @@ export function createSupabaseCustomerRepository({ env = process.env, fetchImpl 
       }
       try {
         const rows = await request('customer_profiles', 'select=*', {
-          method: 'POST', prefer: 'return=representation', body: values,
+          method: 'POST', prefer: 'return=representation', body: values, expectedConflict: true,
         })
         if (!rows[0]?.id) throw new Error('Supabase customer profile was not returned.')
         return rows[0]
@@ -76,7 +135,7 @@ export function createSupabaseCustomerRepository({ env = process.env, fetchImpl 
       } else {
         try {
           rows = await request('customer_profiles', 'select=*', {
-            method: 'POST', prefer: 'return=representation', body: { netlify_identity_id: identityId, ...values },
+            method: 'POST', prefer: 'return=representation', body: { netlify_identity_id: identityId, ...values }, expectedConflict: true,
           })
         } catch (error) {
           // A concurrent request may have inserted this Identity user first.
@@ -99,12 +158,19 @@ export function createSupabaseCustomerRepository({ env = process.env, fetchImpl 
           method: 'POST',
           prefer: 'return=representation',
           body: row,
+          expectedConflict: true,
         })
         return rows[0] || null
       } catch (error) {
         if (error.status !== 409) throw error
         const existing = await this.findDesign(row.id, row.customer_id)
         if (!existing) {
+          reportFailure(onError, {
+            stage: 'supabase_saved_design_metadata_write',
+            category: 'ownership_conflict',
+            status: error.status,
+            providerCode: safeProviderCode(error.providerCode),
+          })
           throw Object.assign(new Error('Saved design is not available to this customer.'), { status: 409 })
         }
         const values = { ...row }
@@ -115,7 +181,10 @@ export function createSupabaseCustomerRepository({ env = process.env, fetchImpl 
           prefer: 'return=representation',
           body: values,
         })
-        if (!rows[0]) throw Object.assign(new Error('Saved design is not available to this customer.'), { status: 409 })
+        if (!rows[0]) {
+          reportFailure(onError, { stage: 'supabase_saved_design_metadata_write', category: 'ownership_conflict', status: 409 })
+          throw Object.assign(new Error('Saved design is not available to this customer.'), { status: 409 })
+        }
         return rows[0]
       }
     },

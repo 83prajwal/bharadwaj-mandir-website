@@ -92,3 +92,15 @@ test('server rejects malformed, invalid, oversized and cross-origin design write
   assert.equal((await call(handler, 'save', { name: 'Invalid', config: defaults }, { size: true })).response.status, 413)
   assert.equal((await call(handler, 'save', { name: 'Invalid', config: defaults }, { origin: 'https://attacker.test' })).response.status, 403)
 })
+
+test('Netlify design handler keeps its original storage error response when Vercel diagnostics are not configured', async () => {
+  const store = {
+    async get() { return null },
+    async set() { throw Object.assign(new Error('legacy storage response'), { status: 507 }) },
+    async delete() {},
+  }
+  const handler = createDesignHandler({ store })
+  const result = await call(handler, 'save', { name: 'Legacy', config: structuredClone(defaults) })
+  assert.equal(result.response.status, 507)
+  assert.deepEqual(result.data, { error: 'legacy storage response' })
+})
