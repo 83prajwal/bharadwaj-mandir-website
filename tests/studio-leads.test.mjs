@@ -149,11 +149,13 @@ test('Vercel configuration diagnostics report missing variable names without val
   assert.deepEqual(getMissingStudioLeadConfiguration({
     NETLIFY_BLOBS_SITE_ID: 'site-id',
     NETLIFY_BLOBS_TOKEN: 'secret-token',
-  }), ['NETLIFY_IDENTITY_URL'])
+  }), ['NETLIFY_IDENTITY_URL', 'SUPABASE_URL', 'SUPABASE_SECRET_KEY'])
   assert.deepEqual(getMissingStudioLeadConfiguration({
     NETLIFY_BLOBS_SITE_ID: 'site-id',
     NETLIFY_BLOBS_TOKEN: 'secret-token',
     NETLIFY_IDENTITY_URL: 'https://identity.example/.netlify/identity',
+    SUPABASE_URL: 'https://project.supabase.co',
+    SUPABASE_SECRET_KEY: 'server-secret',
   }), [])
 })
 
@@ -275,6 +277,209 @@ test('Vercel Identity signup adapter forwards the existing Identity payload and 
     email: 'asha@example.com',
     password: 'long-enough',
     data: { full_name: 'Asha Rao', phone: '+919876543210', contact_consent: true },
+  })
+})
+
+test('Vercel sign-up upserts a Supabase profile using the returned verified Identity ID', async () => {
+  const profiles = []
+  const identityCalls = []
+  const leadHandler = createVercelStudioLeadHandler({
+    store: memoryStore(),
+    appendRow: async () => {},
+    customerRepository: { upsertProfile: async (profile) => { profiles.push(profile); return { id: 'customer-id' } } },
+    identityUrl: 'https://identity.test/.netlify/identity',
+    fetchImpl: async (url, options) => {
+      identityCalls.push({ url: String(url), options })
+      return Response.json({ id: 'verified-netlify-user', confirmed_at: null })
+    },
+  })
+  const nodeHandler = createVercelStudioLeadNodeHandler({ getHandler: () => leadHandler, logger: { error() {} } })
+  const { response } = await invokeVercelNode(nodeHandler, vercelRequest(signup()))
+  assert.equal(response.status, 200)
+  assert.equal(identityCalls[0].url, 'https://identity.test/.netlify/identity/signup')
+  assert.deepEqual(profiles, [{
+    identityId: 'verified-netlify-user', fullName: 'Asha Rao', email: 'asha@example.com',
+    phone: '+919876543210', contactConsent: true,
+  }])
+})
+
+test('Identity signup success with a failed Supabase profile write returns a safe retryable error', async () => {
+  const calls = []
+  const leadHandler = createVercelStudioLeadHandler({
+    store: memoryStore(),
+    appendRow: async () => assert.fail('Lead row must not be written before the profile'),
+    customerRepository: { upsertProfile: async () => { throw new Error('Supabase unavailable') } },
+    identityUrl: 'https://identity.test/.netlify/identity',
+    fetchImpl: async (url) => {
+      calls.push(String(url))
+      return Response.json({ id: 'verified-user-1', confirmed_at: null })
+    },
+  })
+  const nodeHandler = createVercelStudioLeadNodeHandler({ getHandler: () => leadHandler, logger: { error() {} } })
+  const { response } = await invokeVercelNode(nodeHandler, vercelRequest(signup()))
+  assert.equal(response.status, 502)
+  assert.deepEqual(await response.json(), { error: 'We could not create your account right now.' })
+  assert.deepEqual(calls, ['https://identity.test/.netlify/identity/signup'])
+})
+
+test('retry authenticates the existing Identity account and creates its missing profile from verified metadata', async () => {
+  let signupCount = 0
+  const profileRows = new Map()
+  const profileAttempts = []
+  const leadRows = []
+  const identityCalls = []
+  const repository = {
+    async upsertProfile(profile) {
+      profileAttempts.push(profile)
+      throw new Error('Supabase unavailable during first request')
+    },
+    async findProfile(identityId) { return profileRows.get(identityId) || null },
+    async createProfileIfMissing(profile) {
+      profileAttempts.push(profile)
+      if (!profileRows.has(profile.identityId)) profileRows.set(profile.identityId, { id: 'customer-1', ...profile })
+      return profileRows.get(profile.identityId)
+    },
+  }
+  const leadHandler = createVercelStudioLeadHandler({
+    store: memoryStore(),
+    appendRow: async (row) => leadRows.push(row),
+    customerRepository: repository,
+    identityUrl: 'https://identity.test/.netlify/identity',
+    fetchImpl: async (url, options) => {
+      const endpoint = String(url)
+      identityCalls.push({ endpoint, options })
+      if (endpoint.endsWith('/signup')) {
+        signupCount += 1
+        if (signupCount === 1) return Response.json({ id: 'verified-user-1', confirmed_at: '2026-11-10T10:00:00Z' })
+        return Response.json({ msg: 'A user with this email address has already been registered' }, { status: 422 })
+      }
+      if (endpoint.endsWith('/token?grant_type=password')) return Response.json({ access_token: 'short-lived-test-token' })
+      if (endpoint.endsWith('/user')) {
+        assert.equal(options.headers.authorization, 'Bearer short-lived-test-token')
+        return Response.json({
+          id: 'verified-user-1', email: 'asha@example.com', name: 'Verified Name',
+          confirmed_at: '2026-11-10T10:00:00Z',
+          user_metadata: { full_name: 'Identity Name', phone: '+919999999999', contact_consent: true },
+        })
+      }
+      assert.fail(`Unexpected Identity endpoint: ${endpoint}`)
+    },
+  })
+  const nodeHandler = createVercelStudioLeadNodeHandler({ getHandler: () => leadHandler, logger: { error() {} } })
+
+  const first = await invokeVercelNode(nodeHandler, vercelRequest(signup()))
+  assert.equal(first.response.status, 502)
+  assert.equal(profileRows.size, 0)
+
+  const retry = await invokeVercelNode(nodeHandler, vercelRequest(signup()))
+  assert.equal(retry.response.status, 200)
+  assert.deepEqual(await retry.response.json(), { ok: true, saved: true, confirmationRequired: false })
+  assert.equal(signupCount, 2)
+  assert.deepEqual(identityCalls.map(({ endpoint }) => endpoint), [
+    'https://identity.test/.netlify/identity/signup',
+    'https://identity.test/.netlify/identity/signup',
+    'https://identity.test/.netlify/identity/token?grant_type=password',
+    'https://identity.test/.netlify/identity/user',
+  ])
+  assert.deepEqual(profileRows.get('verified-user-1'), {
+    id: 'customer-1', identityId: 'verified-user-1', fullName: 'Identity Name', email: 'asha@example.com',
+    phone: '+919999999999', contactConsent: true,
+  })
+  assert.equal(leadRows.length, 1)
+})
+
+test('invalid credentials on an existing Identity account preserve the duplicate response without touching profiles', async () => {
+  const original = {
+    id: 'customer-1', identityId: 'verified-user-1', fullName: 'Existing Customer',
+    email: 'asha@example.com', phone: '+919876543210', contactConsent: true,
+  }
+  const calls = []
+  let profileReads = 0
+  let profileCreates = 0
+  let profileUpserts = 0
+  let leadRows = 0
+  const repository = {
+    async findProfile() { profileReads += 1; return original },
+    async createProfileIfMissing() { profileCreates += 1; return original },
+    async upsertProfile() { profileUpserts += 1; return original },
+  }
+  const leadHandler = createVercelStudioLeadHandler({
+    store: memoryStore(),
+    appendRow: async () => { leadRows += 1 },
+    customerRepository: repository,
+    identityUrl: 'https://identity.test/.netlify/identity',
+    fetchImpl: async (url, options) => {
+      const endpoint = String(url)
+      calls.push({ endpoint, options })
+      if (endpoint.endsWith('/signup')) {
+        return Response.json({ msg: 'A user with this email address has already been registered' }, { status: 422 })
+      }
+      if (endpoint.endsWith('/token?grant_type=password')) {
+        return Response.json({ msg: 'Invalid login credentials' }, { status: 400 })
+      }
+      assert.fail(`Invalid credentials must not trigger an Identity user lookup: ${endpoint}`)
+    },
+  })
+  const nodeHandler = createVercelStudioLeadNodeHandler({ getHandler: () => leadHandler, logger: { error() {} } })
+  const { response } = await invokeVercelNode(nodeHandler, vercelRequest(signup()))
+
+  assert.equal(response.status, 409)
+  const payload = await response.json()
+  assert.deepEqual(payload, { error: 'An account with this email already exists. Please log in.' })
+  assert.doesNotMatch(JSON.stringify(payload), /Existing Customer|asha@example\.com|9876543210|verified-user-1/i)
+  assert.deepEqual(calls.map(({ endpoint }) => endpoint), [
+    'https://identity.test/.netlify/identity/signup',
+    'https://identity.test/.netlify/identity/token?grant_type=password',
+  ])
+  assert.equal(profileReads, 0)
+  assert.equal(profileCreates, 0)
+  assert.equal(profileUpserts, 0)
+  assert.equal(leadRows, 0)
+  assert.deepEqual(original, {
+    id: 'customer-1', identityId: 'verified-user-1', fullName: 'Existing Customer',
+    email: 'asha@example.com', phone: '+919876543210', contactConsent: true,
+  })
+})
+
+test('existing profile is left unchanged when an authenticated duplicate signup is retried', async () => {
+  const original = { id: 'customer-1', identityId: 'verified-user-1', fullName: 'Saved Name', email: 'asha@example.com', phone: '+919876543210', contactConsent: false }
+  let upsertCalls = 0
+  let recoveryCreateCalls = 0
+  const repository = {
+    async upsertProfile() { upsertCalls += 1; return original },
+    async findProfile() { return original },
+    async createProfileIfMissing() { recoveryCreateCalls += 1; return original },
+  }
+  let signupCount = 0
+  const leadHandler = createVercelStudioLeadHandler({
+    store: memoryStore(),
+    appendRow: async () => {},
+    customerRepository: repository,
+    identityUrl: 'https://identity.test/.netlify/identity',
+    fetchImpl: async (url) => {
+      if (String(url).endsWith('/signup')) {
+        signupCount += 1
+        return signupCount === 1
+          ? Response.json({ id: 'verified-user-1', confirmed_at: '2026-11-10T10:00:00Z' })
+          : Response.json({ msg: 'A user with this email address has already been registered' }, { status: 422 })
+      }
+      if (String(url).endsWith('/token?grant_type=password')) return Response.json({ access_token: 'short-lived-test-token' })
+      if (String(url).endsWith('/user')) return Response.json({
+        id: 'verified-user-1', email: 'asha@example.com', confirmed_at: '2026-11-10T10:00:00Z',
+        user_metadata: { full_name: 'Different submitted name', phone: '+910000000000', contact_consent: true },
+      })
+      assert.fail(`Unexpected Identity endpoint: ${url}`)
+    },
+  })
+  const nodeHandler = createVercelStudioLeadNodeHandler({ getHandler: () => leadHandler, logger: { error() {} } })
+  await invokeVercelNode(nodeHandler, vercelRequest(signup()))
+  const retry = await invokeVercelNode(nodeHandler, vercelRequest(signup({ fullName: 'Changed Name', phone: '99999 99999' })))
+  assert.equal(retry.response.status, 200)
+  assert.equal(upsertCalls, 1)
+  assert.equal(recoveryCreateCalls, 1)
+  assert.deepEqual(original, {
+    id: 'customer-1', identityId: 'verified-user-1', fullName: 'Saved Name', email: 'asha@example.com',
+    phone: '+919876543210', contactConsent: false,
   })
 })
 

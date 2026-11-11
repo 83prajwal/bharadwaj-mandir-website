@@ -99,7 +99,7 @@ function publicDesign(record) {
 const designKey = (id) => `design:${id}`
 const shareKey = (tokenHash) => `share:${tokenHash}`
 
-export function createDesignHandler({ store, now = () => new Date() }) {
+export function createDesignHandler({ store, now = () => new Date(), customerAccess = null }) {
   const json = (status, data) => new Response(JSON.stringify(data), { status, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', 'referrer-policy': 'no-referrer' } })
   const requests = new Map()
   const getDesign = async (id) => {
@@ -107,6 +107,25 @@ export function createDesignHandler({ store, now = () => new Date() }) {
     return (await store.get(designKey(id), { type: 'json' })) || null
   }
   const authorize = (record, ownerSecret) => record && isSecretMatch(ownerSecret, record.ownerHash)
+  const metadataFor = (id, customer) => customer && id ? customerAccess.repository.findDesign(id, customer.id) : null
+  const saveMetadata = (record, customer, previous = null) => customerAccess.repository.saveDesign({
+    id: record.id,
+    customer_id: customer.id,
+    legacy_design_id: previous?.legacy_design_id || null,
+    design_name: record.name,
+    design_configuration: record.config,
+    storage_reference: `netlify-blobs://${customerAccess.storeName || 'bharadwaj-mandir-designs'}/design:${record.id}`,
+    share_token_hash: record.shareHash || null,
+    share_expires_at: record.shareExpiresAt || null,
+    created_at: previous?.created_at || record.createdAt,
+    updated_at: record.updatedAt,
+  })
+  const linkVerifiedLegacy = async (record, customer) => {
+    const linked = { ...record, customerProfileId: customer.id }
+    const metadata = await saveMetadata(linked, customer, { legacy_design_id: record.id, created_at: record.createdAt })
+    await store.set(designKey(record.id), JSON.stringify(linked))
+    return { record: linked, metadata }
+  }
   return async function handler(request, context = {}) {
     if (!['GET', 'POST'].includes(request.method)) return json(405, { error: 'Use GET or POST.' })
     const origin = request.headers.get('origin')
@@ -139,6 +158,17 @@ export function createDesignHandler({ store, now = () => new Date() }) {
       if (requests.size > 1000) for (const [key, value] of requests) if (value.window < window - 1) requests.delete(key)
       const query = new URL(request.url).searchParams
       const operation = request.method === 'POST' ? body.operation : query.get('operation')
+      const customer = customerAccess && operation !== 'read-share' ? await customerAccess.getCustomer(request) : null
+      if (customerAccess && operation === 'save' && !customer && !body.ownerSecret && !body.id) return json(401, { error: 'Please log in to save designs to your account.' })
+      if (operation === 'list') {
+        if (!customer) return json(401, { error: 'Please log in to view your saved designs.' })
+        const rows = await customerAccess.repository.listDesigns(customer.id)
+        const designs = rows.map((row) => ({
+          id: row.id, name: row.design_name, createdAt: row.created_at, updatedAt: row.updated_at,
+          hasShare: Boolean(row.share_token_hash), customerOwned: true, config: row.design_configuration,
+        }))
+        return json(200, { designs })
+      }
       if (operation === 'read-share') {
         const token = request.method === 'POST' ? body.token : query.get('token')
         if (typeof token !== 'string' || !/^[A-Za-z0-9_-]{43}$/.test(token)) return json(404, { error: 'This share link is invalid or has been revoked.' })
@@ -150,49 +180,117 @@ export function createDesignHandler({ store, now = () => new Date() }) {
       const id = request.method === 'POST' ? body.id : query.get('id')
       const ownerSecret = request.method === 'POST' ? body.ownerSecret : query.get('ownerSecret')
       if (request.method === 'POST' && operation === 'load') {
-        const record = await getDesign(id)
-        if (!authorize(record, ownerSecret)) return json(404, { error: 'Saved design not found.' })
-        return json(200, { design: { id, name: record.name, createdAt: record.createdAt, updatedAt: record.updatedAt, hasShare: Boolean(record.shareHash), config: record.config } })
+        let record = await getDesign(id)
+        let owned = await metadataFor(id, customer)
+        if (record && customer && !owned && authorize(record, ownerSecret)) {
+          const linked = await linkVerifiedLegacy(record, customer)
+          record = linked.record
+          owned = linked.metadata
+        } else if (record && customer && !owned && record.customerProfileId === customer.id) {
+          owned = await saveMetadata(record, customer, { legacy_design_id: record.id, created_at: record.createdAt })
+        }
+        if (!authorize(record, ownerSecret) && !owned) return json(404, { error: 'Saved design not found.' })
+        const source = record || (owned && { id, name: owned.design_name, createdAt: owned.created_at, updatedAt: owned.updated_at, config: owned.design_configuration, shareHash: owned.share_token_hash })
+        return json(200, { design: { id, name: source.name, createdAt: source.createdAt, updatedAt: source.updatedAt, hasShare: Boolean(source.shareHash), customerOwned: Boolean(owned), config: source.config } })
       }
       if (request.method === 'GET') return json(405, { error: 'Use POST for design operations.' })
       if (operation === 'save' || operation === 'rename') {
+        const targetId = id || (customer ? body.clientDesignId : null)
+        if (!id && body.clientDesignId && !/^[0-9a-f-]{36}$/i.test(body.clientDesignId)) return json(400, { error: 'The design request could not be read.' })
         const isUpdate = Boolean(id)
-        const record = isUpdate && await getDesign(id)
-        if (isUpdate && !authorize(record, ownerSecret)) return json(404, { error: 'Saved design not found.' })
+        const record = targetId && await getDesign(targetId)
+        const existingMetadata = targetId ? await metadataFor(targetId, customer) : null
+        if (targetId && customer && !existingMetadata && customerAccess && operation === 'save' && !id && record && record.customerProfileId !== customer.id) return json(404, { error: 'Saved design not found.' })
+        if (targetId && customer && !existingMetadata && !id && customerAccess?.repository.findDesignById) {
+          const otherOwner = await customerAccess.repository.findDesignById(targetId)
+          if (otherOwner && otherOwner.customer_id !== customer.id) return json(404, { error: 'Saved design not found.' })
+        }
+        const customerAuthorized = Boolean(existingMetadata || (record?.customerProfileId && record.customerProfileId === customer?.id))
+        const verifiedLegacyOwner = Boolean(customer && record && authorize(record, ownerSecret))
+        if (isUpdate && !authorize(record, ownerSecret) && !customerAuthorized) return json(404, { error: 'Saved design not found.' })
         const name = typeof body.name === 'string' ? body.name.trim() : ''
         if (!name || name.length > 80) return json(400, { error: 'Design name must be 1 to 80 characters.' })
-        const config = operation === 'rename' ? record.config : validateStoredDesign(body.config)
+        const prior = record || (existingMetadata && { id, name: existingMetadata.design_name, createdAt: existingMetadata.created_at, updatedAt: existingMetadata.updated_at, config: existingMetadata.design_configuration, ownerHash: null, shareHash: existingMetadata.share_token_hash, shareExpiresAt: existingMetadata.share_expires_at })
+        const config = operation === 'rename' ? prior.config : validateStoredDesign(body.config)
         const timestamp = now().toISOString()
-        const saved = { id: id || randomUUID(), name, config, createdAt: record?.createdAt || timestamp, updatedAt: timestamp, ownerHash: record?.ownerHash || hash(secret()), shareHash: record?.shareHash || null }
-        const issuedSecret = record ? null : secret()
+        const customerAuthorizedForWrite = customerAuthorized || verifiedLegacyOwner
+        const customerId = customer && (!id || customerAuthorizedForWrite) ? (targetId || randomUUID()) : null
+        const saved = { id: customerId || id || randomUUID(), name, config, createdAt: prior?.createdAt || timestamp, updatedAt: timestamp, ownerHash: prior?.ownerHash || hash(secret()), shareHash: prior?.shareHash || null, ...(prior?.shareExpiresAt !== undefined ? { shareExpiresAt: prior.shareExpiresAt } : {}), ...(customer && (!id || customerAuthorizedForWrite) ? { customerProfileId: customer.id } : (prior?.customerProfileId ? { customerProfileId: prior.customerProfileId } : {})) }
+        const restoringBlob = Boolean(customerAuthorized && !record && existingMetadata)
+        const issuedSecret = prior && !restoringBlob ? null : secret()
         if (issuedSecret) saved.ownerHash = hash(issuedSecret)
+        if (customer && (customerAuthorizedForWrite || !id)) await saveMetadata(saved, customer, existingMetadata || (verifiedLegacyOwner ? { legacy_design_id: id, created_at: record.createdAt } : null))
         await store.set(designKey(saved.id), JSON.stringify(saved))
-        return json(200, { design: { id: saved.id, name: saved.name, createdAt: saved.createdAt, updatedAt: saved.updatedAt, hasShare: Boolean(saved.shareHash), config: saved.config }, ...(issuedSecret ? { ownerSecret: issuedSecret } : {}) })
+        return json(200, { design: { id: saved.id, name: saved.name, createdAt: saved.createdAt, updatedAt: saved.updatedAt, hasShare: Boolean(saved.shareHash), ...(customer && (customerAuthorizedForWrite || !id) ? { customerOwned: true } : {}), config: saved.config }, ...(issuedSecret ? { ownerSecret: issuedSecret } : {}) })
       }
-      const record = await getDesign(id)
-      if (!authorize(record, ownerSecret)) return json(404, { error: 'Saved design not found.' })
+      let record = await getDesign(id)
+      let owned = await metadataFor(id, customer)
+      if (record && customer && !owned && ['duplicate', 'delete', 'share', 'revoke'].includes(operation) && authorize(record, ownerSecret)) {
+        const linked = await linkVerifiedLegacy(record, customer)
+        record = linked.record
+        owned = linked.metadata
+      } else if (record && customer && !owned && record.customerProfileId === customer.id) {
+        owned = await saveMetadata(record, customer, { legacy_design_id: record.id, created_at: record.createdAt })
+      }
+      if (!authorize(record, ownerSecret) && !owned) return json(404, { error: 'Saved design not found.' })
+      const source = record || (owned && { id, name: owned.design_name, createdAt: owned.created_at, updatedAt: owned.updated_at, config: owned.design_configuration, ownerHash: null, shareHash: owned.share_token_hash, shareExpiresAt: owned.share_expires_at })
       if (operation === 'duplicate') {
+        const requestedId = body.clientDesignId
+        if (customer && requestedId && !/^[0-9a-f-]{36}$/i.test(requestedId)) return json(400, { error: 'The design request could not be read.' })
+        if (customer && requestedId) {
+          const duplicateMetadata = await customerAccess.repository.findDesign(requestedId, customer.id)
+          if (duplicateMetadata) {
+            let duplicateRecord = await getDesign(requestedId)
+            let ownerToken
+            if (!duplicateRecord) {
+              ownerToken = secret()
+              duplicateRecord = {
+                id: requestedId,
+                name: duplicateMetadata.design_name,
+                config: duplicateMetadata.design_configuration,
+                createdAt: duplicateMetadata.created_at,
+                updatedAt: duplicateMetadata.updated_at,
+                ownerHash: hash(ownerToken),
+                shareHash: duplicateMetadata.share_token_hash,
+                shareExpiresAt: duplicateMetadata.share_expires_at,
+                customerProfileId: customer.id,
+              }
+              await store.set(designKey(requestedId), JSON.stringify(duplicateRecord))
+            }
+            return json(200, { design: { id: requestedId, name: duplicateRecord.name, createdAt: duplicateRecord.createdAt, updatedAt: duplicateRecord.updatedAt, hasShare: Boolean(duplicateRecord.shareHash), customerOwned: true, config: duplicateRecord.config }, ...(ownerToken ? { ownerSecret: ownerToken } : {}) })
+          }
+          const duplicateRecord = await getDesign(requestedId)
+          if (duplicateRecord && duplicateRecord.customerProfileId !== customer.id) return json(404, { error: 'Saved design not found.' })
+          const otherOwner = customerAccess.repository.findDesignById && await customerAccess.repository.findDesignById(requestedId)
+          if (otherOwner && otherOwner.customer_id !== customer.id) return json(404, { error: 'Saved design not found.' })
+        }
         const timestamp = now().toISOString(); const ownerToken = secret()
-        const copy = { ...record, id: randomUUID(), name: `${record.name} copy`, createdAt: timestamp, updatedAt: timestamp, ownerHash: hash(ownerToken), shareHash: null }
+        const copy = { ...source, id: (customer && body.clientDesignId) || randomUUID(), name: `${source.name} copy`, createdAt: timestamp, updatedAt: timestamp, ownerHash: hash(ownerToken), shareHash: null, ...(customer ? { shareExpiresAt: null, customerProfileId: customer.id } : {}) }
+        if (customer) await saveMetadata(copy, customer)
         await store.set(designKey(copy.id), JSON.stringify(copy))
-        return json(200, { design: { id: copy.id, name: copy.name, createdAt: timestamp, updatedAt: timestamp, hasShare: false, config: copy.config }, ownerSecret: ownerToken })
+        return json(200, { design: { id: copy.id, name: copy.name, createdAt: timestamp, updatedAt: timestamp, hasShare: false, ...(customer ? { customerOwned: true } : {}), config: copy.config }, ownerSecret: ownerToken })
       }
       if (operation === 'delete') {
-        if (record.shareHash) await store.delete(shareKey(record.shareHash))
+        if (source.shareHash) await store.delete(shareKey(source.shareHash))
         await store.delete(designKey(id))
+        if (owned) await customerAccess.repository.deleteDesign(id, customer.id)
         return json(200, { deleted: true })
       }
       if (operation === 'share') {
-        if (record.shareHash) await store.delete(shareKey(record.shareHash))
+        if (source.shareHash) await store.delete(shareKey(source.shareHash))
         const token = secret(); const tokenHash = hash(token)
         const expiresAt = new Date(now().getTime() + 90 * 24 * 60 * 60 * 1000).toISOString()
-        await store.set(designKey(id), JSON.stringify({ ...record, shareHash: tokenHash, shareExpiresAt: expiresAt, updatedAt: now().toISOString() }))
+        const updated = { ...source, shareHash: tokenHash, shareExpiresAt: expiresAt, updatedAt: now().toISOString() }
+        await store.set(designKey(id), JSON.stringify(updated))
         await store.set(shareKey(tokenHash), JSON.stringify({ designId: id, expiresAt }))
+        if (owned) await saveMetadata(updated, customer, owned)
         return json(200, { token, expiresAt })
       }
       if (operation === 'revoke') {
-        if (record.shareHash) await store.delete(shareKey(record.shareHash))
-        await store.set(designKey(id), JSON.stringify({ ...record, shareHash: null, shareExpiresAt: null, updatedAt: now().toISOString() }))
+        if (source.shareHash) await store.delete(shareKey(source.shareHash))
+        const updated = { ...source, shareHash: null, shareExpiresAt: null, updatedAt: now().toISOString() }
+        await store.set(designKey(id), JSON.stringify(updated))
+        if (owned) await saveMetadata(updated, customer, owned)
         return json(200, { revoked: true })
       }
       return json(400, { error: 'Unknown design operation.' })

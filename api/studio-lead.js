@@ -2,10 +2,11 @@ import { AsyncLocalStorage } from 'node:async_hooks'
 import { Readable } from 'node:stream'
 import { getStore } from '@netlify/blobs'
 import { createStudioLeadHandler } from '../netlify/functions/lib/studio-leads.mjs'
+import { createSupabaseCustomerRepository } from './lib/supabase-customers.js'
 
 const REQUEST_TIMEOUT_MS = 5_000
 const identityRequestContext = new AsyncLocalStorage()
-const REQUIRED_STUDIO_LEAD_CONFIG = ['NETLIFY_BLOBS_SITE_ID', 'NETLIFY_BLOBS_TOKEN', 'NETLIFY_IDENTITY_URL']
+const REQUIRED_STUDIO_LEAD_CONFIG = ['NETLIFY_BLOBS_SITE_ID', 'NETLIFY_BLOBS_TOKEN', 'NETLIFY_IDENTITY_URL', 'SUPABASE_URL', 'SUPABASE_SECRET_KEY']
 
 function writeJson(response, status, payload) {
   response.statusCode = status
@@ -71,7 +72,37 @@ async function createNetlifyIdentityAccount(email, password, data, options) {
   try { payload = await response.json() } catch { throw new Error('Identity returned an unreadable response.') }
   if (!response.ok) throw identityError(payload, response.status)
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) throw new Error('Identity returned an unreadable response.')
-  return { confirmedAt: payload?.confirmed_at || null }
+  return { id: payload?.id, confirmedAt: payload?.confirmed_at || null }
+}
+
+function isDuplicateIdentitySignup(error) {
+  return (error?.status === 400 || error?.status === 422) && /already|registered|exists/i.test(error?.message || '')
+}
+
+async function authenticateExistingIdentityAccount(email, password, options) {
+  const tokenResponse = await identityFetch('/token?grant_type=password', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  }, options)
+  let tokenPayload
+  try { tokenPayload = await tokenResponse.json() } catch { throw new Error('Identity returned an unreadable response.') }
+  if (!tokenResponse.ok || typeof tokenPayload?.access_token !== 'string' || !tokenPayload.access_token) return null
+
+  const userResponse = await identityFetch('/user', {
+    headers: { authorization: `Bearer ${tokenPayload.access_token}` },
+  }, options)
+  let user
+  try { user = await userResponse.json() } catch { throw new Error('Identity returned an unreadable response.') }
+  if (!userResponse.ok || typeof user?.id !== 'string' || typeof user?.email !== 'string') return null
+  if (user.email.trim().toLowerCase() !== email.trim().toLowerCase()) return null
+  return {
+    id: user.id,
+    email: user.email,
+    confirmedAt: user.confirmed_at || null,
+    metadata: user.user_metadata && typeof user.user_metadata === 'object' ? user.user_metadata : {},
+    name: typeof user.name === 'string' ? user.name : '',
+  }
 }
 
 function getIdentityJwt(request) {
@@ -114,15 +145,52 @@ export function createVercelStudioLeadHandler({
   logger = console,
   env = process.env,
   getStoreFn = getStore,
+  customerRepository,
 } = {}) {
   const identityOptions = { fetchImpl, ...(identityUrl ? { identityUrl: getIdentityUrl(identityUrl) } : {}) }
+  const profileRepository = customerRepository || (env.SUPABASE_URL?.trim() && env.SUPABASE_SECRET_KEY?.trim()
+    ? createSupabaseCustomerRepository({ env, fetchImpl })
+    : null)
   const storeOrThrow = store || getStoreFn('bharadwaj-mandir-studio-leads', {
     siteID: env.NETLIFY_BLOBS_SITE_ID?.trim(),
     token: env.NETLIFY_BLOBS_TOKEN?.trim(),
   })
   const handler = createStudioLeadHandler({
     store: storeOrThrow,
-    createAccount: createAccount || ((...args) => createNetlifyIdentityAccount(...args, identityOptions)),
+    createAccount: createAccount || (async (email, password, data) => {
+      let account
+      let recovered = false
+      try {
+        account = await createNetlifyIdentityAccount(email, password, data, identityOptions)
+      } catch (error) {
+        if (!profileRepository || !isDuplicateIdentitySignup(error)) throw error
+        account = await authenticateExistingIdentityAccount(email, password, identityOptions)
+        if (!account) throw error
+        recovered = true
+      }
+
+      if (!account.id || !profileRepository) throw new Error('Studio profile storage is unavailable.')
+      if (recovered) {
+        if (typeof profileRepository.createProfileIfMissing !== 'function') throw new Error('Studio profile storage is unavailable.')
+        const metadata = account.metadata || {}
+        await profileRepository.createProfileIfMissing({
+          identityId: account.id,
+          fullName: metadata.full_name || account.name || '',
+          email: account.email,
+          phone: metadata.phone || '',
+          contactConsent: metadata.contact_consent === true,
+        })
+      } else {
+        await profileRepository.upsertProfile({
+          identityId: account.id,
+          fullName: data.full_name,
+          email,
+          phone: data.phone,
+          contactConsent: data.contact_consent === true,
+        })
+      }
+      return { id: account.id, confirmedAt: account.confirmedAt || null }
+    }),
     currentUser: currentUser || (() => getNetlifyIdentityUser(identityOptions)),
     ...(appendRow ? { appendRow } : {}),
   })

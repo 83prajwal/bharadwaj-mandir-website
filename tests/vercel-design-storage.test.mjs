@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import { Readable } from 'node:stream'
 import { defaults } from '../src/pages/mandir-studio/lib/config.ts'
 import { createVercelDesignHandler, createVercelDesignNodeHandler } from '../api/designs.js'
+import { createSupabaseCustomerRepository } from '../api/lib/supabase-customers.js'
 
 class MemoryStore {
   values = new Map()
@@ -130,4 +131,338 @@ test('Vercel adapter preserves request validation, method handling and safe erro
   assert.deepEqual(JSON.parse(response.body), { error: 'Design storage is temporarily unavailable.' })
   assert.equal(response.body.includes('site-id'), false)
   assert.equal(response.body.includes('token'), false)
+})
+
+function customerRepository() {
+  const profiles = new Map()
+  const designs = new Map()
+  return {
+    profiles,
+    designs,
+    async upsertProfile(profile) {
+      const row = profiles.get(profile.identityId) || { id: `customer-${profile.identityId}`, ...profile }
+      Object.assign(row, profile)
+      profiles.set(profile.identityId, row)
+      return row
+    },
+    async findDesign(id, customerId) {
+      const row = designs.get(id)
+      return row?.customer_id === customerId ? row : null
+    },
+    async findDesignById(id) { return designs.get(id) || null },
+    async listDesigns(customerId) { return [...designs.values()].filter((row) => row.customer_id === customerId) },
+    async saveDesign(row) {
+      const existing = designs.get(row.id)
+      if (existing && existing.customer_id !== row.customer_id) throw Object.assign(new Error('design id conflict'), { status: 409 })
+      const saved = { ...existing, ...row }
+      designs.set(row.id, saved)
+      return saved
+    },
+    async deleteDesign(id, customerId) {
+      if (designs.get(id)?.customer_id === customerId) designs.delete(id)
+    },
+  }
+}
+
+function customerDesignHandler({ store, repository }) {
+  const fetchImpl = async (_url, options) => {
+    const token = options.headers.authorization.slice('Bearer '.length)
+    const id = token === 'identity-a' ? 'netlify-user-a' : token === 'identity-b' ? 'netlify-user-b' : null
+    return id ? Response.json({ id, email: `${id}@example.com`, user_metadata: { full_name: id, phone: '+919876543210', contact_consent: true } }) : new Response('', { status: 401 })
+  }
+  const handler = createVercelDesignHandler({
+    env: {
+      NETLIFY_BLOBS_SITE_ID: 'site-id', NETLIFY_BLOBS_TOKEN: 'blob-token',
+      NETLIFY_IDENTITY_URL: 'https://identity.test/.netlify/identity',
+      SUPABASE_URL: 'https://project.supabase.co', SUPABASE_SECRET_KEY: 'server-key',
+    },
+    store,
+    customerRepository: repository,
+    fetchImpl,
+  })
+  return createVercelDesignNodeHandler({ getHandler: () => handler })
+}
+
+test('customer designs use verified Netlify Identity, persist metadata idempotently and list across devices', async () => {
+  const store = new MemoryStore()
+  const repository = customerRepository()
+  const handler = customerDesignHandler({ store, repository })
+  const id = 'c51e7d70-0b2d-46da-bc7c-79bc8574f3e4'
+  const options = { headers: { cookie: 'nf_jwt=identity-a' } }
+
+  let result = await call(handler, 'save', { clientDesignId: id, name: 'Family mandir', config: structuredClone(defaults), customerId: 'forged-customer' }, options)
+  assert.equal(result.response.statusCode, 200)
+  assert.equal(result.data.design.id, id)
+  assert.equal(result.data.design.customerOwned, true)
+  assert.deepEqual(repository.profiles.get('netlify-user-a'), {
+    id: 'customer-netlify-user-a', identityId: 'netlify-user-a', fullName: 'netlify-user-a',
+    email: 'netlify-user-a@example.com', phone: '+919876543210', contactConsent: true,
+  })
+  assert.equal(repository.designs.size, 1)
+  assert.equal(repository.designs.get(id).customer_id, 'customer-netlify-user-a')
+  assert.deepEqual(JSON.parse(store.values.get(`design:${id}`)).config, defaults)
+
+  // A retry with the same client-generated design ID updates one record.
+  result = await call(handler, 'save', { clientDesignId: id, name: 'Family mandir', config: structuredClone(defaults) }, options)
+  assert.equal(result.response.statusCode, 200)
+  assert.equal(repository.designs.size, 1)
+
+  // A new session/device can retrieve the server-owned list and load the design.
+  result = await call(handler, 'list', {}, options)
+  assert.equal(result.data.designs.length, 1)
+  assert.equal(result.data.designs[0].id, id)
+  result = await call(handler, 'load', { id }, options)
+  assert.equal(result.response.statusCode, 200)
+  assert.deepEqual(result.data.design.config, defaults)
+
+  // Another Identity account cannot read, rename or delete this row.
+  for (const operation of ['load', 'rename', 'delete']) {
+    result = await call(handler, operation, { id, name: 'Stolen' }, { headers: { cookie: 'nf_jwt=identity-b' } })
+    assert.equal(result.response.statusCode, 404, operation)
+  }
+  assert.equal(repository.designs.size, 1)
+  assert.equal(JSON.parse(store.values.get(`design:${id}`)).name, 'Family mandir')
+})
+
+test('concurrent different customers cannot claim or overwrite the same design ID', async () => {
+  const store = new MemoryStore()
+  const repository = customerRepository()
+  const originalFindById = repository.findDesignById.bind(repository)
+  let arrived = 0
+  let release
+  const barrier = new Promise((resolve) => { release = resolve })
+  repository.findDesignById = async (id) => {
+    const snapshot = await originalFindById(id)
+    arrived += 1
+    if (arrived === 2) release()
+    await barrier
+    return snapshot
+  }
+  const handler = customerDesignHandler({ store, repository })
+  const id = 'd1114b2e-f20b-41f7-8c0c-426dd6df134a'
+  const save = (identity, name) => call(handler, 'save', {
+    clientDesignId: id, name, config: structuredClone(defaults),
+  }, { headers: { cookie: `nf_jwt=identity-${identity}` } })
+
+  const results = await Promise.all([save('a', 'Customer A'), save('b', 'Customer B')])
+  assert.deepEqual(results.map(({ response }) => response.statusCode).sort(), [200, 409])
+  assert.equal(repository.designs.size, 1)
+  const [ownedRow] = repository.designs.values()
+  const storedBlob = JSON.parse(store.values.get(`design:${id}`))
+  assert.equal(storedBlob.customerProfileId, ownedRow.customer_id)
+  assert.ok(['customer-netlify-user-a', 'customer-netlify-user-b'].includes(ownedRow.customer_id))
+})
+
+test('legacy owner-secret designs are not auto-linked to a signed-in customer', async () => {
+  const store = new MemoryStore()
+  const repository = customerRepository()
+  const legacyHandler = createVercelDesignNodeHandler({ getHandler: () => createVercelDesignHandler({ store }) })
+  let result = await call(legacyHandler, 'save', { name: 'Legacy', config: structuredClone(defaults) })
+  const { id, ownerSecret } = { ...result.data.design, ownerSecret: result.data.ownerSecret }
+
+  const handler = customerDesignHandler({ store, repository })
+  result = await call(handler, 'list', {}, { headers: { cookie: 'nf_jwt=identity-a' } })
+  assert.deepEqual(result.data.designs, [])
+  result = await call(handler, 'load', { id }, { headers: { cookie: 'nf_jwt=identity-a' } })
+  assert.equal(result.response.statusCode, 404)
+  result = await call(handler, 'load', { id, ownerSecret })
+  assert.equal(result.response.statusCode, 200)
+  assert.equal(repository.designs.size, 0)
+  result = await call(handler, 'load', { id, ownerSecret }, { headers: { cookie: 'nf_jwt=identity-a' } })
+  assert.equal(result.response.statusCode, 200)
+  assert.equal(repository.designs.get(id).customer_id, 'customer-netlify-user-a')
+  assert.equal(repository.designs.get(id).legacy_design_id, id)
+})
+
+test('a design save retry after a Blobs write failure recovers the claimed ID without creating a second design', async () => {
+  const store = new MemoryStore()
+  const repository = customerRepository()
+  const originalSet = store.set.bind(store)
+  let failOnce = true
+  store.set = async (...args) => {
+    if (failOnce) { failOnce = false; throw new Error('temporary Blobs failure') }
+    return originalSet(...args)
+  }
+  const handler = customerDesignHandler({ store, repository })
+  const id = 'b25e5b38-c31b-4fca-9e0f-529af68e2cc4'
+  const options = { headers: { cookie: 'nf_jwt=identity-a' } }
+  let result = await call(handler, 'save', { clientDesignId: id, name: 'Retryable', config: structuredClone(defaults) }, options)
+  assert.equal(result.response.statusCode, 500)
+  assert.equal(repository.designs.size, 1)
+  assert.equal(store.values.has(`design:${id}`), false)
+  result = await call(handler, 'save', { clientDesignId: id, name: 'Retryable', config: structuredClone(defaults) }, options)
+  assert.equal(result.response.statusCode, 200)
+  assert.equal(repository.designs.size, 1)
+  assert.equal(repository.designs.get(id).customer_id, 'customer-netlify-user-a')
+})
+
+test('customer-owned designs preserve rename, duplicate, share, revoke and delete operations', async () => {
+  const store = new MemoryStore()
+  const repository = customerRepository()
+  const handler = customerDesignHandler({ store, repository })
+  const auth = { headers: { cookie: 'nf_jwt=identity-a' } }
+  let result = await call(handler, 'save', { clientDesignId: '4ab756e0-c1e0-4c4d-a248-8a510a0f2710', name: 'Original', config: structuredClone(defaults) }, auth)
+  const id = result.data.design.id
+  result = await call(handler, 'rename', { id, name: 'Renamed' }, auth)
+  assert.equal(result.response.statusCode, 200)
+  result = await call(handler, 'duplicate', { id }, auth)
+  assert.equal(result.response.statusCode, 200)
+  const duplicateId = result.data.design.id
+  assert.equal(repository.designs.size, 2)
+  const retryId = 'ef106727-867d-4a57-b7c8-a3cfc2f86d02'
+  await call(handler, 'duplicate', { id, clientDesignId: retryId }, auth)
+  await call(handler, 'duplicate', { id, clientDesignId: retryId }, auth)
+  assert.equal(repository.designs.size, 3)
+  result = await call(handler, 'share', { id }, auth)
+  assert.equal(result.response.statusCode, 200)
+  const shareToken = result.data.token
+  assert.ok(repository.designs.get(id).share_token_hash)
+  result = await call(handler, 'read-share', { token: shareToken })
+  assert.equal(result.response.statusCode, 200)
+  result = await call(handler, 'revoke', { id }, auth)
+  assert.deepEqual(result.data, { revoked: true })
+  assert.equal((await call(handler, 'read-share', { token: shareToken })).response.statusCode, 404)
+  result = await call(handler, 'delete', { id }, auth)
+  assert.deepEqual(result.data, { deleted: true })
+  assert.equal(repository.designs.size, 2)
+  assert.equal((await call(handler, 'load', { id: duplicateId }, auth)).response.statusCode, 200)
+})
+
+test('Supabase repository uses server-only credentials, upserts by Identity ID and returns safe database errors', async () => {
+  const calls = []
+  const repository = createSupabaseCustomerRepository({
+    env: { SUPABASE_URL: 'https://project.supabase.co/', SUPABASE_SECRET_KEY: 'server-only-secret' },
+    fetchImpl: async (url, options) => {
+      calls.push({ url: String(url), options })
+      if (options.method === 'GET') return Response.json([])
+      return Response.json([{ id: 'customer-uuid', netlify_identity_id: 'identity-id' }])
+    },
+  })
+  const profile = await repository.upsertProfile({ identityId: 'identity-id', fullName: 'Asha', email: 'ASHA@example.com', phone: '+919876543210', contactConsent: true })
+  assert.equal(profile.id, 'customer-uuid')
+  assert.match(calls[0].url, /netlify_identity_id=eq.identity-id/)
+  assert.equal(calls[0].options.headers.apikey, 'server-only-secret')
+  assert.equal(calls[0].options.headers.authorization, undefined)
+  assert.equal(calls[1].options.method, 'POST')
+  assert.deepEqual(JSON.parse(calls[1].options.body), {
+    netlify_identity_id: 'identity-id', full_name: 'Asha', email: 'asha@example.com',
+    phone: '+919876543210', contact_consent: true, updated_at: JSON.parse(calls[1].options.body).updated_at,
+  })
+  assert.doesNotMatch(JSON.stringify(profile), /server-only-secret/)
+
+  const failing = createSupabaseCustomerRepository({
+    env: { SUPABASE_URL: 'https://project.supabase.co', SUPABASE_SECRET_KEY: 'secret' },
+    fetchImpl: async () => new Response('private db response', { status: 500 }),
+  })
+  await assert.rejects(failing.upsertProfile({ identityId: 'id' }), /HTTP 500/)
+})
+
+test('Supabase missing-profile recovery creates the profile using the verified Identity ID', async () => {
+  const calls = []
+  const repository = createSupabaseCustomerRepository({
+    env: { SUPABASE_URL: 'https://project.supabase.co', SUPABASE_SECRET_KEY: 'server-only-secret' },
+    fetchImpl: async (url, options) => {
+      calls.push({ url: String(url), options })
+      if (options.method === 'GET') return Response.json([])
+      return Response.json([{ id: 'customer-uuid', netlify_identity_id: 'verified-identity-id' }], { status: 201 })
+    },
+  })
+  const profile = await repository.createProfileIfMissing({
+    identityId: 'verified-identity-id', fullName: 'Verified Name', email: 'VERIFIED@example.com',
+    phone: '+919876543210', contactConsent: true,
+  })
+  assert.equal(profile.id, 'customer-uuid')
+  assert.equal(calls.length, 2)
+  assert.match(calls[0].url, /netlify_identity_id=eq.verified-identity-id/)
+  assert.equal(calls[1].options.method, 'POST')
+  assert.deepEqual(JSON.parse(calls[1].options.body), {
+    netlify_identity_id: 'verified-identity-id', full_name: 'Verified Name', email: 'verified@example.com',
+    phone: '+919876543210', contact_consent: true,
+  })
+})
+
+test('Supabase missing-profile recovery never overwrites an existing profile', async () => {
+  const existing = {
+    id: 'customer-uuid', netlify_identity_id: 'identity-id', full_name: 'Original Name',
+    email: 'asha@example.com', phone: '+919876543210', contact_consent: false,
+  }
+  const calls = []
+  const repository = createSupabaseCustomerRepository({
+    env: { SUPABASE_URL: 'https://project.supabase.co', SUPABASE_SECRET_KEY: 'server-only-secret' },
+    fetchImpl: async (url, options) => {
+      calls.push({ url: String(url), options })
+      if (options.method === 'GET') return Response.json([existing])
+      assert.fail('An existing profile must not be written or overwritten')
+    },
+  })
+  const profile = await repository.createProfileIfMissing({
+    identityId: 'identity-id', fullName: 'Changed Name', email: 'changed@example.com',
+    phone: '+910000000000', contactConsent: true,
+  })
+  assert.deepEqual(profile, existing)
+  assert.equal(calls.length, 1)
+  assert.match(calls[0].url, /netlify_identity_id=eq.identity-id/)
+})
+
+test('Supabase design creation handles a concurrent ID conflict without patching another customer row', async () => {
+  const rows = new Map()
+  const calls = []
+  let createBarrierResolve
+  let createArrivals = 0
+  const createBarrier = new Promise((resolve) => { createBarrierResolve = resolve })
+  let patchCalls = 0
+  const repositoryA = createSupabaseCustomerRepository({
+    env: { SUPABASE_URL: 'https://project.supabase.co', SUPABASE_SECRET_KEY: 'server-key' },
+    fetchImpl: async (url, options) => {
+      calls.push({ url: String(url), options })
+      if (options.method === 'POST') {
+        const row = JSON.parse(options.body)
+        createArrivals += 1
+        if (createArrivals === 2) createBarrierResolve()
+        await createBarrier
+        if (rows.has(row.id)) return Response.json({ message: 'duplicate key' }, { status: 409 })
+        rows.set(row.id, row)
+        return Response.json([row], { status: 201 })
+      }
+      if (options.method === 'GET') {
+        const query = new URL(url).searchParams
+        const row = rows.get(query.get('id')?.replace('eq.', ''))
+        return Response.json(row && row.customer_id === query.get('customer_id')?.replace('eq.', '') ? [row] : [])
+      }
+      if (options.method === 'PATCH') {
+        patchCalls += 1
+        const query = new URL(url).searchParams
+        const row = rows.get(query.get('id')?.replace('eq.', ''))
+        if (!row || row.customer_id !== query.get('customer_id')?.replace('eq.', '')) return Response.json([])
+        const updated = { ...row, ...JSON.parse(options.body) }
+        rows.set(updated.id, updated)
+        return Response.json([updated])
+      }
+      return Response.json([], { status: 200 })
+    },
+  })
+  const id = '68ad591f-4b14-4d1e-9fdd-4e031fb64704'
+  const base = {
+    id, legacy_design_id: null, design_name: 'Design', design_configuration: defaults,
+    storage_reference: `netlify-blobs://bharadwaj-mandir-designs/design:${id}`,
+    share_token_hash: null, share_expires_at: null, created_at: new Date().toISOString(), updated_at: new Date().toISOString(),
+  }
+  const results = await Promise.all([
+    repositoryA.saveDesign({ ...base, customer_id: 'customer-a' }),
+    repositoryA.saveDesign({ ...base, customer_id: 'customer-b' }).then((row) => ({ row }), (error) => ({ error })),
+  ])
+  assert.equal(rows.size, 1)
+  assert.equal(patchCalls, 0)
+  assert.ok(['customer-a', 'customer-b'].includes(rows.get(id).customer_id))
+  assert.equal(results.filter((value) => value?.error?.status === 409).length, 1)
+  const owner = rows.get(id).customer_id
+  await repositoryA.saveDesign({ ...rows.get(id), design_name: 'Updated by owner' })
+  assert.equal(patchCalls, 1)
+  const patchCall = calls.find((call) => call.options.method === 'PATCH')
+  assert.match(patchCall.url, new RegExp(`id=eq.${id}.*customer_id=eq.${owner}`))
+  assert.equal(Object.hasOwn(JSON.parse(patchCall.options.body), 'customer_id'), false)
+  const otherCustomer = owner === 'customer-a' ? 'customer-b' : 'customer-a'
+  await assert.rejects(repositoryA.saveDesign({ ...rows.get(id), customer_id: otherCustomer }), { status: 409 })
+  assert.equal(patchCalls, 1)
+  assert.equal(rows.get(id).customer_id, owner)
 })

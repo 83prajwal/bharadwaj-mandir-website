@@ -1,6 +1,7 @@
 import { Readable } from 'node:stream'
 import { getStore } from '@netlify/blobs'
 import { createDesignHandler } from '../netlify/functions/lib/design-storage.mjs'
+import { createSupabaseCustomerRepository } from './lib/supabase-customers.js'
 
 const DESIGN_STORE_NAME = 'bharadwaj-mandir-designs'
 const JSON_HEADERS = {
@@ -45,7 +46,14 @@ function getClientAddress(request) {
   return String(getRequestHeader(request, 'x-forwarded-for') || 'unknown').split(',')[0].trim()
 }
 
-export function createVercelDesignHandler({ env = process.env, getStoreFn = getStore, store } = {}) {
+function getIdentityUrl(value) {
+  if (!value) throw new Error('Netlify Identity configuration is incomplete.')
+  const url = new URL(value)
+  if (url.protocol !== 'https:' || url.username || url.password || url.search || url.hash || !url.pathname.replace(/\/$/, '').endsWith('/.netlify/identity')) throw new Error('Netlify Identity configuration is invalid.')
+  return url.href.replace(/\/$/, '')
+}
+
+export function createVercelDesignHandler({ env = process.env, getStoreFn = getStore, store, customerRepository, fetchImpl = fetch, identityUrl } = {}) {
   let designStore = store
   if (!designStore) {
     const siteID = env.NETLIFY_BLOBS_SITE_ID?.trim()
@@ -53,12 +61,53 @@ export function createVercelDesignHandler({ env = process.env, getStoreFn = getS
     if (!siteID || !token) throw new Error('Design storage configuration is incomplete.')
     designStore = getStoreFn(DESIGN_STORE_NAME, { siteID, token })
   }
-  return createDesignHandler({ store: designStore })
+  let customerAccess = null
+  const hasSupabaseSetting = Boolean(env.SUPABASE_URL?.trim() || env.SUPABASE_SECRET_KEY?.trim())
+  if (hasSupabaseSetting && (!env.SUPABASE_URL?.trim() || !env.SUPABASE_SECRET_KEY?.trim())) throw new Error('Supabase customer storage configuration is incomplete.')
+  if (customerRepository || (env.SUPABASE_URL?.trim() && env.SUPABASE_SECRET_KEY?.trim())) {
+    const repository = customerRepository || createSupabaseCustomerRepository({ env, fetchImpl })
+    const identityEndpoint = getIdentityUrl(identityUrl || env.NETLIFY_IDENTITY_URL)
+    customerAccess = {
+      repository,
+      async getCustomer(request) {
+        const cookie = request.headers.get('cookie') || ''
+        const cookieValue = cookie.split(';').map((part) => part.trim()).find((part) => part.startsWith('nf_jwt='))
+        if (!cookieValue) return null
+        let jwt = cookieValue.slice('nf_jwt='.length)
+        try { jwt = decodeURIComponent(jwt) } catch { /* Netlify Identity may use a raw cookie token. */ }
+        let response
+        let user
+        try {
+          response = await fetchImpl(`${identityEndpoint}/user`, {
+            headers: { authorization: `Bearer ${jwt}` },
+            signal: AbortSignal.timeout(5_000),
+          })
+          if (!response.ok) return null
+          user = await response.json()
+        } catch { return null }
+        if (!user?.id || !user?.email) return null
+        const metadata = user.user_metadata || {}
+        return repository.upsertProfile({
+          identityId: user.id,
+          fullName: metadata.full_name || user.name || '',
+          email: user.email,
+          phone: metadata.phone || '',
+          contactConsent: metadata.contact_consent === true,
+        })
+      },
+    }
+  }
+  return createDesignHandler({ store: designStore, customerAccess })
 }
 
 let productionHandler
 function getProductionHandler() {
-  if (!productionHandler) productionHandler = createVercelDesignHandler()
+  if (!productionHandler) {
+    const required = ['NETLIFY_BLOBS_SITE_ID', 'NETLIFY_BLOBS_TOKEN', 'NETLIFY_IDENTITY_URL', 'SUPABASE_URL', 'SUPABASE_SECRET_KEY']
+    const missing = required.filter((name) => !process.env[name]?.trim())
+    if (missing.length) throw new Error('Design customer storage configuration is incomplete.')
+    productionHandler = createVercelDesignHandler()
+  }
   return productionHandler
 }
 
