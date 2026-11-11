@@ -112,11 +112,13 @@ export function createVercelStudioLeadHandler({
   fetchImpl = fetch,
   identityUrl,
   logger = console,
+  env = process.env,
+  getStoreFn = getStore,
 } = {}) {
   const identityOptions = { fetchImpl, ...(identityUrl ? { identityUrl: getIdentityUrl(identityUrl) } : {}) }
-  const storeOrThrow = store || getStore('bharadwaj-mandir-studio-leads', {
-    siteID: process.env.NETLIFY_BLOBS_SITE_ID,
-    token: process.env.NETLIFY_BLOBS_TOKEN,
+  const storeOrThrow = store || getStoreFn('bharadwaj-mandir-studio-leads', {
+    siteID: env.NETLIFY_BLOBS_SITE_ID?.trim(),
+    token: env.NETLIFY_BLOBS_TOKEN?.trim(),
   })
   const handler = createStudioLeadHandler({
     store: storeOrThrow,

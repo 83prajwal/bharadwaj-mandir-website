@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { Readable } from 'node:stream'
 import {
+  getMissingStudioLeadConfiguration,
   createVercelStudioLeadHandler,
   createVercelStudioLeadNodeHandler,
 } from '../api/studio-lead.js'
@@ -142,6 +143,58 @@ test('Vercel Node endpoint accepts a valid sign-up and sends a JSON response', a
   assert.equal(accounts.length, 1)
   assert.equal(accounts[0][0], 'asha@example.com')
   assert.equal(rows.length, 1)
+})
+
+test('Vercel configuration diagnostics report missing variable names without values', () => {
+  assert.deepEqual(getMissingStudioLeadConfiguration({
+    NETLIFY_BLOBS_SITE_ID: 'site-id',
+    NETLIFY_BLOBS_TOKEN: 'secret-token',
+  }), ['NETLIFY_IDENTITY_URL'])
+  assert.deepEqual(getMissingStudioLeadConfiguration({
+    NETLIFY_BLOBS_SITE_ID: 'site-id',
+    NETLIFY_BLOBS_TOKEN: 'secret-token',
+    NETLIFY_IDENTITY_URL: 'https://identity.example/.netlify/identity',
+  }), [])
+})
+
+test('Vercel Studio Lead trims Blobs credentials before initializing the existing store', () => {
+  let storeName
+  let storeOptions
+  createVercelStudioLeadHandler({
+    env: {
+      NETLIFY_BLOBS_SITE_ID: ' \n site-id-test \t',
+      NETLIFY_BLOBS_TOKEN: '\n test-pat \t',
+    },
+    getStoreFn: (name, options) => {
+      storeName = name
+      storeOptions = options
+      return memoryStore()
+    },
+    createAccount: async () => ({ confirmedAt: null }),
+    currentUser: async () => null,
+  })
+  assert.equal(storeName, 'bharadwaj-mandir-studio-leads')
+  assert.deepEqual(storeOptions, { siteID: 'site-id-test', token: 'test-pat' })
+})
+
+test('Vercel adapter logs only the failure stage and missing config names, never error messages or values', async () => {
+  const logs = []
+  const nodeHandler = createVercelStudioLeadNodeHandler({
+    getHandler: () => {
+      const error = new Error('secret token and customer@example.com')
+      error.code = 'STUDIO_LEAD_CONFIG_MISSING'
+      error.missingVariables = ['NETLIFY_IDENTITY_URL', 'DO_NOT_LOG_THIS']
+      throw error
+    },
+    logger: { error: (...args) => logs.push(args) },
+  })
+  const { response } = await invokeVercelNode(nodeHandler, vercelRequest(signup()))
+  assert.equal(response.status, 503)
+  assert.deepEqual(logs, [[
+    'Studio lead Vercel adapter failed.',
+    { stage: 'handler_initialization', missingVariables: ['NETLIFY_IDENTITY_URL'] },
+  ]])
+  assert.doesNotMatch(JSON.stringify(logs), /secret token|customer@example\.com|DO_NOT_LOG_THIS/)
 })
 
 test('Vercel registration adapter preserves Netlify request, validation and error responses', async () => {
