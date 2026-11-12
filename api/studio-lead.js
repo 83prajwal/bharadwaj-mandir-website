@@ -80,10 +80,15 @@ function isDuplicateIdentitySignup(error) {
 }
 
 async function authenticateExistingIdentityAccount(email, password, options) {
+  const tokenBody = new URLSearchParams({
+    grant_type: 'password',
+    username: email,
+    password,
+  })
   const tokenResponse = await identityFetch('/token?grant_type=password', {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ email, password }),
+    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    body: tokenBody.toString(),
   }, options)
   let tokenPayload
   try { tokenPayload = await tokenResponse.json() } catch { throw new Error('Identity returned an unreadable response.') }

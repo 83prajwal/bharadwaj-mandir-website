@@ -353,7 +353,13 @@ test('retry authenticates the existing Identity account and creates its missing 
         if (signupCount === 1) return Response.json({ id: 'verified-user-1', confirmed_at: '2026-11-10T10:00:00Z' })
         return Response.json({ msg: 'A user with this email address has already been registered' }, { status: 422 })
       }
-      if (endpoint.endsWith('/token?grant_type=password')) return Response.json({ access_token: 'short-lived-test-token' })
+      if (endpoint.endsWith('/token?grant_type=password')) {
+        assert.equal(options.headers['content-type'], 'application/x-www-form-urlencoded')
+        assert.deepEqual(Object.fromEntries(new URLSearchParams(options.body)), {
+          grant_type: 'password', username: 'asha@example.com', password: 'long-enough',
+        })
+        return Response.json({ access_token: 'short-lived-test-token' })
+      }
       if (endpoint.endsWith('/user')) {
         assert.equal(options.headers.authorization, 'Bearer short-lived-test-token')
         return Response.json({
@@ -415,6 +421,10 @@ test('invalid credentials on an existing Identity account preserve the duplicate
         return Response.json({ msg: 'A user with this email address has already been registered' }, { status: 422 })
       }
       if (endpoint.endsWith('/token?grant_type=password')) {
+        assert.equal(options.headers['content-type'], 'application/x-www-form-urlencoded')
+        assert.deepEqual(Object.fromEntries(new URLSearchParams(options.body)), {
+          grant_type: 'password', username: 'asha@example.com', password: 'long-enough',
+        })
         return Response.json({ msg: 'Invalid login credentials' }, { status: 400 })
       }
       assert.fail(`Invalid credentials must not trigger an Identity user lookup: ${endpoint}`)
@@ -456,14 +466,20 @@ test('existing profile is left unchanged when an authenticated duplicate signup 
     appendRow: async () => {},
     customerRepository: repository,
     identityUrl: 'https://identity.test/.netlify/identity',
-    fetchImpl: async (url) => {
+    fetchImpl: async (url, options) => {
       if (String(url).endsWith('/signup')) {
         signupCount += 1
         return signupCount === 1
           ? Response.json({ id: 'verified-user-1', confirmed_at: '2026-11-10T10:00:00Z' })
           : Response.json({ msg: 'A user with this email address has already been registered' }, { status: 422 })
       }
-      if (String(url).endsWith('/token?grant_type=password')) return Response.json({ access_token: 'short-lived-test-token' })
+      if (String(url).endsWith('/token?grant_type=password')) {
+        assert.equal(options.headers['content-type'], 'application/x-www-form-urlencoded')
+        assert.deepEqual(Object.fromEntries(new URLSearchParams(options.body)), {
+          grant_type: 'password', username: 'asha@example.com', password: 'long-enough',
+        })
+        return Response.json({ access_token: 'short-lived-test-token' })
+      }
       if (String(url).endsWith('/user')) return Response.json({
         id: 'verified-user-1', email: 'asha@example.com', confirmed_at: '2026-11-10T10:00:00Z',
         user_metadata: { full_name: 'Different submitted name', phone: '+910000000000', contact_consent: true },
