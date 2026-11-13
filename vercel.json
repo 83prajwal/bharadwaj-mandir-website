@@ -5,6 +5,8 @@
     }
   },
   "rewrites": [
+    { "source": "/.netlify/identity", "destination": "https://singular-kelpie-c8df6b.netlify.app/.netlify/identity" },
+    { "source": "/.netlify/identity/:path*", "destination": "https://singular-kelpie-c8df6b.netlify.app/.netlify/identity/:path*" },
     { "source": "/(.*)", "destination": "/" }
   ]
 }
