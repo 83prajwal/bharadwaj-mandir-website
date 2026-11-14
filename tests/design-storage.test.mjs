@@ -2,6 +2,8 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { defaults } from '../src/pages/mandir-studio/lib/config.ts'
 import { createDesignHandler } from '../netlify/functions/lib/design-storage.mjs'
+import { createVercelDesignsHandler, createVercelDesignsNodeHandler } from '../api/designs.js'
+import { Readable } from 'node:stream'
 
 class MemoryStore {
   values = new Map()
@@ -91,4 +93,132 @@ test('server rejects malformed, invalid, oversized and cross-origin design write
   assert.equal((await call(handler, 'save', { name: 'Invalid', config: unknown })).response.status, 400)
   assert.equal((await call(handler, 'save', { name: 'Invalid', config: defaults }, { size: true })).response.status, 413)
   assert.equal((await call(handler, 'save', { name: 'Invalid', config: defaults }, { origin: 'https://attacker.test' })).response.status, 403)
+})
+
+function vercelRequest(request) {
+  return (async () => {
+    const url = new URL(request.url)
+    const input = request.method === 'GET' || request.method === 'HEAD'
+      ? Readable.from([])
+      : Readable.from([Buffer.from(await request.clone().arrayBuffer())])
+    input.method = request.method
+    input.url = `${url.pathname}${url.search}`
+    input.headers = {
+      ...Object.fromEntries(request.headers.entries()),
+      host: url.host,
+      'x-forwarded-proto': url.protocol.slice(0, -1),
+      'x-real-ip': '203.0.113.12',
+    }
+
+    const headers = new Headers()
+    const response = {
+      statusCode: 200,
+      setHeader(name, value) { headers.set(name, value) },
+      end(body) { this.body = body },
+    }
+    await createVercelDesignsNodeHandler({ designHandler: requestHandler })(input, response)
+    return new Response(response.body, { status: response.statusCode, headers })
+  })()
+}
+
+let requestHandler
+
+function vercelDesignRequest(operation, body = {}, method = 'POST') {
+  const url = new URL('https://mandir.test/api/designs')
+  if (method === 'GET') {
+    for (const [key, value] of Object.entries(body)) url.searchParams.set(key, value)
+    return new Request(url, { method, headers: { origin: url.origin } })
+  }
+  return new Request(url, {
+    method,
+    headers: { origin: url.origin, 'content-type': 'application/json' },
+    body: JSON.stringify({ operation, ...body }),
+  })
+}
+
+test('Vercel adapter initializes the existing Blobs store with explicit trimmed credentials', async () => {
+  const store = new MemoryStore()
+  let initialized
+  requestHandler = createVercelDesignsHandler({
+    env: { NETLIFY_BLOBS_SITE_ID: ' site-id ', NETLIFY_BLOBS_TOKEN: ' token ' },
+    getStoreFn: (name, options) => { initialized = { name, options }; return store },
+  })
+  const config = structuredClone(defaults)
+  const response = await vercelRequest(vercelDesignRequest('save', { name: 'Vercel design', config }))
+  const payload = await response.json()
+  assert.equal(response.status, 200)
+  assert.equal(initialized.name, 'bharadwaj-mandir-designs')
+  assert.deepEqual(initialized.options, { siteID: 'site-id', token: 'token' })
+  assert.match(payload.design.id, /^[0-9a-f-]{36}$/)
+  assert.equal(typeof payload.ownerSecret, 'string')
+})
+
+test('Vercel adapter preserves save, load, update, duplicate, share, read, revoke and delete behavior', async () => {
+  const store = new MemoryStore()
+  requestHandler = createVercelDesignsHandler({ store, now: () => new Date('2026-11-14T00:00:00.000Z') })
+  const config = structuredClone(defaults)
+  let response = await vercelRequest(vercelDesignRequest('save', { name: 'Vercel design', config }))
+  let payload = await response.json()
+  assert.equal(response.status, 200)
+  const { id, ownerSecret } = { ...payload.design, ownerSecret: payload.ownerSecret }
+
+  response = await vercelRequest(vercelDesignRequest('load', { id, ownerSecret }))
+  assert.equal(response.status, 200)
+  assert.deepEqual((await response.json()).design.config, config)
+
+  response = await vercelRequest(vercelDesignRequest('save', { id, ownerSecret, name: 'Updated', config: { ...config, width: 1300, availableWidth: 1400 } }))
+  payload = await response.json()
+  assert.equal(payload.design.name, 'Updated')
+  assert.equal(payload.design.config.width, 1300)
+
+  response = await vercelRequest(vercelDesignRequest('duplicate', { id, ownerSecret }))
+  const copy = await response.json()
+  assert.equal(response.status, 200)
+  assert.notEqual(copy.design.id, id)
+
+  response = await vercelRequest(vercelDesignRequest('share', { id, ownerSecret }))
+  const share = await response.json()
+  assert.equal(response.status, 200)
+  response = await vercelRequest(vercelDesignRequest('', { operation: 'read-share', token: share.token }, 'GET'))
+  assert.equal(response.status, 200)
+  assert.equal((await response.json()).design.config.requirements, '')
+
+  response = await vercelRequest(vercelDesignRequest('revoke', { id, ownerSecret }))
+  assert.equal((await response.json()).revoked, true)
+  response = await vercelRequest(vercelDesignRequest('', { operation: 'read-share', token: share.token }, 'GET'))
+  assert.equal(response.status, 404)
+
+  response = await vercelRequest(vercelDesignRequest('delete', { id, ownerSecret }))
+  assert.equal((await response.json()).deleted, true)
+  response = await vercelRequest(vercelDesignRequest('load', { id, ownerSecret }))
+  assert.equal(response.status, 404)
+})
+
+test('Vercel adapter safely handles missing credentials, unauthorized access and unavailable Blobs', async () => {
+  requestHandler = createVercelDesignsHandler({ env: { NETLIFY_BLOBS_SITE_ID: '', NETLIFY_BLOBS_TOKEN: '' } })
+  let response = await vercelRequest(vercelDesignRequest('save', { name: 'Unavailable', config: defaults }))
+  assert.equal(response.status, 503)
+  assert.deepEqual(await response.json(), { error: 'Design storage is temporarily unavailable.' })
+
+  requestHandler = createVercelDesignsHandler({ store: new MemoryStore() })
+  response = await vercelRequest(vercelDesignRequest('load', { id: '12345678-1234-1234-1234-123456789abc', ownerSecret: 'x'.repeat(43) }))
+  assert.equal(response.status, 404)
+  assert.deepEqual(await response.json(), { error: 'Saved design not found.' })
+
+  const brokenStore = { async get() { throw new Error('private provider detail') } }
+  requestHandler = createVercelDesignsHandler({ store: brokenStore })
+  response = await vercelRequest(vercelDesignRequest('read-share', { token: 'a'.repeat(43) }))
+  assert.equal(response.status, 500)
+  assert.deepEqual(await response.json(), { error: 'Design storage is temporarily unavailable.' })
+})
+
+test('Vercel adapter preserves Netlify handler validation and endpoint configuration', async () => {
+  const caller = await import('node:fs/promises').then(({ readFile }) => readFile('src/pages/MandirDesigner.jsx', 'utf8'))
+  assert.match(caller, /const DESIGN_API = '\/api\/designs'/)
+
+  requestHandler = createVercelDesignsHandler({ store: new MemoryStore() })
+  const invalid = { ...structuredClone(defaults), width: '1200' }
+  const response = await vercelRequest(vercelDesignRequest('save', { name: 'Invalid', config: invalid }))
+  assert.equal(response.status, 400)
+  assert.match((await response.json()).error, /width/i)
 })
