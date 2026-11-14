@@ -1,7 +1,7 @@
 /**
- * Bharadwaj Mandir standalone Lead Management automation.
- * Runs as the Apps Script owner and uses SpreadsheetApp directly; no web app,
- * coordinator, service-account key, or AI Review functionality is required.
+ * Bharadwaj Mandir Lead Management automation and signed Studio Lead Web App.
+ * Runs as the Apps Script owner and uses SpreadsheetApp directly; no Google
+ * service-account key or AI Review functionality is required.
  */
 const LEAD_HEADERS = [
   'Lead ID', 'Submission timestamp', 'Customer name', 'Email', 'Phone', 'Country',
@@ -20,6 +20,11 @@ const REPORT_CONTROL_KEYS = ['last_report_end_utc', 'next_report_due_utc', 'pend
 const LEAD_REGISTER_TAB = 'Lead Register'
 const REPORT_CONTROL_TAB = 'Report Control'
 const LEAD_LOCK_WAIT_MS = 8000
+const STUDIO_LEADS_TAB = 'Studio Leads'
+const STUDIO_LEAD_HEADERS = ['Date', 'Name', 'Phone', 'Email', 'Design interest', 'Design details', 'Consent', 'Status', 'Notes']
+const STUDIO_LEAD_IDEMPOTENCY_METADATA_KEY = 'bharadwaj_studio_lead_idempotency'
+const STUDIO_LEAD_NONCE_PREFIX = 'STUDIO_LEAD_NONCE_'
+const STUDIO_LEAD_SIGNATURE_WINDOW_MS = 5 * 60 * 1000
 const FORM_PAGE_SIZE = 100
 const MAX_FORM_PAGES = 100
 const REPORT_IDEMPOTENCY_PREFIX = 'bharadwaj-lead-report-'
@@ -420,4 +425,161 @@ function setupHourlyLeadOperationsTrigger() {
   })
   if (!existing) ScriptApp.newTrigger('runLeadOperationsHourly').timeBased().everyHours(1).create()
   return existing ? 'Hourly Lead Operations trigger already exists.' : 'Hourly Lead Operations trigger created.'
+}
+
+function studioLeadJson_(payload) {
+  return ContentService.createTextOutput(JSON.stringify(payload)).setMimeType(ContentService.MimeType.JSON)
+}
+
+function studioLeadConstantTimeEqual_(left, right) {
+  if (typeof left !== 'string' || typeof right !== 'string' || left.length !== right.length) return false
+  let difference = 0
+  for (let index = 0; index < left.length; index += 1) difference |= left.charCodeAt(index) ^ right.charCodeAt(index)
+  return difference === 0
+}
+
+function studioLeadValidRow_(row) {
+  if (!Array.isArray(row) || row.length !== STUDIO_LEAD_HEADERS.length) return false
+  const limits = [100, 120, 25, 254, 100, 500, 3, 20, 500]
+  if (row.some(function (value, index) { return typeof value !== 'string' || value.length > limits[index] })) return false
+  if (!row[0] || !row[1] || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(row[3])) return false
+  if (row[4] !== '3D Studio sign-up' && !/^Quotation: .+/.test(row[4])) return false
+  if (row[6] !== 'Yes' && row[6] !== 'No') return false
+  return row[7] === 'New'
+}
+
+function studioLeadSignatureValid_(envelope, secret) {
+  const expected = Utilities.base64EncodeWebSafe(Utilities.computeHmacSha256Signature(
+    envelope.timestamp + '.' + envelope.nonce + '.' + JSON.stringify(envelope.payload), secret
+  )).replace(/=+$/, '')
+  return studioLeadConstantTimeEqual_(expected, envelope.signature)
+}
+
+function claimStudioLeadNonce_(nonce) {
+  const properties = leadProperties_()
+  const all = properties.getProperties()
+  const now = Date.now()
+  Object.keys(all).forEach(function (key) {
+    if (key.indexOf(STUDIO_LEAD_NONCE_PREFIX) !== 0) return
+    const created = Number(all[key])
+    if (!Number.isFinite(created) || now - created > STUDIO_LEAD_SIGNATURE_WINDOW_MS * 2) properties.deleteProperty(key)
+  })
+  const key = STUDIO_LEAD_NONCE_PREFIX + nonce
+  if (properties.getProperty(key)) return false
+  properties.setProperty(key, String(now))
+  return true
+}
+
+function studioLeadHasIdempotencyMetadata_(spreadsheet, idempotencyKey) {
+  return spreadsheet.createDeveloperMetadataFinder()
+    .withKey(STUDIO_LEAD_IDEMPOTENCY_METADATA_KEY)
+    .withValue(idempotencyKey)
+    .find().length > 0
+}
+
+// Historical rows predate row metadata. Match their existing visible fields so
+// a retry after an uncertain response can still be acknowledged without append.
+function studioLeadExistingRow_(sheet, row) {
+  const lastRow = sheet.getLastRow()
+  if (lastRow < 2) return 0
+  const existing = sheet.getRange(2, 1, lastRow - 1, STUDIO_LEAD_HEADERS.length).getDisplayValues()
+  for (let index = 0; index < existing.length; index += 1) {
+    const candidate = existing[index]
+    const sameEmail = String(candidate[3] || '').trim().toLowerCase() === row[3].trim().toLowerCase()
+    const sameLead = row[4] === '3D Studio sign-up'
+      ? candidate[4] === row[4]
+      : candidate[4] === row[4] && candidate[5] === row[5]
+    if (sameEmail && sameLead) return index + 2
+  }
+  return 0
+}
+
+function studioLeadTagRow_(sheet, rowNumber, idempotencyKey) {
+  try {
+    sheet.getRange(rowNumber, 1, 1, STUDIO_LEAD_HEADERS.length)
+      .addDeveloperMetadata(STUDIO_LEAD_IDEMPOTENCY_METADATA_KEY, idempotencyKey, SpreadsheetApp.DeveloperMetadataVisibility.PROJECT)
+  } catch (_) {
+    // The visible row remains authoritative; retries also check its stable fields.
+  }
+}
+
+function appendStudioLead_(payload) {
+  const spreadsheet = leadSpreadsheet_()
+  const sheet = spreadsheet.getSheetByName(STUDIO_LEADS_TAB)
+  if (!sheet) throw new Error('STUDIO_LEADS_SHEET_MISSING')
+  if (JSON.stringify(sheet.getRange(1, 1, 1, STUDIO_LEAD_HEADERS.length).getDisplayValues()[0]) !== JSON.stringify(STUDIO_LEAD_HEADERS)) {
+    throw new Error('STUDIO_LEADS_SCHEMA_MISMATCH')
+  }
+
+  if (studioLeadHasIdempotencyMetadata_(spreadsheet, payload.idempotencyKey)) {
+    return { accepted: true, duplicate: true }
+  }
+  const existingRow = studioLeadExistingRow_(sheet, payload.row)
+  if (existingRow) {
+    studioLeadTagRow_(sheet, existingRow, payload.idempotencyKey)
+    return { accepted: true, duplicate: true }
+  }
+
+  const rowNumber = sheet.getLastRow() + 1
+  const safeRow = payload.row.map(function (value) {
+    return value.charAt(0) === '=' ? "'" + value : value
+  })
+  try {
+    sheet.getRange(rowNumber, 1, 1, STUDIO_LEAD_HEADERS.length).setValues([safeRow])
+    SpreadsheetApp.flush()
+  } catch (error) {
+    const persistedRow = studioLeadExistingRow_(sheet, payload.row)
+    if (!persistedRow) throw error
+    studioLeadTagRow_(sheet, persistedRow, payload.idempotencyKey)
+    return { accepted: true, duplicate: true }
+  }
+
+  studioLeadTagRow_(sheet, rowNumber, payload.idempotencyKey)
+  return { accepted: true, duplicate: false }
+}
+
+/** Authenticated Vercel-to-Apps-Script transport for the existing Studio Leads tab. */
+function doPost(e) {
+  let envelope
+  try {
+    const raw = e && e.postData && e.postData.contents
+    if (typeof raw !== 'string' || raw.length > 16000) return studioLeadJson_({ ok: false, error: 'INVALID_REQUEST' })
+    envelope = JSON.parse(raw)
+  } catch (_) {
+    return studioLeadJson_({ ok: false, error: 'INVALID_REQUEST' })
+  }
+
+  const timestamp = envelope && envelope.timestamp
+  const nonce = envelope && envelope.nonce
+  const payload = envelope && envelope.payload
+  const signature = envelope && envelope.signature
+  const timestampMs = typeof timestamp === 'string' ? Date.parse(timestamp) : NaN
+  if (!Number.isFinite(timestampMs) || new Date(timestampMs).toISOString() !== timestamp
+    || Math.abs(Date.now() - timestampMs) > STUDIO_LEAD_SIGNATURE_WINDOW_MS
+    || typeof nonce !== 'string' || !/^[a-f0-9]{48}$/.test(nonce)
+    || typeof signature !== 'string' || !/^[A-Za-z0-9_-]{43}$/.test(signature)
+    || !payload || payload.operation !== 'studioLeadAppend'
+    || typeof payload.idempotencyKey !== 'string' || !/^(signup|quotation)\/[a-f0-9]{64}$/.test(payload.idempotencyKey)
+    || !studioLeadValidRow_(payload.row)) {
+    return studioLeadJson_({ ok: false, error: 'INVALID_REQUEST' })
+  }
+
+  let secret
+  try { secret = requiredLeadProperty_('STUDIO_LEAD_APPS_SCRIPT_SECRET') } catch (_) {
+    return studioLeadJson_({ ok: false, error: 'UNAVAILABLE' })
+  }
+  if (secret.length < 32) return studioLeadJson_({ ok: false, error: 'UNAVAILABLE' })
+  if (!studioLeadSignatureValid_(envelope, secret)) return studioLeadJson_({ ok: false, error: 'UNAUTHORIZED' })
+
+  try {
+    const result = leadWithLock_(function () {
+      if (!claimStudioLeadNonce_(nonce)) return { rejected: 'REPLAYED_REQUEST' }
+      return appendStudioLead_(payload)
+    })
+    if (result && result.rejected) return studioLeadJson_({ ok: false, error: result.rejected })
+    return studioLeadJson_({ ok: true, result: result })
+  } catch (_) {
+    Logger.log('Studio Lead Apps Script append failed (COORDINATOR_FAILURE).')
+    return studioLeadJson_({ ok: false, error: 'COORDINATOR_FAILURE' })
+  }
 }

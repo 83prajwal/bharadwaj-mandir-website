@@ -1,16 +1,14 @@
 # 3D Studio login and lead sheet setup
 
-The 3D Studio at `/mandir-designer` needs an account. Sign-ups and quotation requests are saved to a private Google Sheet.
-
-Nothing works until steps 1 to 4 are done on the live Netlify site.
+The 3D Studio at `/mandir-designer` needs an account. Sign-ups and quotation requests are saved to the existing private Google Sheet.
 
 ## How it works
 
 1. A logged-out visitor sees the sign-up and login page. The 3D code is not downloaded until they log in.
-2. The browser sends sign-ups to `netlify/functions/studio-lead.mjs`. The function checks the fields, the honeypot and the rate limit, creates the account in Netlify Identity, then adds one row to the sheet.
+2. The browser sends sign-ups to the Studio Lead API. The Netlify deployment uses `netlify/functions/studio-lead.mjs` and its existing Google Sheets integration. The Vercel deployment uses `/api/studio-lead`, verifies Netlify Identity, writes the customer profile to Supabase, then sends a signed server-to-server request to the existing Apps Script Web App to append one row.
 3. "Request a Quotation" calls the same function. It reads the name, phone and email from the logged-in account, adds a row, then opens the existing enquiry form.
 4. Passwords pass through the function to Netlify Identity. They are not logged or stored by this site, and they never reach the sheet.
-5. Google credentials and the sheet ID stay in Netlify environment variables. The browser never contacts Google.
+5. The browser never contacts Google. Netlify keeps its existing service-account configuration for rollback. Vercel does not use Google Service Account credentials for Studio Lead writes; Apps Script accesses the spreadsheet as its owner.
 
 ## 1. Turn on Netlify Identity
 
@@ -29,9 +27,9 @@ Nothing works until steps 1 to 4 are done on the live Netlify site.
 
 4. Copy the sheet ID from its URL: `https://docs.google.com/spreadsheets/d/<THIS-PART>/edit`.
 
-## 3. Create the service account
+## 3. Existing Netlify service-account setup (rollback only)
 
-Skip to step 6 of this list if `GOOGLE_SERVICE_ACCOUNT_EMAIL` is already set in Netlify.
+If `GOOGLE_SERVICE_ACCOUNT_EMAIL` is already set in Netlify, skip this service-account setup. It is retained only for the Netlify rollback path.
 
 1. Open <https://console.cloud.google.com/> and create or select a project.
 2. Open **APIs & Services > Library**, search for **Google Sheets API**, and click **Enable**.
@@ -52,7 +50,25 @@ In Netlify, open **Project configuration > Environment variables** and add the v
 | `GOOGLE_SPREADSHEET_ID` | The sheet ID from step 2 |
 | `GOOGLE_STUDIO_LEADS_TAB` | Optional. Defaults to `Studio Leads`. |
 
-Then redeploy the site. `.env.example` lists these names with empty values.
+These values remain necessary for the existing Netlify implementation and rollback. They are not required by the Vercel Studio Lead Apps Script appender.
+
+## 5. Configure Vercel to use the existing Apps Script Web App
+
+The Vercel API calls the existing Web App using a signed request. Keep the Web App configured to execute as its owner; public access is protected by the HMAC signature and timestamp/nonce checks in `doPost(e)`. Update the existing Web App deployment to a version containing that handler while retaining its URL. Do not create a separate Apps Script project or endpoint.
+
+Keep the existing `LEAD_SPREADSHEET_ID` Script Property pointing at the current spreadsheet. Add `STUDIO_LEAD_APPS_SCRIPT_SECRET` in Apps Script Script Properties, using the same high-entropy value configured in Vercel. Do not log or place this secret in frontend variables.
+
+Configure these server-only variables for the Vercel deployment:
+
+| Variable | Purpose |
+|---|---|
+| `STUDIO_LEAD_APPS_SCRIPT_URL` | URL of the existing deployed Web App ending in `/exec` |
+| `STUDIO_LEAD_APPS_SCRIPT_SECRET` | HMAC signing secret shared with Apps Script Script Properties |
+| `NETLIFY_IDENTITY_URL` | Existing Netlify Identity API |
+| `NETLIFY_BLOBS_SITE_ID` and `NETLIFY_BLOBS_TOKEN` | Existing Blobs site and Studio Lead store access |
+| `SUPABASE_URL` and `SUPABASE_SECRET_KEY` | Server-side customer profile storage |
+
+Vercel Studio Lead writes use the existing `Studio Leads` tab and its nine columns. Apps Script records the idempotency key as spreadsheet developer metadata, which does not add a visible column. Google Service Account credentials and `GOOGLE_SPREADSHEET_ID` are not needed in the Vercel Studio Lead flow; keep Netlify's existing values for rollback.
 
 ## Test checklist
 
@@ -83,7 +99,8 @@ Run these on the deployed site. They cannot be run on `npm run dev`, which has n
 
 **Failure and abuse**
 
-- [ ] Temporarily set a wrong `GOOGLE_SPREADSHEET_ID` and redeploy. Sign-up and quotation show the friendly message with a WhatsApp button. Restore the value afterwards.
+- [ ] On a Preview deployment, verify a successful signed Apps Script write adds one row and a retry does not add another.
+- [ ] On Preview, verify an Apps Script failure reports an unsaved lead while the Identity account and Supabase profile remain intact; retry after restoring the Apps Script configuration.
 - [ ] Send more than 5 sign-ups in an hour from one connection. Further attempts are refused with a "too many attempts" message.
 
 **Privacy**

@@ -107,7 +107,7 @@ export function createStudioLeadHandler({
     const claim = await store.setJSON(markerKey, { at: now().toISOString() }, { onlyIfNew: true })
     if (!claim.modified) return true
     try {
-      await appendRow(row)
+      await appendRow(row, { idempotencyKey: markerKey })
       return true
     } catch (error) {
       await store.delete(markerKey).catch(() => undefined)

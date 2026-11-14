@@ -1,4 +1,4 @@
-const STUDIO_LEAD_API = '/.netlify/functions/studio-lead'
+const STUDIO_LEAD_API = '/api/studio-lead'
 
 export async function postStudioLead(payload) {
   const response = await fetch(STUDIO_LEAD_API, {

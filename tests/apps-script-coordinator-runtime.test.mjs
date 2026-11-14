@@ -1,6 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
+import { createHmac } from 'node:crypto'
 import vm from 'node:vm'
 
 const headers = [
@@ -17,8 +18,10 @@ const controlKeys = ['last_report_end_utc', 'next_report_due_utc', 'pending_repo
 
 function fakeSheet(rows) {
   let maxColumns = Math.max(0, ...rows.map((row) => row.length))
+  const metadata = []
   return {
     rows,
+    metadata,
     getLastRow: () => rows.length,
     getLastColumn: () => Math.max(0, ...rows.map((row) => row.length)),
     getMaxColumns: () => maxColumns,
@@ -35,6 +38,7 @@ function fakeSheet(rows) {
           line.forEach((value, c) => { rows[row - 1 + r][col - 1 + c] = typeof value === 'string' && value.startsWith("'=") ? value.slice(1) : value })
         }) },
         setValue(value) { rows[row - 1] ||= []; rows[row - 1][col - 1] = typeof value === 'string' && value.startsWith("'=") ? value.slice(1) : value },
+        addDeveloperMetadata(key, value) { metadata.push({ key, value, row }) },
       }
     },
   }
@@ -64,10 +68,13 @@ function harness({ submissions = [], properties: overrides = {}, fetchImpl } = {
     RESEND_API_KEY: 'synthetic-resend-key',
     REPORT_FROM_EMAIL: 'sender@example.test',
     REPORT_TO_EMAIL: 'recipient@example.test',
+    STUDIO_LEAD_APPS_SCRIPT_SECRET: 'synthetic-apps-script-secret-value-at-least-32-bytes',
     ...overrides,
   }))
+  const studioLeads = fakeSheet([['Date', 'Name', 'Phone', 'Email', 'Design interest', 'Design details', 'Consent', 'Status', 'Notes']])
   const triggers = []
   const calls = []
+  let lockCalls = 0
   const scriptFetch = fetchImpl || ((url, options) => {
     calls.push({ url, options })
     if (url.includes('api.netlify.com')) {
@@ -78,9 +85,30 @@ function harness({ submissions = [], properties: overrides = {}, fetchImpl } = {
   })
   const context = {
     Date, JSON, Math, Object, String, Array, Set, Map, Number, Error, URL,
-    PropertiesService: { getScriptProperties: () => ({ getProperty: (key) => properties.get(key) || null }) },
-    SpreadsheetApp: { openById: () => ({ getSheetByName: (name) => ({ 'Lead Register': register, 'Report Control': control })[name] || null }), flush() {} },
-    LockService: { getScriptLock: () => ({ waitLock() {}, releaseLock() {} }) },
+    PropertiesService: { getScriptProperties: () => ({
+      getProperty: (key) => properties.get(key) || null,
+      getProperties: () => Object.fromEntries(properties),
+      setProperty: (key, value) => properties.set(key, String(value)),
+      deleteProperty: (key) => properties.delete(key),
+    }) },
+    SpreadsheetApp: {
+      DeveloperMetadataVisibility: { PROJECT: 'PROJECT' },
+      openById: () => ({
+        getSheetByName: (name) => ({ 'Lead Register': register, 'Report Control': control, 'Studio Leads': studioLeads })[name] || null,
+        createDeveloperMetadataFinder() {
+          let key
+          let value
+          const finder = {
+            withKey(next) { key = next; return finder },
+            withValue(next) { value = next; return finder },
+            find() { return studioLeads.metadata.filter((item) => item.key === key && item.value === value) },
+          }
+          return finder
+        },
+      }),
+      flush() {},
+    },
+    LockService: { getScriptLock: () => ({ waitLock() { lockCalls += 1 }, releaseLock() {} }) },
     UrlFetchApp: { fetch: scriptFetch },
     ScriptApp: {
       getProjectTriggers: () => triggers,
@@ -92,13 +120,79 @@ function harness({ submissions = [], properties: overrides = {}, fetchImpl } = {
         } }) }),
       }),
     },
-    Utilities: { formatDate: (date) => date.toISOString() },
+    Utilities: {
+      formatDate: (date) => date.toISOString(),
+      computeHmacSha256Signature: (value, key) => Array.from(createHmac('sha256', key).update(value).digest()),
+      base64EncodeWebSafe: (bytes) => Buffer.from(bytes).toString('base64url'),
+    },
+    ContentService: {
+      MimeType: { JSON: 'application/json' },
+      createTextOutput(content) { return { content, setMimeType() { return this }, getContent() { return this.content } } },
+    },
     Logger: { log() {} },
   }
   vm.createContext(context)
   vm.runInContext(readFileSync('scripts/apps-script/Code.gs', 'utf8'), context)
-  return { context, register, control, triggers, calls, properties }
+  return { context, register, control, studioLeads, triggers, calls, properties, get lockCalls() { return lockCalls } }
 }
+
+function signedStudioLead(payload, overrides = {}) {
+  const envelope = {
+    timestamp: new Date().toISOString(),
+    nonce: 'a'.repeat(48),
+    payload,
+    ...overrides,
+  }
+  const canonical = `${envelope.timestamp}.${envelope.nonce}.${JSON.stringify(envelope.payload)}`
+  envelope.signature = createHmac('sha256', 'synthetic-apps-script-secret-value-at-least-32-bytes').update(canonical).digest('base64url')
+  return envelope
+}
+
+function callStudioLead(app, envelope) {
+  const output = app.context.doPost({ postData: { contents: JSON.stringify(envelope) } })
+  return JSON.parse(output.getContent())
+}
+
+test('authenticated Studio Lead POST appends once to the existing nine-column tab', () => {
+  const app = harness()
+  const payload = {
+    operation: 'studioLeadAppend',
+    idempotencyKey: `signup/${'b'.repeat(64)}`,
+    row: ['Nov 13, 2026', 'Synthetic Customer', '+919876543210', 'synthetic@example.test', '3D Studio sign-up', '', 'Yes', 'New', ''],
+  }
+  const first = callStudioLead(app, signedStudioLead(payload))
+  const retryEnvelope = signedStudioLead(payload, { nonce: 'c'.repeat(48) })
+  const retry = callStudioLead(app, retryEnvelope)
+
+  assert.deepEqual(first, { ok: true, result: { accepted: true, duplicate: false } })
+  assert.deepEqual(retry, { ok: true, result: { accepted: true, duplicate: true } })
+  assert.equal(app.studioLeads.rows.length, 2)
+  assert.equal(app.studioLeads.rows[1].length, 9)
+  assert.equal(app.studioLeads.rows[1][3], 'synthetic@example.test')
+  assert.equal(app.studioLeads.metadata.length, 1)
+  assert.equal(app.lockCalls, 2)
+  assert.equal(app.register.rows.length, 1)
+})
+
+test('Studio Lead POST rejects forged, expired and replayed requests without writing rows', () => {
+  const app = harness()
+  const payload = {
+    operation: 'studioLeadAppend',
+    idempotencyKey: `signup/${'d'.repeat(64)}`,
+    row: ['Nov 13, 2026', 'Synthetic Customer', '+919876543210', 'synthetic@example.test', '3D Studio sign-up', '', 'Yes', 'New', ''],
+  }
+  const forged = signedStudioLead(payload)
+  forged.signature = 'z'.repeat(43)
+  assert.deepEqual(callStudioLead(app, forged), { ok: false, error: 'UNAUTHORIZED' })
+
+  const expired = signedStudioLead(payload, { timestamp: '2020-01-01T00:00:00.000Z', nonce: 'e'.repeat(48) })
+  assert.deepEqual(callStudioLead(app, expired), { ok: false, error: 'INVALID_REQUEST' })
+
+  const replay = signedStudioLead(payload, { nonce: 'f'.repeat(48) })
+  assert.deepEqual(callStudioLead(app, replay), { ok: true, result: { accepted: true, duplicate: false } })
+  assert.deepEqual(callStudioLead(app, replay), { ok: false, error: 'REPLAYED_REQUEST' })
+  assert.equal(app.studioLeads.rows.length, 2)
+})
 
 test('hourly trigger setup is idempotent and does not create an extra report trigger', () => {
   const app = harness()
