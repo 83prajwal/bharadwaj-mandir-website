@@ -5,6 +5,7 @@ import { parseQuotationValidationResponse } from '../lib/quotation-response.mjs'
 
 const uploadLimit = 7 * 1024 * 1024
 const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf']
+const enquirySubmissionUrl = import.meta.env.VITE_ENQUIRY_SUBMISSION_URL || '/'
 
 export default function EnquiryForm() {
   const [submitted, setSubmitted] = useState(false)
@@ -69,7 +70,7 @@ export default function EnquiryForm() {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams([...body.entries()].filter(([name]) => name !== 'referenceFile')).toString(),
           }
-      const response = await fetch('/', request)
+      const response = await fetch(enquirySubmissionUrl, request)
       if (!response.ok) {
         console.error(`Netlify Forms returned HTTP ${response.status} for the enquiry submission.`)
         setError(`The form service returned an HTTP ${response.status} response. Your enquiry was not confirmed; please try again later.`)
@@ -97,7 +98,7 @@ export default function EnquiryForm() {
           {designerQuote ? <><p><strong>{designerName}</strong> (request reference: {submittedReference})</p><p>The form service accepted your request. The Bharadwaj Mandir team will review the design and requirements you provided. No commercial quotation has been issued.</p><Link className="btn btn-primary" to="/mandir-designer">Return to the 3D Studio</Link></> : <><p>The form service accepted your submission. The team can now review the project details you provided. This site cannot display a service-generated reference number.</p><p>Destination feasibility, specifications and any quotation will need to be confirmed with the team.</p></>}
         </div>
       ) : (
-        <form className="enquiry-form" name="enquiry" method="POST" action="/" data-netlify="true" data-netlify-honeypot="bot-field" encType="multipart/form-data" onSubmit={handleSubmit}>
+        <form className="enquiry-form" name="enquiry" method="POST" action={enquirySubmissionUrl} data-netlify="true" data-netlify-honeypot="bot-field" encType="multipart/form-data" onSubmit={handleSubmit}>
           <input type="hidden" name="form-name" value="enquiry" />
           <input type="hidden" name="productUrl" value={selectedProductId === linkedProductId ? query.get('productUrl') || '' : selectedProductId ? `${window.location.origin}/products/${selectedProductId}` : ''} />
         <input type="hidden" name="enquiryType" value={designerQuote ? '3D Studio quotation request' : 'Website enquiry'} />
