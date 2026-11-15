@@ -361,6 +361,15 @@ html[data-scrolled] .site-header { background: color-mix(in srgb, var(--cream) 9
 .footer-blessing p { margin: 0; }
 .blessing-devanagari { display: block; color: var(--gold-light); font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 600; line-height: 1.4; }
 .blessing-english { display: block; color: rgba(255, 248, 236, .85); font-family: var(--font-display); font-size: .82rem; letter-spacing: .3em; text-transform: uppercase; }
+.footer-blessing-rotator { display: grid; justify-items: center; gap: .55rem; }
+.footer-blessing-text { display: grid; align-content: center; min-height: 5.4rem; margin: 0; animation: blessing-in .8s ease both; }
+@keyframes blessing-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.blessing-dots { display: flex; flex-wrap: wrap; justify-content: center; }
+.blessing-dots button { display: grid; place-items: center; width: 28px; height: 28px; padding: 0; border: 0; background: none; cursor: pointer; }
+.blessing-dots button::before { content: ''; width: 7px; height: 7px; border: 1px solid var(--gold-light); border-radius: 50%; transition: background-color .3s ease, transform .3s ease; }
+.blessing-dots button[aria-pressed="true"]::before { background: var(--gold-light); transform: scale(1.3); }
+.blessing-dots button:focus-visible { outline: 2px solid var(--gold-light); outline-offset: -2px; border-radius: 50%; }
+@media (prefers-reduced-motion: reduce) { .footer-blessing-text { animation: none; } }
 .footer-blessing small { color: rgba(255, 248, 236, .7); font-size: .75rem; }
 
 /* ---------- existing pages: lift & glow, headings ---------- */
@@ -421,7 +430,12 @@ html[data-scrolled] .site-header { background: color-mix(in srgb, var(--cream) 9
 .floating-action { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; color: #fff; box-shadow: 0 10px 24px -8px rgba(43, 20, 10, .55); transition: transform .2s ease; }
 .floating-action:hover { transform: translateY(-2px); }
 .floating-whatsapp { background: #128C4B; }
-.floating-call { background: linear-gradient(135deg, var(--maroon), var(--maroon-deep)); }
+/* Phones: WhatsApp (left) and Ask us (right) share one bottom line, and the
+   footer ends above them so they never cover its text. */
+@media (max-width: 760px) {
+  .assistant-widget { bottom: calc(1rem + env(safe-area-inset-bottom)); }
+  .site-footer { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
+}
 .nav-whatsapp { display: inline-flex; align-items: center; justify-content: center; gap: .45rem; flex: 0 0 auto; width: 42px; height: 42px; border-radius: 50%; background: #128C4B; color: #fff; }
 .nav-whatsapp span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 @media (max-width: 1024px) {
