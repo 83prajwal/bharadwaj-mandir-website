@@ -77,6 +77,22 @@ export default function MandirDesigner() {
     }).catch((error) => setStatus(error.message))
   }, [])
 
+  // Supabase metadata lets a signed-in customer see their saved designs on a
+  // different device. Existing local and owner-secret entries remain as a
+  // fallback and are merged without replacing them.
+  useEffect(() => {
+    let active = true
+    designApi({ operation: 'list' }).then(({ designs }) => {
+      if (!active || !Array.isArray(designs)) return
+      const local = readSavedDesigns()
+      const remoteIds = new Set(designs.map((entry) => entry.id))
+      const merged = [...designs, ...local.filter((entry) => !remoteIds.has(entry.id))]
+      try { storeSavedDesigns(merged) } catch { /* Keep the remote list in memory if browser storage is unavailable. */ }
+      setSaved(merged)
+    }).catch(() => { /* Existing browser copies remain available if metadata lookup is offline. */ })
+    return () => { active = false }
+  }, [])
+
   useEffect(() => {
     try { localStorage.setItem('bm-designer-draft-v1', JSON.stringify(config)) } catch { /* Saving a draft is best effort. */ }
   }, [config])
@@ -105,8 +121,9 @@ export default function MandirDesigner() {
     const existing = forceNew ? null : saved.find((item) => item.id === loadedId)
     const cleanName = name.trim() || 'Mandir design'
     try {
-      const result = await designApi({ operation: 'save', id: existing?.ownerSecret ? existing.id : undefined, ownerSecret: existing?.ownerSecret, name: cleanName, config: nextConfig })
-      const entry = { ...result.design, ownerSecret: result.ownerSecret || existing?.ownerSecret, config: nextConfig }
+      const customerOwned = existing?.customerOwned === true
+      const result = await designApi({ operation: 'save', id: existing?.ownerSecret || customerOwned ? existing.id : undefined, ownerSecret: existing?.ownerSecret, name: cleanName, config: nextConfig })
+      const entry = { ...result.design, ownerSecret: result.ownerSecret || existing?.ownerSecret, customerOwned: true, config: nextConfig }
       const next = [entry, ...saved.filter((item) => item.id !== entry.id && item.id !== existing?.id)]
       storeSavedDesigns(next); setSaved(next); setLoadedId(entry.id)
       setStatus('Design saved securely. This browser holds its private management key.')
@@ -123,10 +140,10 @@ export default function MandirDesigner() {
 
   async function duplicateDesign(sourceOverride) {
     const source = sourceOverride || saved.find((item) => item.id === loadedId)
-    if (sourceOverride?.ownerSecret) {
+    if (sourceOverride?.ownerSecret || sourceOverride?.customerOwned) {
       try {
         const result = await designApi({ operation: 'duplicate', id: source.id, ownerSecret: source.ownerSecret })
-        const entry = { ...result.design, ownerSecret: result.ownerSecret }
+        const entry = { ...result.design, ownerSecret: result.ownerSecret, customerOwned: true }
         const next = [entry, ...saved]
         storeSavedDesigns(next); setSaved(next); setLoadedId(entry.id); setDesignName(entry.name); setConfig(normalizeConfig(entry.config)); setStatus('A separate saved copy was created.')
         return
@@ -141,7 +158,7 @@ export default function MandirDesigner() {
     const entry = saved.find((item) => item.id === id)
     if (!entry) return
     try {
-      const remote = entry.ownerSecret ? await designApi({ operation: 'load', id, ownerSecret: entry.ownerSecret }) : null
+      const remote = entry.ownerSecret || entry.customerOwned ? await designApi({ operation: 'load', id, ownerSecret: entry.ownerSecret }) : null
       replace(remote?.design.config || entry.config)
       setDesignName(remote?.design.name || entry.name); setLoadedId(id)
       setStatus(`Loaded “${entry.name}”.`)
@@ -154,7 +171,7 @@ export default function MandirDesigner() {
     if (!entry) return
     if (!name || name.length > 80) { setStatus('Design name must be 1 to 80 characters.'); return }
     try {
-      if (entry.ownerSecret) await designApi({ operation: 'rename', id: entry.id, ownerSecret: entry.ownerSecret, name })
+      if (entry.ownerSecret || entry.customerOwned) await designApi({ operation: 'rename', id: entry.id, ownerSecret: entry.ownerSecret, name })
       const next = saved.map((item) => item.id === loadedId ? { ...item, name, updatedAt: new Date().toISOString() } : item)
       storeSavedDesigns(next); setSaved(next); setStatus('Design renamed.')
     } catch (error) { setStatus(error.message) }
@@ -163,7 +180,7 @@ export default function MandirDesigner() {
   async function removeDesign(selectedOverride) {
     const selected = selectedOverride || saved.find((entry) => entry.id === loadedId)
     const deleteId = selected?.id || loadedId
-    if (selected?.ownerSecret) {
+    if (selected?.ownerSecret || selected?.customerOwned) {
       try { await designApi({ operation: 'delete', id: selected.id, ownerSecret: selected.ownerSecret }) }
       catch (error) { setStatus(error.message); return }
     }
@@ -181,8 +198,9 @@ export default function MandirDesigner() {
     const shareConflicts = validate(shareConfig)
     if (shareConflicts.length) { setStatus(`Cannot create a share link until these checks are resolved: ${shareConflicts.join(' ')}`); return }
     try {
-      const save = await designApi({ operation: 'save', id: entry?.ownerSecret ? entry.id : undefined, ownerSecret: entry?.ownerSecret, name: shareName.trim() || 'Mandir design', config: shareConfig })
-      entry = { ...save.design, ownerSecret: save.ownerSecret || entry?.ownerSecret, config: shareConfig }
+      const customerOwned = entry?.customerOwned === true
+      const save = await designApi({ operation: 'save', id: entry?.ownerSecret || customerOwned ? entry.id : undefined, ownerSecret: entry?.ownerSecret, name: shareName.trim() || 'Mandir design', config: shareConfig })
+      entry = { ...save.design, ownerSecret: save.ownerSecret || entry?.ownerSecret, customerOwned: true, config: shareConfig }
       const { token } = await designApi({ operation: 'share', id: entry.id, ownerSecret: entry.ownerSecret })
       const next = [entry, ...saved.filter((item) => item.id !== entry.id && item.id !== replacedLocalId)]
       storeSavedDesigns(next); setSaved(next); setLoadedId(entry.id)
@@ -336,8 +354,8 @@ export default function MandirDesigner() {
                 <button type="button" onClick={() => loadDesign(entry.id)}>Open</button>
                 <button type="button" onClick={() => { setLoadedId(entry.id); setDesignName(entry.name) }}>Select</button>
                 <button type="button" onClick={() => duplicateDesign(entry)}>Duplicate</button>
-                {entry.ownerSecret && <button type="button" onClick={() => shareDesign(entry)}>Share</button>}
-                {entry.ownerSecret && entry.hasShare && <button type="button" onClick={() => revokeShare(entry)}>Revoke link</button>}
+                {(entry.ownerSecret || entry.customerOwned) && <button type="button" onClick={() => shareDesign(entry)}>Share</button>}
+                {(entry.ownerSecret || entry.customerOwned) && entry.hasShare && <button type="button" onClick={() => revokeShare(entry)}>Revoke link</button>}
                 <button type="button" onClick={() => removeDesign(entry)}>Delete</button>
               </div>
               {entry.localOnly && <small>Browser-only copy · save again when Netlify storage is available</small>}

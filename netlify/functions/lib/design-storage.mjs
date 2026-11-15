@@ -86,6 +86,9 @@ export function validateStoredDesign(input) {
 
 const hash = (value) => createHash('sha256').update(value).digest('hex')
 const secret = () => randomBytes(32).toString('base64url')
+// Only trusted server adapters can provide this symbol on the invocation
+// context after verifying the customer's Identity session and Supabase owner row.
+export const SERVER_AUTHORIZED_DESIGN_ID = Symbol('server-authorized-design-id')
 function isSecretMatch(value, storedHash) {
   if (typeof value !== 'string' || !/^[A-Za-z0-9_-]{43}$/.test(value) || typeof storedHash !== 'string') return false
   const actual = Buffer.from(hash(value), 'hex')
@@ -106,7 +109,9 @@ export function createDesignHandler({ store, now = () => new Date() }) {
     if (typeof id !== 'string' || !/^[0-9a-f-]{36}$/.test(id)) return null
     return (await store.get(designKey(id), { type: 'json' })) || null
   }
-  const authorize = (record, ownerSecret) => record && isSecretMatch(ownerSecret, record.ownerHash)
+  const authorize = (record, ownerSecret, id, context) => record && (
+    isSecretMatch(ownerSecret, record.ownerHash) || context?.[SERVER_AUTHORIZED_DESIGN_ID] === id
+  )
   return async function handler(request, context = {}) {
     if (!['GET', 'POST'].includes(request.method)) return json(405, { error: 'Use GET or POST.' })
     const origin = request.headers.get('origin')
@@ -151,14 +156,14 @@ export function createDesignHandler({ store, now = () => new Date() }) {
       const ownerSecret = request.method === 'POST' ? body.ownerSecret : query.get('ownerSecret')
       if (request.method === 'POST' && operation === 'load') {
         const record = await getDesign(id)
-        if (!authorize(record, ownerSecret)) return json(404, { error: 'Saved design not found.' })
+        if (!authorize(record, ownerSecret, id, context)) return json(404, { error: 'Saved design not found.' })
         return json(200, { design: { id, name: record.name, createdAt: record.createdAt, updatedAt: record.updatedAt, hasShare: Boolean(record.shareHash), config: record.config } })
       }
       if (request.method === 'GET') return json(405, { error: 'Use POST for design operations.' })
       if (operation === 'save' || operation === 'rename') {
         const isUpdate = Boolean(id)
         const record = isUpdate && await getDesign(id)
-        if (isUpdate && !authorize(record, ownerSecret)) return json(404, { error: 'Saved design not found.' })
+        if (isUpdate && !authorize(record, ownerSecret, id, context)) return json(404, { error: 'Saved design not found.' })
         const name = typeof body.name === 'string' ? body.name.trim() : ''
         if (!name || name.length > 80) return json(400, { error: 'Design name must be 1 to 80 characters.' })
         const config = operation === 'rename' ? record.config : validateStoredDesign(body.config)
@@ -170,7 +175,7 @@ export function createDesignHandler({ store, now = () => new Date() }) {
         return json(200, { design: { id: saved.id, name: saved.name, createdAt: saved.createdAt, updatedAt: saved.updatedAt, hasShare: Boolean(saved.shareHash), config: saved.config }, ...(issuedSecret ? { ownerSecret: issuedSecret } : {}) })
       }
       const record = await getDesign(id)
-      if (!authorize(record, ownerSecret)) return json(404, { error: 'Saved design not found.' })
+      if (!authorize(record, ownerSecret, id, context)) return json(404, { error: 'Saved design not found.' })
       if (operation === 'duplicate') {
         const timestamp = now().toISOString(); const ownerToken = secret()
         const copy = { ...record, id: randomUUID(), name: `${record.name} copy`, createdAt: timestamp, updatedAt: timestamp, ownerHash: hash(ownerToken), shareHash: null }
