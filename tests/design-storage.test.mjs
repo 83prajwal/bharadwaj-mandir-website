@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto'
 import { defaults } from '../src/pages/mandir-studio/lib/config.ts'
 import { createDesignHandler } from '../netlify/functions/lib/design-storage.mjs'
 import { createVercelDesignsHandler, createVercelDesignsNodeHandler } from '../api/designs.js'
+import { projectDesignMetadata } from '../server/lib/design-metadata.js'
 import { Readable } from 'node:stream'
 
 class MemoryStore {
@@ -273,6 +274,47 @@ function customerDesignHandler({ store = new MemoryStore(), repository, identity
   return { store, request: (operation, body = {}) => vercelRequest(vercelDesignRequest(operation, body, 'POST', { cookie: 'nf_jwt=preview-session-token' }), handler) }
 }
 
+test('design metadata projects actual configuration fields and preserves explicit values', () => {
+  const config = {
+    ...structuredClone(defaults),
+    material: 'Green',
+    finish: 'Polished',
+    materialPillars: 'Inherit',
+    materialRoof: 'Black',
+    backPaint: 'None',
+    doorsPaint: 'Gold',
+    pillarsInlay: 'Full',
+    inlayColor: 'Blue',
+    backCarving: 'Intricate',
+    doorsPattern: 'Lotus',
+    jaliPattern: 'Hexagon',
+    doors: 'Jali',
+    roof: 'Dome',
+    kalash: false,
+    pillars: 0,
+    width: 0,
+    designFamily: 'Parametric',
+    unrecognizedMetadata: 'must not be copied',
+  }
+  const metadata = projectDesignMetadata(config)
+
+  assert.deepEqual(metadata, Object.fromEntries(Object.entries(config).filter(([key]) => !['unrecognizedMetadata', 'requirements', 'dimensions', 'lighting', 'brightness'].includes(key))))
+  assert.equal(metadata.material, 'Green')
+  assert.equal(metadata.materialPillars, 'Inherit')
+  assert.equal(metadata.backPaint, 'None')
+  assert.equal(metadata.pillars, 0)
+  assert.equal(metadata.width, 0)
+  assert.equal(Object.hasOwn(metadata, 'unrecognizedMetadata'), false)
+  assert.equal(Object.hasOwn(metadata, 'requirements'), false)
+  assert.equal(Object.hasOwn(metadata, 'dimensions'), false)
+  assert.equal(Object.hasOwn(metadata, 'lighting'), false)
+})
+
+test('design metadata omits absent optional configuration properties without inventing values', () => {
+  const metadata = projectDesignMetadata({ material: 'Pink', finish: 'Matte', pillars: 0, backPaint: 'None' })
+  assert.deepEqual(metadata, { material: 'Pink', finish: 'Matte', pillars: 0, backPaint: 'None' })
+})
+
 test('authenticated Vercel designs map Identity to a server-selected profile and support cross-device design operations', async () => {
   const profileA = { id: 'customer-a', netlify_identity_id: 'identity-owner' }
   const profileB = { id: 'customer-b', netlify_identity_id: 'identity-other' }
@@ -287,6 +329,7 @@ test('authenticated Vercel designs map Identity to a server-selected profile and
   assert.equal(repository.designRows.get(payload.design.id).customer_id, profileA.id)
   assert.equal(repository.designRows.get(payload.design.id).storage_reference, `design:${payload.design.id}`)
   assert.deepEqual(repository.designRows.get(payload.design.id).design_configuration, config)
+  assert.deepEqual(repository.designRows.get(payload.design.id).design_metadata, projectDesignMetadata(config))
 
   response = await owner.request('list')
   payload = await response.json()
@@ -306,6 +349,8 @@ test('authenticated Vercel designs map Identity to a server-selected profile and
   assert.equal(response.status, 200)
   assert.equal(repository.designRows.get(id).design_name, 'Updated design')
   assert.equal(repository.designRows.get(id).design_configuration.width, 1250)
+  assert.equal(repository.designRows.get(id).design_metadata.width, 1250)
+  assert.equal(repository.designRows.get(id).design_metadata.materialRoof, config.materialRoof)
 
   response = await owner.request('rename', { id, name: 'Renamed design' })
   assert.equal(response.status, 200)
@@ -445,4 +490,26 @@ test('legacy designs remain owner-secret accessible and are linked only after ve
   assert.equal(response.status, 200)
   assert.equal(repository.designRows.get(legacyId).customer_id, 'customer-a')
   assert.equal(repository.designRows.get(legacyId).legacy_design_id, legacyId)
+})
+
+test('existing design rows with null metadata remain loadable from Netlify Blobs', async () => {
+  const store = new MemoryStore()
+  const legacyHandler = createDesignHandler({ store })
+  const legacy = await call(legacyHandler, 'save', { name: 'Metadata not yet backfilled', config: structuredClone(defaults) })
+  const id = legacy.data.design.id
+  const repository = metadataRepository([{ id: 'customer-a', netlify_identity_id: 'identity-owner' }])
+  repository.designRows.set(id, {
+    id,
+    customer_id: 'customer-a',
+    legacy_design_id: null,
+    design_name: legacy.data.design.name,
+    design_configuration: legacy.data.design.config,
+    storage_reference: `design:${id}`,
+    design_metadata: null,
+  })
+  const owner = customerDesignHandler({ store, repository })
+  const response = await owner.request('load', { id })
+  assert.equal(response.status, 200)
+  assert.deepEqual((await response.json()).design.config, legacy.data.design.config)
+  assert.equal(repository.designRows.get(id).design_metadata, null)
 })

@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto'
 import { Readable } from 'node:stream'
 import { getStore } from '@netlify/blobs'
 import { createSupabaseCustomerRepository } from '../server/lib/supabase-customers.js'
+import { projectDesignMetadata } from '../server/lib/design-metadata.js'
 import { createDesignHandler, SERVER_AUTHORIZED_DESIGN_ID } from '../netlify/functions/lib/design-storage.mjs'
 
 const STORE_NAME = 'bharadwaj-mandir-designs'
@@ -105,6 +106,7 @@ function toMetadata(record, customerId, { legacyDesignId = null, shareTokenHash 
     legacy_design_id: legacyDesignId,
     design_name: record.name,
     design_configuration: record.config,
+    design_metadata: projectDesignMetadata(record.config),
     storage_reference: `design:${record.id}`,
     share_token_hash: shareTokenHash,
     share_expires_at: shareExpiresAt,
