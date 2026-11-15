@@ -140,7 +140,7 @@ function AuthForms({ initialNotice, onSignedUp }) {
             {mode === 'signup' ? (
               <>
                 <label><span>Full name *</span><input type="text" autoComplete="name" minLength={2} maxLength={120} required {...field('fullName')} /></label>
-                <label><span>Phone *</span><input type="tel" autoComplete="tel" placeholder="98765 43210" pattern="(\+?91|0)?[\s\-]*[6-9][\d\s\-]{9,13}" title="Enter a 10-digit Indian mobile number. Country code is optional." required {...field('phone')} /></label>
+                <label><span>Phone *</span><input type="tel" autoComplete="tel" pattern="(\+?91|0)?[\s\-]*[6-9][\d\s\-]{9,13}" title="Enter a 10-digit Indian mobile number. Country code is optional." required {...field('phone')} /></label>
               </>
             ) : null}
             <label><span>Email *</span><input type="email" autoComplete="email" maxLength={254} required {...field('email')} /></label>

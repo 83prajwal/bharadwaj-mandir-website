@@ -11,7 +11,19 @@ export const heroShloka = {
   meaning: 'May all be happy; may all be free from suffering.',
 }
 
-export const blessingLine = { devanagari: 'ॐ नमः शिवाय', english: 'Om Namah Shivaya' }
+// Footer blessings, shown in turn so customers of every tradition feel welcome.
+// The first one honours all deities. Add, remove or reorder freely.
+export const blessings = [
+  { devanagari: 'ॐ सर्वदेवेभ्यो नमः', english: 'Om Sarva Devebhyo Namah', meaning: 'Salutations to all the divine' },
+  { devanagari: 'ॐ गं गणपतये नमः', english: 'Om Gam Ganapataye Namah', meaning: 'Salutations to Lord Ganesha' },
+  { devanagari: 'ॐ नमो भगवते वासुदेवाय', english: 'Om Namo Bhagavate Vasudevaya', meaning: 'Salutations to Lord Krishna' },
+  { devanagari: 'श्री राम जय राम जय जय राम', english: 'Shri Ram Jai Ram Jai Jai Ram', meaning: 'Glory to Lord Rama' },
+  { devanagari: 'ॐ श्री महालक्ष्म्यै नमः', english: 'Om Shri Mahalakshmyai Namah', meaning: 'Salutations to Goddess Lakshmi' },
+  { devanagari: 'ॐ दुं दुर्गायै नमः', english: 'Om Dum Durgayai Namah', meaning: 'Salutations to Goddess Durga' },
+  { devanagari: 'ॐ श्री हनुमते नमः', english: 'Om Shri Hanumate Namah', meaning: 'Salutations to Lord Hanuman' },
+  { devanagari: 'ॐ ऐं सरस्वत्यै नमः', english: 'Om Aim Saraswatyai Namah', meaning: 'Salutations to Goddess Saraswati' },
+  { devanagari: 'ॐ नमः शिवाय', english: 'Om Namah Shivaya', meaning: 'Salutations to Lord Shiva' },
+]
 
 export const visitInfo = {
   confirmed: false,

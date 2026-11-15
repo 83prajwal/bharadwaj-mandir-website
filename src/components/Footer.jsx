@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom'
 import TempleIcon from './TempleIcons'
 import { Divider } from './Ornaments'
 import WhatsAppLink from './WhatsAppLink'
-import { blessingLine, socialLinks, visitInfo } from '../data/siteContent'
+import FooterBlessing from './FooterBlessing'
+import { socialLinks, visitInfo } from '../data/siteContent'
 import { openAssistantEvent, openCookieSettingsEvent } from '../lib/siteEvents'
 
 export default function Footer() {
@@ -70,7 +71,7 @@ export default function Footer() {
       </div>
       <div className="footer-blessing container">
         <Divider variant="lotus" />
-        <p><span lang="sa" className="blessing-devanagari">{blessingLine.devanagari}</span> <span className="blessing-english">{blessingLine.english}</span></p>
+        <FooterBlessing />
         <small>© {new Date().getFullYear()} Bharadwaj Mandir</small>
       </div>
     </footer>
