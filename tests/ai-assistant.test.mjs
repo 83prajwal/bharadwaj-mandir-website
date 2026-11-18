@@ -124,6 +124,26 @@ test('social conversation, gratitude, acknowledgements and complaints use intent
   assert.equal(classifyDeterministicIntent([{ role: 'user', content: 'Can you help me?' }]).answer, 'Of course. What would you like help with?')
 })
 
+test('pricing, international delivery, manufacturing, customisation and payment questions use confirmed policy only', () => {
+  const scenarios = [
+    ['How much does a small marble mandir cost?', /personalised quotations rather than publishing fixed product prices or price ranges/i, /dimensions.*marble selection.*carving.*customisation.*shipping destination/i, /within 24 hours/i],
+    ['Do you deliver to the UK or USA?', /UK, USA/i, /availability and charges depend on the destination/i],
+    ['How long does it take to manufacture a mandir?', /do not have a verified manufacturing timeline/i],
+    ['Can I customise my mandir?', /customisation options are confirmed for each project/i],
+    ['What payment methods do you accept?', /has not published confirmed payment methods/i],
+  ]
+
+  for (const [question, ...expectations] of scenarios) {
+    const response = classifyDeterministicIntent([{ role: 'user', content: question }])
+    assert.ok(response, question)
+    assert.equal(response.handoff, true, question)
+    for (const expected of expectations) assert.match(response.answer, expected, question)
+  }
+
+  const priceResponse = classifyDeterministicIntent([{ role: 'user', content: scenarios[0][0] }])
+  assert.equal(priceResponse.quoteRequest, true)
+})
+
 test('unmatched unrelated questions do not turn into enquiry handoffs, including after a topic change', () => {
   const response = composeUnknownResponse([{ role: 'user', content: 'How does photosynthesis work?' }])
   assert.equal(response.handoff, false)
@@ -146,9 +166,9 @@ test('context-free fragments ask for clarification while business questions rema
   const knownProductQuestion = 'Do you have a mandir with a peacock motif?'
   const unknownPriceQuestion = 'What is the price of the peacock design?'
   const unknownDeliveryQuestion = 'Which locations do you deliver to?'
-  for (const question of [knownProductQuestion, unknownPriceQuestion, unknownDeliveryQuestion]) {
-    assert.equal(classifyDeterministicIntent([{ role: 'user', content: question }]), null)
-  }
+  assert.equal(classifyDeterministicIntent([{ role: 'user', content: knownProductQuestion }]), null)
+  assert.equal(classifyDeterministicIntent([{ role: 'user', content: unknownPriceQuestion }]).quoteRequest, true)
+  assert.equal(classifyDeterministicIntent([{ role: 'user', content: unknownDeliveryQuestion }]).quoteRequest, true)
 })
 
 test('unknown price and delivery questions still hand off after a successful provider response', async () => {
@@ -179,7 +199,8 @@ test('unknown business details receive relevant, concise handoffs', () => {
     { role: 'user', content: 'What would the peacock design cost?' },
   ])
   assert.equal(price.handoff, true)
-  assert.match(price.answer, /confirmed price/i)
+  assert.match(price.answer, /personalised quotations rather than publishing fixed product prices/i)
+  assert.match(price.answer, /within 24 hours/i)
   assert.match(price.answer, /enquiry form/i)
 
   const delivery = composeGroundedAnswer({ factIds: [], unknown: true }, buildKnowledge(), [
@@ -196,7 +217,9 @@ test('ambiguous follow-ups with relevant history continue through verified fact 
     { role: 'assistant', content: 'White Mandir with Peacock Motif: A blue peacock motif stands out against the white carved surround.' },
     { role: 'user', content: 'What about its price?' },
   ]
-  assert.equal(classifyDeterministicIntent(contextualMessages), null)
+  const priceFollowUp = classifyDeterministicIntent(contextualMessages)
+  assert.equal(priceFollowUp.quoteRequest, true)
+  assert.match(priceFollowUp.answer, /included this chat in the form/i)
 
   const incompleteFollowUp = [...contextualMessages.slice(0, 2), { role: 'user', content: 'And the colour options?' }]
   assert.equal(classifyDeterministicIntent(incompleteFollowUp), null)

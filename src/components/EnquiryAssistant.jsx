@@ -20,6 +20,7 @@ export default function EnquiryAssistant() {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [handoff, setHandoff] = useState(false)
+  const [quotationHandoff, setQuotationHandoff] = useState(false)
   const transcriptRef = useRef(null)
   const openerRef = useRef(null)
   const composerRef = useRef(null)
@@ -54,6 +55,7 @@ export default function EnquiryAssistant() {
     setDraft('')
     setError('')
     setHandoff(false)
+    setQuotationHandoff(false)
     setBusy(true)
     try {
       const recentMessages = []
@@ -71,6 +73,7 @@ export default function EnquiryAssistant() {
       const data = await readAssistantResponse(response)
       setMessages((current) => [...current, { role: 'assistant', content: data.answer }])
       setHandoff(data.handoff === true)
+      setQuotationHandoff(data.quoteRequest === true)
     } catch (sendError) {
       if (sendError?.code === 'ASSISTANT_ENDPOINT_UNAVAILABLE') {
         const isLocalPreview = ['localhost', '127.0.0.1', '::1'].includes(window.location.hostname)
@@ -101,7 +104,7 @@ export default function EnquiryAssistant() {
             ))}
             {busy && <p className="assistant-message assistant-message-assistant" role="status">Checking the published information…</p>}
           </div>
-          {handoff && <Link className="assistant-handoff" to="/contact?interest=Project%20enquiry" state={{ assistantQuestion: messages.filter((message) => message.role === 'user').at(-1)?.content || '' }}>Continue with the existing enquiry form</Link>}
+          {handoff && <Link className="assistant-handoff" to="/contact?interest=Project%20enquiry" state={{ assistantQuestion: messages.filter((message) => message.role === 'user').at(-1)?.content || '', assistantConversation: messages.filter((message) => message.role === 'user').map((message) => message.content).join('\n').slice(-3000), assistantQuotationRequest: quotationHandoff }}>Continue with the existing enquiry form</Link>}
           {error && <div className="assistant-error" role="alert"><p>{error}</p><Link to="/contact?interest=Project%20enquiry" state={{ assistantQuestion: messages.filter((message) => message.role === 'user').at(-1)?.content || '' }}>Continue with the enquiry form</Link></div>}
           <form className="assistant-composer" onSubmit={sendMessage}>
             <label className="assistant-sr-only" htmlFor="assistant-message">Ask a question about our mandirs</label>

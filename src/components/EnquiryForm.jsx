@@ -21,6 +21,8 @@ export default function EnquiryForm() {
   const linkedProductId = query.get('productId') || ''
   const [selectedProductId, setSelectedProductId] = useState(() => (products.some((product) => product.id === linkedProductId) ? linkedProductId : ''))
   const assistantQuestion = typeof location.state?.assistantQuestion === 'string' ? location.state.assistantQuestion.slice(0, 1200) : ''
+  const assistantConversation = typeof location.state?.assistantConversation === 'string' ? location.state.assistantConversation.slice(0, 3000) : ''
+  const assistantQuotationRequest = location.state?.assistantQuotationRequest === true
   const designerConfig = location.state?.designerConfig && typeof location.state.designerConfig === 'object' ? location.state.designerConfig : null
   const designerQuote = Boolean(location.state?.designerQuote && designerConfig)
   const designerName = typeof location.state?.designerName === 'string' ? location.state.designerName.slice(0, 80) : 'Mandir design'
@@ -30,7 +32,10 @@ export default function EnquiryForm() {
   const designerSummary = designerConfig
     ? `3D Studio design: ${typeof location.state?.designerName === 'string' ? location.state.designerName.slice(0, 80) : 'Mandir design'}\n${designerFields.filter((key) => designerConfig[key] !== undefined).map((key) => `${key}: ${String(designerConfig[key]).slice(0, 100)}`).join('\n')}${typeof designerConfig.requirements === 'string' && designerConfig.requirements.trim() ? `\nDesign requirements: ${designerConfig.requirements.slice(0, 1200)}` : ''}`
     : ''
-  const initialMessage = [assistantQuestion ? `Question from the website assistant: ${assistantQuestion}` : '', designerSummary].filter(Boolean).join('\n\n').slice(0, 3800)
+  const assistantContext = assistantConversation
+    ? `Conversation details from the website assistant:\n${assistantConversation}`
+    : assistantQuestion ? `Question from the website assistant: ${assistantQuestion}` : ''
+  const initialMessage = [assistantContext, designerSummary].filter(Boolean).join('\n\n').slice(0, 3800)
 
   async function handleSubmit(event) {
     event.preventDefault()
@@ -116,11 +121,11 @@ export default function EnquiryForm() {
             <label><span>Full name *</span><input type="text" name="fullName" autoComplete="name" maxLength="120" required /></label>
             <label><span>Email *</span><input type="email" name="email" autoComplete="email" maxLength="254" required /></label>
             <label><span>Country *</span><input type="text" name="country" list="country-list" autoComplete="country-name" maxLength="100" required /><datalist id="country-list">{['United States', 'United Kingdom', 'Canada', 'Australia', 'United Arab Emirates', 'Singapore', 'New Zealand', 'India', 'Germany', 'France', 'Netherlands', 'Italy', 'Switzerland', 'Ireland', 'South Africa', 'Malaysia', 'Japan'].map((country) => <option key={country} value={country} />)}</datalist></label>
-            <label><span>{designerQuote ? 'Installation city *' : 'City'}</span><input type="text" name="city" autoComplete="address-level2" maxLength="100" required={designerQuote} /></label>
-            <label><span>WhatsApp / phone {designerQuote ? '*' : '(include country code)'}</span><input type="tel" name="phone" autoComplete="tel" pattern="[+()0-9 .-]{7,25}" title="Enter a phone number with country code." required={designerQuote} /></label>
+            <label><span>{designerQuote || assistantQuotationRequest ? 'City *' : 'City'}</span><input type="text" name="city" autoComplete="address-level2" maxLength="100" required={designerQuote || assistantQuotationRequest} /></label>
+            <label><span>WhatsApp / phone {designerQuote || assistantQuotationRequest ? '*' : '(include country code)'}</span><input type="tel" name="phone" autoComplete="tel" pattern="[+()0-9 .-]{7,25}" title="Enter a phone number with country code." required={designerQuote || assistantQuotationRequest} /></label>
             {designerQuote && <label className="form-grid-wide"><span>Installation location *</span><input type="text" name="installationLocation" autoComplete="street-address" maxLength="240" required placeholder="Address, neighbourhood or site details" /></label>}
             <label><span>Buyer type</span><select name="buyerType" defaultValue=""><option value="">Select if known</option><option>Homeowner</option><option>Interior designer</option><option>Architect</option><option>Temple committee</option><option>Dealer</option><option>Other</option></select></label>
-            <label><span>Project interest *</span><select name="interest" required defaultValue={query.get('interest') || ''}><option value="" disabled>Select an interest</option><option>Home mandir</option><option>Custom mandir</option><option>Pooja room</option><option>Jali or carving</option><option>Project enquiry</option></select></label>
+            <label><span>Project interest *</span><select name="interest" required defaultValue={query.get('interest') || (assistantQuotationRequest ? 'Custom mandir' : '')}><option value="" disabled>Select an interest</option><option>Home mandir</option><option>Custom mandir</option><option>Pooja room</option><option>Jali or carving</option><option>Project enquiry</option></select></label>
             {designerQuote
               ? <input type="hidden" name="productId" value="" />
               : <label><span>Design</span><select name="productId" value={selectedProductId} onChange={(event) => setSelectedProductId(event.target.value)}><option value="">Not sure yet / custom design</option>{products.map((product) => <option key={product.id} value={product.id}>{product.name} ({formatEstimatedPrice(product.estimatedPriceUsd)} est.)</option>)}</select></label>}
@@ -129,6 +134,7 @@ export default function EnquiryForm() {
             <label><span>Desired timeline</span><input type="text" name="timeline" maxLength="100" /></label>
             <label><span>Delivery or installation</span><select name="deliveryNeeds" defaultValue=""><option value="" disabled>Select your preference</option><option value="With installation">With installation</option><option value="Without installation">Without installation</option><option value="Not sure yet">Not sure yet</option></select></label>
           </div>
+          {assistantQuotationRequest && <p className="field-help">Your assistant conversation is included below. Add any missing design or size details, marble preference (if known), and customisation requirements. Country, city and WhatsApp number are needed for this quotation request.</p>}
           <label><span>Project message</span><textarea name="message" rows="5" maxLength="4000" defaultValue={initialMessage} /></label>
           <label><span>Reference image, drawing or floor plan</span><input type="file" name="referenceFile" accept="image/jpeg,image/png,image/webp,application/pdf" aria-describedby="reference-file-help" /><span id="reference-file-help" className="field-help">One JPG, PNG, WebP or PDF file, up to {designerQuote ? '3' : '7'} MB.</span></label>
           {designerQuote && designerShareUrl && <label className="consent-control"><input type="checkbox" checked={shareDesign} onChange={(event) => setShareDesign(event.target.checked)} /><span>Include my read-only design share link so the team can view the 3D concept.</span></label>}

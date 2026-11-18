@@ -34,11 +34,10 @@ export const visitInfo = {
 }
 
 export const socialLinks = {
-  confirmed: false,
-  // Add real profile URLs. Items with an empty url are shown as "coming soon".
+  confirmed: true,
   items: [
-    { id: 'instagram', label: 'Instagram', url: '' },
-    { id: 'facebook', label: 'Facebook', url: '' },
-    { id: 'youtube', label: 'YouTube', url: '' },
+    { id: 'instagram', label: 'Instagram', url: 'https://www.instagram.com/bharadwajmandir/' },
+    { id: 'facebook', label: 'Facebook', url: 'https://www.facebook.com/profile.php?id=61586725754477' },
+    { id: 'youtube', label: 'YouTube', url: 'https://www.youtube.com/@BharadwajMandir' },
   ],
 }
