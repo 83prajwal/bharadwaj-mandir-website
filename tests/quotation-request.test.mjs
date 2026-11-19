@@ -60,31 +60,31 @@ async function compareNetlifyAndVercel(request) {
   return { netlifyResponse, netlifyPayload, vercelResponse, vercelPayload }
 }
 
-test('frontend accepts JSON validation success and surfaces JSON validation errors', async () => {
+test('frontend accepts JSON validation success and categorizes validation errors without exposing details', async () => {
   const success = await parseQuotationValidationResponse(new Response(JSON.stringify({ ok: true, designName: 'Home Mandir' }), { status: 200, headers: { 'content-type': 'application/json' } }))
   assert.equal(success.designName, 'Home Mandir')
   await assert.rejects(
     parseQuotationValidationResponse(new Response(JSON.stringify({ error: 'Enter the installation city.' }), { status: 400, headers: { 'content-type': 'application/json' } })),
-    /Enter the installation city/,
+    (error) => error.code === 'VALIDATION_FAILURE' && !error.message.includes('installation city'),
   )
 })
 
-test('frontend diagnoses missing HTML function routes and empty gateway responses without submitting', async () => {
+test('frontend safely categorizes missing function routes and gateway errors without exposing technical details', async () => {
   await assert.rejects(
     parseQuotationValidationResponse(new Response('<!doctype html><html><body>Not found</body></html>', { status: 404, headers: { 'content-type': 'text/html' } })),
-    /function was not reached.*HTTP 404.*text\/html/,
+    (error) => error.code === 'SERVICE_UNAVAILABLE' && !/HTTP|Netlify|redeploy/i.test(error.message),
   )
   await assert.rejects(
     parseQuotationValidationResponse(new Response('', { status: 502 })),
-    /function or Netlify gateway failed.*HTTP 502.*text\/plain/,
+    (error) => error.code === 'SERVICE_UNAVAILABLE' && !/HTTP|Netlify|gateway/i.test(error.message),
   )
   await assert.rejects(
     parseQuotationValidationResponse(new Response('<html><body>Gateway error</body></html>', { status: 502, headers: { 'content-type': 'text/html' } })),
-    /function or Netlify gateway failed.*HTTP 502.*text\/html/,
+    (error) => error.code === 'SERVICE_UNAVAILABLE' && !/HTTP|Netlify|gateway/i.test(error.message),
   )
   await assert.rejects(
     parseQuotationValidationResponse(new Response(JSON.stringify({ message: 'unexpected' }), { status: 200, headers: { 'content-type': 'application/json' } })),
-    /unexpected JSON response/,
+    (error) => error.code === 'UNEXPECTED_RESPONSE' && !/service|unexpected JSON/i.test(error.message),
   )
 })
 
@@ -154,7 +154,7 @@ test('Vercel quotation endpoint matches Netlify for missing required fields', as
   })
   const { vercelResponse, vercelPayload } = await compareNetlifyAndVercel(request)
   assert.equal(vercelResponse.status, 400)
-  assert.match(vercelPayload.error, /installation city/i)
+  assert.equal(vercelPayload.error, 'Please check the required fields and try again.')
 })
 
 test('Vercel quotation endpoint matches Netlify for invalid and oversized reference files', async () => {
@@ -165,7 +165,7 @@ test('Vercel quotation endpoint matches Netlify for invalid and oversized refere
   })
   const invalid = await compareNetlifyAndVercel(invalidRequest)
   assert.equal(invalid.vercelResponse.status, 400)
-  assert.match(invalid.vercelPayload.error, /Upload a JPG, PNG, WebP or PDF/)
+  assert.equal(invalid.vercelPayload.error, 'Please check the required fields and try again.')
 
   const oversizedFile = validForm()
   oversizedFile.set('referenceFile', new File([new Uint8Array(3 * 1024 * 1024 + 1)], 'large.pdf', { type: 'application/pdf' }))
@@ -174,7 +174,7 @@ test('Vercel quotation endpoint matches Netlify for invalid and oversized refere
   })
   const oversized = await compareNetlifyAndVercel(oversizedRequest)
   assert.equal(oversized.vercelResponse.status, 400)
-  assert.match(oversized.vercelPayload.error, /3 MB or smaller/)
+  assert.equal(oversized.vercelPayload.error, 'Please check the required fields and try again.')
 })
 
 test('Vercel quotation endpoint matches Netlify for method, origin and malformed multipart errors', async () => {

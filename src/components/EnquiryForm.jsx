@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { formatEstimatedPrice, products } from '../data/products'
 import { parseQuotationValidationResponse } from '../lib/quotation-response.mjs'
+import { ENQUIRY_ERROR_MESSAGES, getEnquirySubmissionError } from '../lib/enquiry-errors.mjs'
 
 const uploadLimit = 7 * 1024 * 1024
 const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf']
@@ -46,12 +47,15 @@ export default function EnquiryForm() {
     const file = fileInput.files[0]
     fileInput.setCustomValidity(file && !allowedTypes.includes(file.type) ? 'Upload a JPG, PNG, WebP or PDF file.' : '')
     if (file && file.size > (designerQuote ? 3 * 1024 * 1024 : uploadLimit)) fileInput.setCustomValidity(`Choose a file smaller than ${designerQuote ? '3' : '7'} MB.`)
-    if (!form.reportValidity()) return
+    if (!form.reportValidity()) {
+      setError(ENQUIRY_ERROR_MESSAGES.validation)
+      return
+    }
 
     setError('')
     const isLocalHost = ['localhost', '127.0.0.1', '::1'].includes(window.location.hostname)
     if (isLocalHost) {
-      setError('A local preview cannot deliver enquiries. Submit a test from the deployed Netlify site.')
+      setError(ENQUIRY_ERROR_MESSAGES.service)
       return
     }
 
@@ -77,18 +81,14 @@ export default function EnquiryForm() {
           }
       const response = await fetch(enquirySubmissionUrl, request)
       if (!response.ok) {
-        console.error(`Netlify Forms returned HTTP ${response.status} for the enquiry submission.`)
-        setError(`The form service returned an HTTP ${response.status} response. Your enquiry was not confirmed; please try again later.`)
+        setError(getEnquirySubmissionError(null, response.status))
         return
       }
       if (designerQuote) setSubmittedReference(quotationReference)
       setSubmitted(true)
       form.reset()
     } catch (submissionError) {
-      console.error('Enquiry submission failed before a successful HTTP response.', submissionError)
-      setError(submissionError instanceof TypeError
-        ? 'We could not reach the form service. No successful submission was confirmed; your entered details are still on this page.'
-        : `${submissionError.message || 'The submission could not be prepared.'} Your entered details are still on this page.`)
+      setError(getEnquirySubmissionError(submissionError))
     } finally {
       requestInFlight.current = false
       setSubmitting(false)
@@ -142,7 +142,7 @@ export default function EnquiryForm() {
           <label className="consent-control"><input type="checkbox" name="marketingConsent" value="yes" /><span>I would like to receive occasional product and design updates. Optional.</span></label>
           {error ? <p className="form-error" role="alert">{error}</p> : null}
           <button type="submit" className="btn btn-primary" disabled={submitting}>{submitting ? 'Submitting…' : designerQuote ? 'Submit quotation request' : 'Request a Custom Quote'}</button>
-          <p className="field-help">A submission is confirmed only after the configured form provider accepts it. If email acknowledgement is configured, a confirmation is sent after Netlify verifies the request. Destination, pricing, timing and installation feasibility are confirmed individually.</p>
+          <p className="field-help">A submission is confirmed only after it has been accepted. If email acknowledgement is configured, you will receive a confirmation after your request is processed. Destination, pricing, timing and installation feasibility are confirmed individually.</p>
         </form>
       )}
     </div>

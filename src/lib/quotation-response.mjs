@@ -1,3 +1,9 @@
+function quotationValidationError(code) {
+  return Object.assign(new Error(code === 'VALIDATION_FAILURE'
+    ? 'Quotation request validation failed.'
+    : code === 'SERVICE_UNAVAILABLE' ? 'Quotation service unavailable.' : 'Quotation validation response was unexpected.'), { code })
+}
+
 export async function parseQuotationValidationResponse(response) {
   const body = await response.text()
   const contentType = response.headers.get('content-type')?.split(';', 1)[0] || 'missing Content-Type'
@@ -8,19 +14,20 @@ export async function parseQuotationValidationResponse(response) {
   } catch {
     const looksLikeHtml = contentType === 'text/html' || /^\s*(?:<!doctype\s+html|<html[\s>])/i.test(body)
     if (looksLikeHtml && (response.status === 404 || response.ok)) {
-      throw new Error(`The deployed quotation validation function was not reached (HTTP ${response.status}, ${contentType}). Redeploy the Netlify function with the site.`)
+      throw quotationValidationError('SERVICE_UNAVAILABLE')
     }
-    if (response.status >= 500) {
-      throw new Error(`The quotation validation function or Netlify gateway failed before returning JSON (HTTP ${response.status}, ${contentType}). Check the deployed function logs.`)
-    }
-    throw new Error(`The quotation validation service returned a non-JSON response (HTTP ${response.status}, ${contentType}). Your request was not submitted.`)
+    if (response.status >= 500 || response.status === 404) throw quotationValidationError('SERVICE_UNAVAILABLE')
+    if (response.status >= 400) throw quotationValidationError('VALIDATION_FAILURE')
+    throw quotationValidationError('UNEXPECTED_RESPONSE')
   }
 
   if (!response.ok) {
-    throw new Error(typeof result?.error === 'string' ? result.error : `Quotation validation failed (HTTP ${response.status}).`)
+    if (response.status >= 500 || response.status === 404) throw quotationValidationError('SERVICE_UNAVAILABLE')
+    if (response.status >= 400) throw quotationValidationError('VALIDATION_FAILURE')
+    throw quotationValidationError('UNEXPECTED_RESPONSE')
   }
   if (!result || result.ok !== true || typeof result.designName !== 'string') {
-    throw new Error('The quotation validation service returned an unexpected JSON response. Your request was not submitted.')
+    throw quotationValidationError('UNEXPECTED_RESPONSE')
   }
 
   return result

@@ -37,13 +37,18 @@ function toWebRequest(request) {
   return new Request(url, init)
 }
 
-export function createVercelQuotationValidateHandler({ quotationHandler = netlifyQuotationValidate } = {}) {
+export function createVercelQuotationValidateHandler({ quotationHandler = netlifyQuotationValidate, logger = console } = {}) {
   return async function quotationValidateNodeHandler(request, response) {
     let webRequest
     try {
       webRequest = toWebRequest(request)
-    } catch {
-      writeJson(response, 400, { error: 'The quotation request could not be validated.' })
+    } catch (error) {
+      logger.error?.(JSON.stringify({
+        event: 'quotation_validation_request_conversion_failed',
+        errorName: error?.name || 'UnknownError',
+        stack: typeof error?.stack === 'string' ? error.stack.split('\n').slice(1, 9).join('\n') : '',
+      }))
+      writeJson(response, 400, { error: 'Please check the required fields and try again.' })
       return
     }
 
@@ -52,8 +57,13 @@ export function createVercelQuotationValidateHandler({ quotationHandler = netlif
       response.statusCode = webResponse.status
       for (const [name, value] of webResponse.headers.entries()) response.setHeader(name, value)
       response.end(await webResponse.text())
-    } catch {
-      writeJson(response, 500, { error: 'The quotation request could not be validated.' })
+    } catch (error) {
+      logger.error?.(JSON.stringify({
+        event: 'quotation_validation_adapter_failed',
+        errorName: error?.name || 'UnknownError',
+        stack: typeof error?.stack === 'string' ? error.stack.split('\n').slice(1, 9).join('\n') : '',
+      }))
+      writeJson(response, 500, { error: 'Our enquiry service is temporarily unavailable. Please try again shortly.' })
     }
   }
 }

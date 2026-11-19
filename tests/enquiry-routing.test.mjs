@@ -9,6 +9,8 @@ test('enquiry form action and intercepted submission share the Vite-configured U
   assert.match(formSource, /const enquirySubmissionUrl = import\.meta\.env\.VITE_ENQUIRY_SUBMISSION_URL \|\| '\/'/)
   assert.match(formSource, /fetch\(enquirySubmissionUrl, request\)/)
   assert.match(formSource, /action=\{enquirySubmissionUrl\}/)
+  assert.match(formSource, /setSubmitted\(true\)/)
+  assert.doesNotMatch(formSource, /Redeploy|Netlify Forms returned|HTTP \$\{response\.status\}|submissionError\.message/i)
 })
 
 test('Vercel proxies the enquiry endpoint to the existing Netlify site before the SPA fallback', () => {

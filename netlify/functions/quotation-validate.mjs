@@ -15,6 +15,14 @@ export default async function handler(request) {
     return new Response(JSON.stringify({ ok: true, designName: validated.designName }), { status: 200, headers })
   } catch (error) {
     const status = error.status || 400
-    return new Response(JSON.stringify({ error: status === 413 ? 'The request is too large.' : error.message || 'The quotation request could not be validated.' }), { status, headers })
+    if (status >= 500) console.error(JSON.stringify({
+      event: 'quotation_validation_failed',
+      errorName: error?.name || 'UnknownError',
+      stack: typeof error?.stack === 'string' ? error.stack.split('\n').slice(1, 9).join('\n') : '',
+    }))
+    const message = status >= 500
+      ? 'Our enquiry service is temporarily unavailable. Please try again shortly.'
+      : 'Please check the required fields and try again.'
+    return new Response(JSON.stringify({ error: message }), { status, headers })
   }
 }
