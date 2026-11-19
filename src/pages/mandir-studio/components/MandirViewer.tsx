@@ -8,7 +8,7 @@ import { OrnamentMesh, JaliGeometry, ZoneOrnament, drawerFaces } from './Ornamen
 import {downloadBrandedImage} from '../lib/export-branding';
 import { validate } from '../lib/config';
 
-type Props = { config: any; compact?: boolean };
+type Props = { config: any; compact?: boolean; autoRotate?: boolean };
 type MaterialProps = { material: THREE.Material };
 const mm = (v: any, fallback: number) => (v === undefined ? fallback : Number(v)) / 1000;
 const tint: Record<string, string> = { White: '#d8d5ce', Green: '#46695b', Pink: '#d5aaa0', Beige: '#d1c1a4', Black: '#282b2b' };
@@ -142,11 +142,13 @@ function DimensionAnnotations({ w, d, h }: { w: number; d: number; h: number }) 
 }
 class ViewerBoundary extends Component<{ children: React.ReactNode }, { failed: boolean }> { state = { failed: false }; static getDerivedStateFromError() { return { failed: true }; } render() { return this.state.failed ? <Fallback /> : this.props.children; } }
 function Fallback() { return <div style={{ padding: 40, textAlign: 'center', margin: 'auto' }}><strong>3D preview unavailable on this device</strong><p>Your design controls and saved specifications remain available. Enable WebGL or use a supported browser for the interactive preview.</p></div>; }
-export default function MandirViewer({ config, compact = false }: Props) {
+export default function MandirViewer({ config, compact = false, autoRotate = false }: Props) {
   const [ready, setReady] = useState(false); const [webgl, setWebgl] = useState(true); const [view, setView] = useState({ name: 'Isometric', tick: 0 });
+  const [reducedMotion, setReducedMotion] = useState(false);
   const [doorsOpen, setDoorsOpen] = useState(false);
   const [background, setBackground] = useState('Ivory'); const ref = useRef<HTMLDivElement>(null);
   useEffect(() => { try { const c = document.createElement('canvas'); const gl = c.getContext('webgl2') || c.getContext('webgl'); setWebgl(!!gl); if (gl) gl.getExtension('WEBGL_lose_context')?.loseContext(); } catch { setWebgl(false); } setReady(true); }, []);
+  useEffect(() => { const media = window.matchMedia('(prefers-reduced-motion: reduce)'); const update = () => setReducedMotion(media.matches); update(); media.addEventListener?.('change', update); return () => media.removeEventListener?.('change', update); }, []);
   const conflicts = validate(config);
   const size = conflicts.length ? 2.1 : Math.max(mm(config.width, 1400), mm(config.height, 2100), mm(config.depth, 650));
   const bg = background === 'Dark' ? '#343431' : background === 'White' ? '#ffffff' : '#eee8dd';
@@ -163,7 +165,7 @@ export default function MandirViewer({ config, compact = false }: Props) {
         <directionalLight position={[-4, 3, 2]} intensity={.58} color="#fffaf1" />
         <directionalLight position={[0, 4, -5]} intensity={.68} color="#fff4df" />
         <Suspense fallback={null}><Environment resolution={64}><Lightformer intensity={.9} position={[0, 5, 0]} rotation={[-Math.PI / 2, 0, 0]} scale={[6, 6, 1]} /><Lightformer intensity={1.25} position={[-4, 2, 2]} rotation={[0, Math.PI / 2, 0]} scale={[3, 5, 1]} /><Lightformer intensity={.55} position={[3, 3, -2]} rotation={[0, -Math.PI / 2, 0]} scale={[3, 3, 1]} /></Environment><MandirAssembly config={config} doorsOpen={doorsOpen} /><ContactShadows position={[0, -.012, 0]} opacity={.38} scale={size * 3.4} blur={2.8} far={size * 1.6} resolution={512} /></Suspense>
-        <OrbitControls makeDefault target={[0, size * .44, 0]} minDistance={size * .6} maxDistance={size * 7} maxPolarAngle={Math.PI * .51} enablePan /><CameraPosition view={view} size={size} />
+        <OrbitControls makeDefault target={[0, size * .44, 0]} minDistance={size * .6} maxDistance={size * 7} maxPolarAngle={Math.PI * .51} enablePan autoRotate={autoRotate && !reducedMotion} autoRotateSpeed={.28} /><CameraPosition view={view} size={size} />
       </Canvas></ViewerBoundary> : ready ? <Fallback /> : <div style={{ padding: 60, textAlign: 'center' }}>Preparing marble studio…</div>}
     </div>
     {!compact && <div className="mandir-tools" style={{ display: 'flex', flexWrap: 'wrap', gap: 5, padding: '12px 16px', justifyContent: 'center', position: 'relative', zIndex: 3 }}>

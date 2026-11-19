@@ -30,6 +30,7 @@ const REVEALS = [
   ['.home-custom-inner > div', 'left', false],
   ['.home-steps li', 'right', true],
   ['.masonry-item', 'up', true],
+  ['.studio-feature-card', 'up', true],
 ]
 
 const MAX_STAGGER = 5

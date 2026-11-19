@@ -7,23 +7,104 @@
   font-size: 1.6rem;
 }
 
-.mandir-studio-workspace { padding-top: clamp(1.5rem, 3vw, 2.5rem); }
-.mandir-studio-manage { display: flex; flex-wrap: wrap; align-items: end; gap: .55rem; padding: .8rem; margin-bottom: 1rem; border: 1px solid rgba(90, 16, 32, .12); background: rgba(255,255,255,.55); }
-.mandir-studio-manage button, .mandir-studio-manage select, .mandir-studio-manage input { min-height: 40px; border: 1px solid rgba(90,16,32,.22); border-radius: 3px; padding: .55rem .7rem; color: var(--maroon); background: #fffdf9; font: inherit; font-size: .72rem; }
-.mandir-studio-manage button { font-weight: 700; letter-spacing: .035em; cursor: pointer; }
-.mandir-studio-manage button:hover { border-color: var(--gold); background: #f7f0e4; }
-.mandir-studio-manage button.mandir-studio-quote-action { min-height: 44px; border: 1px solid var(--gold); color: #fff; background: var(--maroon); font-size: .76rem; font-weight: 800; letter-spacing: .045em; box-shadow: 0 5px 14px rgba(90,16,32,.14); }
-.mandir-studio-manage button.mandir-studio-quote-action:hover { border-color: #e5c77f; color: #fff; background: #6b1428; box-shadow: 0 7px 18px rgba(90,16,32,.2); }
+.mandir-studio-workspace { padding-top: clamp(1rem, 2vw, 1.6rem); }
+.mandir-studio-manage {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: .5rem;
+  padding: .9rem 1rem;
+  margin-bottom: 1.15rem;
+  border: 1px solid rgba(90,16,32,.12);
+  background: linear-gradient(135deg, rgba(255,253,249,.95) 0%, rgba(248,244,238,.92) 100%);
+  box-shadow: 0 2px 10px rgba(58,10,21,.05);
+  border-radius: 2px;
+}
+.mandir-studio-manage-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: .4rem;
+  padding-right: .75rem;
+  margin-right: .25rem;
+  border-right: 1px solid rgba(90,16,32,.1);
+}
+.mandir-studio-manage-group:last-of-type { border-right: 0; padding-right: 0; margin-right: 0; }
+.mandir-studio-manage button, .mandir-studio-manage select, .mandir-studio-manage input {
+  min-height: 38px;
+  border: 1px solid rgba(90,16,32,.2);
+  border-radius: 3px;
+  padding: .45rem .7rem;
+  color: var(--maroon);
+  background: #fffdf9;
+  font: inherit;
+  font-size: .71rem;
+  transition: border-color .18s, background .18s, transform .15s;
+}
+.mandir-studio-manage button { font-weight: 700; letter-spacing: .03em; cursor: pointer; }
+.mandir-studio-manage button:hover { border-color: var(--gold); background: #f7f0e4; transform: translateY(-1px); }
+.mandir-studio-manage button.mandir-studio-quote-action {
+  min-height: 42px;
+  padding: .5rem 1.1rem;
+  border: 1px solid var(--gold);
+  border-radius: 3px;
+  color: #fff;
+  background: var(--maroon);
+  font-size: .74rem;
+  font-weight: 800;
+  letter-spacing: .045em;
+  box-shadow: 0 4px 12px rgba(90,16,32,.18);
+}
+.mandir-studio-manage button.mandir-studio-quote-action:hover {
+  border-color: #e5c77f;
+  background: #6b1428;
+  box-shadow: 0 6px 16px rgba(90,16,32,.24);
+  transform: translateY(-1px);
+}
 .mandir-studio-manage button.mandir-studio-quote-action:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.mandir-studio-manage button.btn-danger {
+  color: #8b1a1a;
+  border-color: rgba(139,26,26,.25);
+  background: #fff8f8;
+}
+.mandir-studio-manage button.btn-danger:hover { background: #fdf0f0; border-color: #c0392b; }
 .mandir-studio-name, .mandir-studio-load { display: grid; flex: 1 1 180px; gap: .25rem; color: var(--muted); font-size: .64rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
-.mandir-studio-status { flex: 1 1 100%; color: var(--maroon); font-size: .72rem; }
+.mandir-studio-status {
+  flex: 1 1 100%;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .5rem .75rem;
+  border-radius: 3px;
+  border-left: 3px solid var(--gold);
+  background: rgba(185,138,62,.07);
+  color: var(--maroon);
+  font-size: .72rem;
+  font-weight: 500;
+  animation: studio-rise .3s ease both;
+}
 .mandir-studio-share-url { display: grid; flex: 1 1 100%; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: .45rem; color: var(--muted); font-size: .64rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
 .mandir-studio-share-url input { grid-column: 1; width: 100%; min-width: 0; font-size: .68rem !important; letter-spacing: 0 !important; text-transform: none; }
 .mandir-studio-share-url button { grid-column: 2; grid-row: 2; min-height: 40px; border: 1px solid rgba(90,16,32,.22); padding: .55rem .7rem; color: var(--maroon); background: #fffdf9; font: inherit; font-size: .7rem; font-weight: 700; cursor: pointer; }
 .mandir-design-list { display: grid; flex: 1 1 100%; gap: .6rem; margin-top: .45rem; }
-.mandir-design-list h2 { display: flex; align-items: center; gap: .5rem; margin: 0; color: var(--maroon); font-family: var(--font-heading); font-size: 1.35rem; font-weight: 500; }
+.mandir-design-list h2 { display: flex; align-items: center; gap: .5rem; margin: 0; color: var(--maroon); font-family: var(--font-heading); font-size: 1.15rem; font-weight: 500; }
 .mandir-design-list h2 span { display: inline-grid; min-width: 1.35rem; height: 1.35rem; place-items: center; border-radius: 50%; color: var(--maroon); background: #f2e8d7; font: 600 .65rem sans-serif; }
-.mandir-design-card { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .65rem; padding: .7rem .8rem; border: 1px solid rgba(90, 16, 32, .13); background: rgba(255, 253, 249, .78); }
+.mandir-designs-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .6rem;
+  padding: 1.5rem 1rem;
+  border: 1px dashed rgba(90,16,32,.2);
+  border-radius: 3px;
+  color: var(--muted);
+  text-align: center;
+  font-size: .75rem;
+  line-height: 1.6;
+}
+.mandir-designs-empty svg { opacity: .35; }
+.mandir-design-card { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .65rem; padding: .7rem .8rem; border: 1px solid rgba(90, 16, 32, .13); background: rgba(255, 253, 249, .78); border-radius: 3px; transition: box-shadow .2s; }
+.mandir-design-card:hover { box-shadow: 0 4px 14px rgba(58,10,21,.07); }
 .mandir-design-card > div:first-child { display: grid; gap: .18rem; min-width: 12rem; }
 .mandir-design-card strong { color: var(--maroon); font-size: .78rem; }
 .mandir-design-card small { color: var(--muted); font-size: .64rem; }
@@ -36,8 +117,8 @@
 .mandir-studio-layout { display: grid; grid-template-columns: minmax(280px, 370px) minmax(0, 1fr); align-items: start; gap: 1.15rem; }
 .mandir-studio-controls { min-width: 0; border: 1px solid rgba(90,16,32,.13); background: rgba(255,255,255,.58); box-shadow: 0 12px 34px rgba(58,10,21,.055); }
 .mandir-studio-tabs { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); border-bottom: 1px solid rgba(90,16,32,.14); }
-.mandir-studio-tabs button { min-height: 48px; padding: .45rem .25rem; border: 0; border-bottom: 2px solid transparent; color: var(--muted); background: transparent; font: inherit; font-size: .59rem; font-weight: 700; line-height: 1.3; cursor: pointer; }
-.mandir-studio-tabs button.is-active { border-bottom-color: var(--gold); color: var(--maroon); background: rgba(185,138,62,.07); }
+.mandir-studio-tabs button { min-height: 52px; padding: .45rem .25rem; border: 0; border-bottom: 2px solid transparent; color: var(--muted); background: transparent; font: inherit; font-size: .68rem; font-weight: 700; line-height: 1.3; cursor: pointer; }
+.mandir-studio-tabs button.is-active { border-bottom-color: var(--gold); color: var(--maroon); background: rgba(185,138,62,.12); font-size: .68rem; }
 .mandir-studio-fields { display: grid; gap: .85rem; max-height: 710px; overflow: auto; padding: 1rem; }
 .mandir-studio-field { display: grid; gap: .35rem; color: var(--maroon); font-size: .68rem; font-weight: 700; letter-spacing: .025em; }
 .mandir-studio-field select, .mandir-studio-field input:not([type="range"]), .mandir-studio-field textarea { width: 100%; min-height: 40px; padding: .6rem .7rem; border: 1px solid rgba(90,16,32,.18); border-radius: 3px; color: var(--charcoal); background: #fffdf9; font: inherit; font-size: .78rem; }
@@ -58,17 +139,45 @@
 .mandir-studio-swatches button span { width: 28px; height: 28px; border: 1px solid rgba(0,0,0,.12); border-radius: 50%; }
 .mandir-studio-quote { display: inline-flex; justify-content: center; align-items: center; min-height: 44px; padding: .7rem; font-size: .7rem; text-align: center; }
 .mandir-studio-preview-column { min-width: 0; }
-.mandir-studio-preview-heading { display: flex; justify-content: space-between; gap: .6rem; padding: .65rem .85rem; color: var(--maroon); font-size: .63rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+.mandir-studio-preview-heading { display: flex; justify-content: space-between; gap: .6rem; padding: .65rem .85rem; color: var(--maroon); font-size: .7rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; border-radius: 2px 2px 0 0; border: 1px solid rgba(185,138,62,.3); border-bottom: 0; background: rgba(255,253,249,.8); }
 .mandir-studio-preview-heading span:last-child { color: var(--muted); font-weight: 500; text-align: right; }
 .mandir-studio-preview-column .mandir-view { min-height: 600px !important; height: min(78vh, 860px) !important; border: 1px solid rgba(185,138,62,.48); box-shadow: 0 18px 55px rgba(58,10,21,.09); }
 .mandir-studio-viewer-fallback { display: grid; min-height: 560px; place-items: center; border: 1px solid rgba(185,138,62,.48); color: var(--maroon); background: #f7f1e7; }
 .mandir-studio-warnings { margin-top: .7rem; padding: .8rem 1rem; border-left: 3px solid #b98a3e; color: var(--maroon); background: #f8f0e2; font-size: .75rem; }
 .mandir-studio-warnings ul { margin: .5rem 0 0; padding-left: 1.2rem; color: var(--muted); }
-.mandir-studio-summary { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .35rem .8rem; max-height: 240px; overflow: auto; margin: .7rem 0; padding: .8rem; border: 1px solid rgba(90,16,32,.1); background: rgba(255,255,255,.48); }
+.mandir-studio-summary { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .35rem .8rem; max-height: 220px; overflow: auto; margin: .7rem 0; padding: .8rem; border: 1px solid rgba(90,16,32,.1); background: rgba(255,255,255,.48); border-radius: 0 0 2px 2px; }
 .mandir-studio-summary div { display: flex; justify-content: space-between; gap: .5rem; border-bottom: 1px solid rgba(90,16,32,.08); padding: .25rem 0; font-size: .65rem; }
 .mandir-studio-summary dt { color: var(--muted); text-transform: capitalize; }
 .mandir-studio-summary dd { margin: 0; color: var(--maroon); text-align: right; }
 .mandir-studio-disclaimer { width: 100%; max-width: none; margin: 1rem 0 0; padding-top: .75rem; border-top: 1px solid rgba(90,16,32,.12); }
+
+.studio-account-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: .75rem;
+  padding: .55rem 1.25rem;
+  background: rgba(90,16,32,.04);
+  border-bottom: 1px solid rgba(90,16,32,.1);
+  font-size: .72rem;
+  color: var(--muted);
+}
+.studio-account-bar span { color: var(--maroon); font-weight: 600; }
+.studio-account-bar button {
+  min-height: 32px;
+  padding: .3rem .75rem;
+  border: 1px solid rgba(90,16,32,.22);
+  border-radius: 3px;
+  color: var(--maroon);
+  background: transparent;
+  font: inherit;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
+}
+.studio-account-bar button:hover { background: rgba(90,16,32,.06); border-color: var(--gold); }
 
 @media (max-width: 900px) {
   .mandir-studio-layout { grid-template-columns: 1fr; }
@@ -89,7 +198,7 @@
 
 .mandir-designer-page {
   min-height: 70vh;
-  padding-bottom: clamp(3.5rem, 7vw, 6rem);
+  padding-bottom: clamp(2.5rem, 5vw, 4rem);
   color: var(--charcoal);
   background: var(--ivory);
 }
@@ -100,7 +209,7 @@
 }
 
 .mandir-designer-intro {
-  padding: clamp(2.5rem, 6vw, 5rem) 0 clamp(1.6rem, 3vw, 2.5rem);
+  padding: clamp(2rem, 4vw, 3.2rem) 0 clamp(1.2rem, 2vw, 1.8rem);
   background:
     radial-gradient(ellipse at 82% 0%, rgba(227, 201, 143, .24), transparent 42%),
     linear-gradient(135deg, #fbf7f0 0%, #f3ece0 100%);
@@ -108,7 +217,7 @@
 }
 
 .designer-kicker {
-  margin: 0 0 .8rem;
+  margin: 0 0 .5rem;
   color: var(--maroon);
   font-size: .68rem;
   font-weight: 700;
@@ -120,20 +229,21 @@
   margin: 0;
   color: var(--maroon-deep);
   font-family: var(--font-heading);
-  font-size: clamp(2.8rem, 6vw, 5rem);
+  font-size: clamp(2.5rem, 5vw, 4.2rem);
   font-weight: 500;
-  line-height: .98;
+  line-height: 1.04;
 }
 
 .designer-intro-copy {
   max-width: 42rem;
-  margin: 1rem 0 0;
+  margin: .65rem 0 0;
   color: var(--muted);
   font-size: .94rem;
+  line-height: 1.6;
 }
 
 .designer-workspace {
-  padding-top: clamp(1.5rem, 3vw, 2.5rem);
+  padding-top: clamp(1rem, 2vw, 1.8rem);
 }
 
 .designer-toolbar {

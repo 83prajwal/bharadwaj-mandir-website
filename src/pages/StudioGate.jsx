@@ -3,9 +3,12 @@ import { Link, useLocation } from 'react-router-dom'
 import { getUser, login, logout, onAuthChange, requestPasswordRecovery, updateUser } from '@netlify/identity'
 import WhatsAppLink from '../components/WhatsAppLink'
 import { postStudioLead } from '../lib/studioLead'
+import { defaults } from './mandir-studio/lib/config.ts'
+import './studio-public.css'
 
-// The 3D code is a separate download that only starts after login.
+// Keep the editable studio code behind authentication while sharing its real viewer publicly.
 const MandirDesigner = lazy(() => import('./MandirDesigner.jsx'))
+const MandirViewer = lazy(() => import('./mandir-studio/components/MandirViewer.tsx'))
 
 const CONFIRM_EMAIL = 'Please check your email and click the confirmation link, then log in here.'
 
@@ -15,6 +18,67 @@ function WhatsAppFallback({ children }) {
       <p>{children}</p>
       <WhatsAppLink className="btn btn-whatsapp" label="Message Bharadwaj Mandir" iconSize={20}><span>Message us on WhatsApp</span></WhatsAppLink>
     </div>
+  )
+}
+
+const studioFeatures = [
+  { title: 'A design shaped around your home', text: 'Explore the form and architecture of a mandir made for your space.', icon: <><path d="M5 19V9l7-5 7 5v10H5Z"/><path d="M9 19v-6h6v6M3 9l9-7 9 7"/><path d="M10 9h4"/></> },
+  { title: 'Dimensions that feel considered', text: 'Preview how a customised mandir could fit into your home using your preferred dimensions.', icon: <><path d="M4 7h16v10H4z"/><path d="M8 7v3m4-3v2m4-2v3M8 17v-3m4 3v-2m4 2v-3"/><path d="M2 12h2m16 0h2"/></> },
+  { title: 'Marble, finish and detail', text: 'Explore marble finishes, carvings and design details before requesting your personalised design.', icon: <><path d="M4 5h16v14H4z"/><path d="m6 15 4-5 3 3 2-2 3 4M7 8h.01"/><path d="M8 3v2m8-2v2"/></> },
+  { title: 'Personal touches, beautifully made', text: 'Consider carving and ornament details that bring your vision to life.', icon: <><path d="M12 3v18M3 12h18"/><path d="m12 3 3 5-3 4-3-4 3-5Zm0 9 5 3-5 3-5-3 5-3Z"/><circle cx="12" cy="12" r="8"/></> },
+  { title: 'A clear path to your design', text: 'Share your brief with our team and begin a conversation about your custom mandir.', icon: <><path d="M4 5h10v14H4z"/><path d="M7 9h4m-4 3h4m-4 3h2"/><path d="M14 12h6m-3-3 3 3-3 3"/></> },
+]
+
+function PublicStudioPreview() {
+  return (
+    <>
+      <section className="studio-public-hero" aria-labelledby="studio-public-title">
+        <div className="container studio-hero-container">
+          <div className="studio-public-copy">
+            <p className="eyebrow">Bharadwaj Mandir · 3D Studio</p>
+            <h1 id="studio-public-title">A sacred space,<br />imagined by you.</h1>
+            <p className="studio-public-lede">Discover the craft of a custom marble mandir. Explore a true-to-design 3D preview, then share your vision with our team.</p>
+            <div className="button-row">
+              <Link to="/contact?interest=Custom%20mandir" className="btn btn-primary">Request a Custom Design <span aria-hidden="true">→</span></Link>
+              <a className="btn btn-secondary" href="#studio-features">Explore the possibilities <span aria-hidden="true">↓</span></a>
+            </div>
+            <p className="field-help" style={{ marginTop: '1.25rem' }}>A first look is open to everyone. Create an account when you are ready to design.</p>
+          </div>
+          <div className="studio-public-model-wrap" aria-label="Interactive sample marble mandir model">
+            <div className="studio-public-orbit studio-orbit-one" aria-hidden="true" />
+            <div className="studio-public-orbit studio-orbit-two" aria-hidden="true" />
+            <div className="studio-public-model-label"><span>01 / SAMPLE STUDY</span><span>HERITAGE · WHITE MARBLE</span></div>
+            <Suspense fallback={<div className="studio-public-viewer-loading" role="status">Preparing the sample mandir…</div>}>
+              <MandirViewer config={{ ...defaults, designFamily: 'Parametric', dimensions: false, doors: 'None', lighting: 'Top' }} compact autoRotate />
+            </Suspense>
+            <p className="studio-public-model-caption">A real-time 3D study · Drag to explore</p>
+          </div>
+        </div>
+        <span className="studio-public-side-note" aria-hidden="true">CRAFTED IN MARBLE · DESIGNED FOR YOUR HOME</span>
+      </section>
+      <section className="studio-public-intro" id="studio-features" aria-labelledby="studio-features-title">
+        <div className="container">
+          <div className="studio-features-heading-stacked">
+            <h2 id="studio-features-title">From first thought to a place of devotion.</h2>
+            <p className="eyebrow">Your vision, in three dimensions</p>
+          </div>
+          <div className="studio-feature-grid">
+            {studioFeatures.map((feature, index) => (
+              <article className="studio-feature-card" key={feature.title} style={{ '--feature-index': index }}>
+                <svg viewBox="0 0 24 24" role="img" aria-label={feature.title} fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round">{feature.icon}</svg>
+                <span className="studio-feature-number">0{index + 1}</span>
+                <h3>{feature.title}</h3>
+                <p>{feature.text}</p>
+              </article>
+            ))}
+          </div>
+          <div className="button-row center" style={{ marginTop: '2.5rem' }}>
+            <p style={{ width: '100%', textAlign: 'center', color: 'var(--muted)', margin: '0 0 .5rem' }}>When you are ready, let us help bring your idea to life.</p>
+            <Link to="/contact?interest=Custom%20mandir" className="btn btn-primary">Request a Custom Design <span aria-hidden="true">→</span></Link>
+          </div>
+        </div>
+      </section>
+    </>
   )
 }
 
@@ -121,11 +185,11 @@ function AuthForms({ initialNotice, onSignedUp }) {
   }
 
   return (
-    <main className="page-shell">
-      <section className="section-shell container studio-gate">
+    <section className="studio-signup" id="studio-signup" aria-labelledby="studio-signup-title">
+      <div className="container studio-gate">
         <div className="studio-gate-intro">
           <p className="eyebrow">Bharadwaj Mandir · 3D Studio</p>
-          <h1>Create a free account to design your own mandir in 3D.</h1>
+          <h2 id="studio-signup-title">Create a free account to design your own mandir in 3D.</h2>
           <p>Adjust the size, marble and carving, then request a quotation for your design.</p>
         </div>
         <div className="enquiry-box studio-gate-box">
@@ -161,8 +225,8 @@ function AuthForms({ initialNotice, onSignedUp }) {
           {mode === 'login' ? <button type="button" className="studio-gate-link" onClick={() => changeMode('forgot')}>Forgot your password?</button> : null}
           {mode === 'forgot' ? <button type="button" className="studio-gate-link" onClick={() => changeMode('login')}>Back to log in</button> : null}
         </div>
-      </section>
-    </main>
+      </div>
+    </section>
   )
 }
 
@@ -186,7 +250,12 @@ export default function StudioGate() {
   if (user === undefined) return <main className="page-shell designer-route-loading" aria-live="polite">Opening the 3D studio…</main>
   if (!user) {
     const notice = location.state?.authLinkFailed ? 'That link has expired or was already used. Please log in, or request a new one.' : location.state?.confirmed ? 'Your email is confirmed. Please log in.' : ''
-    return <AuthForms initialNotice={notice} onSignedUp={(problem) => { setSaveProblem(problem); setWelcome('Your account is ready. Welcome to the 3D Studio.') }} />
+    return (
+      <main className="page-shell studio-public">
+        <PublicStudioPreview />
+        <AuthForms initialNotice={notice} onSignedUp={(problem) => { setSaveProblem(problem); setWelcome('Your account is ready. Welcome to the 3D Studio.') }} />
+      </main>
+    )
   }
   if (mustSetPassword) return <SetPasswordForm onDone={() => setMustSetPassword(false)} />
 

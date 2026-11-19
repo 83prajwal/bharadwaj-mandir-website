@@ -71,7 +71,7 @@ const pageMetadata = {
   '/products': ['Marble Mandir Collection | Bharadwaj Mandir', 'Explore mandir designs and enquire about project specifications and quotations.'],
   '/custom-mandir': ['Custom Marble Mandir | Bharadwaj Mandir', 'Enquire about a custom marble mandir designed around your space and requirements.'],
   '/gallery': ['Marble Mandir Gallery | Bharadwaj Mandir', 'View marble mandir designs and craftsmanship from Bharadwaj Mandir.'],
-  '/mandir-designer': ['Bharadwaj Mandir 3D Studio', 'Explore the Bharadwaj Mandir prototype in an interactive 3D studio.'],
+  '/mandir-designer': ['Bharadwaj Mandir 3D Studio', 'Preview a real marble mandir in 3D, explore custom design possibilities and request a personalised design.'],
   '/about': ['About Bharadwaj Mandir', 'Learn about the mandir designs and project approach presented by Bharadwaj Mandir.'],
   '/contact': ['Contact Bharadwaj Mandir', 'Send an enquiry about a marble mandir, home temple or custom marble craftsmanship.'],
   '/faq': ['Frequently Asked Questions | Bharadwaj Mandir', 'Answers to common questions about custom marble mandirs, dimensions and enquiries.'],

@@ -330,33 +330,69 @@ export default function MandirDesigner() {
 
   return (
     <main className="mandir-designer-page mandir-studio-page">
-      <section className="mandir-designer-intro"><div className="mandir-designer-container"><p className="designer-kicker">Bharadwaj Mandir · 3D Studio</p><h1>Design your sanctuary.</h1><p className="designer-intro-copy">Explore the parametric design study. Dimensions and details are provisional until reviewed by the team.</p></div></section>
+      <section className="mandir-designer-intro">
+        <div className="mandir-designer-container">
+          <p className="designer-kicker">Bharadwaj Mandir · 3D Studio</p>
+          <h1>Design your sanctuary.</h1>
+          <p className="designer-intro-copy">Explore the parametric design study. Dimensions and details are provisional until reviewed by the team.</p>
+        </div>
+      </section>
       <section className="mandir-designer-container mandir-studio-workspace" aria-label="Mandir design studio">
         {sharedReadOnly && <div className="mandir-shared-notice" role="status">{sharedLoaded ? <><strong>Read-only shared design: {designName}</strong><p>Review the design, or load a separate local copy to customize it.</p><button type="button" onClick={loadSharedCopy}>Load a copy into the configurator</button></> : <p>{status || 'Loading shared design…'}</p>}</div>}
         {!sharedReadOnly && <div className="mandir-studio-manage">
-          <label className="mandir-studio-name">Design name<input value={designName} maxLength={80} onChange={(event) => setDesignName(event.target.value)} /></label>
-          <button type="button" onClick={() => persistDesign(config, designName)}>Save design</button>
-          <button type="button" onClick={duplicateDesign}>Duplicate</button>
-          <button type="button" onClick={() => shareDesign()}>Create share link</button>
-          <button type="button" className="mandir-studio-quote-action" onClick={requestQuotation} disabled={quoteBusy}>{quoteBusy ? 'Saving…' : 'Request a Quotation'}</button>
-          <button type="button" onClick={downloadSpecification}>Download PDF</button>
-          <button type="button" onClick={printSpecification}>Print specification</button>
-          {loadedId && <button type="button" onClick={renameDesign}>Rename selected</button>}
-          {loadedId && <button type="button" onClick={removeDesign}>Delete selected</button>}
-          {status && <span className="mandir-studio-status" role="status">{status}</span>}
-          {shareUrl && <label className="mandir-studio-share-url">Read-only share link<input aria-label="Read-only share link" value={shareUrl} readOnly onFocus={(event) => event.currentTarget.select()} /><button type="button" onClick={async () => { try { await navigator.clipboard.writeText(shareUrl); setStatus('Share link copied.') } catch { setStatus('Select and copy the share link from the field.') } }}>Copy link</button></label>}
+          <label className="mandir-studio-name">
+            Design name
+            <input value={designName} maxLength={80} onChange={(event) => setDesignName(event.target.value)} />
+          </label>
+          <div className="mandir-studio-manage-group">
+            <button type="button" onClick={() => persistDesign(config, designName)}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{display:'inline',verticalAlign:'middle',marginRight:'5px'}}><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Save
+            </button>
+            <button type="button" onClick={duplicateDesign}>Duplicate</button>
+            {loadedId && <button type="button" onClick={renameDesign}>Rename</button>}
+            {loadedId && <button type="button" className="btn-danger" onClick={removeDesign}>Delete</button>}
+          </div>
+          <div className="mandir-studio-manage-group">
+            <button type="button" onClick={() => shareDesign()}>Share link</button>
+            <button type="button" onClick={downloadSpecification}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{display:'inline',verticalAlign:'middle',marginRight:'5px'}}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              PDF
+            </button>
+            <button type="button" onClick={printSpecification}>Print</button>
+          </div>
+          <button type="button" className="mandir-studio-quote-action" onClick={requestQuotation} disabled={quoteBusy}>
+            {quoteBusy ? 'Saving…' : '✦ Request a Quotation'}
+          </button>
+          {status && <span className="mandir-studio-status" role="status">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{flexShrink:0}}><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            {status}
+          </span>}
+          {shareUrl && <label className="mandir-studio-share-url">
+            Read-only share link
+            <input aria-label="Read-only share link" value={shareUrl} readOnly onFocus={(event) => event.currentTarget.select()} />
+            <button type="button" onClick={async () => { try { await navigator.clipboard.writeText(shareUrl); setStatus('Share link copied.') } catch { setStatus('Select and copy the share link from the field.') } }}>Copy</button>
+          </label>}
           <div className="mandir-design-list" aria-label="My Designs">
             <h2>My Designs <span>{saved.length}</span></h2>
-            {saved.length === 0 && <p className="designer-viewer-note">Saved designs appear here. They remain in this browser unless saved to Netlify storage.</p>}
+            {saved.length === 0 && (
+              <div className="mandir-designs-empty">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 19V9l7-5 7 5v10H5Z"/><path d="M9 19v-6h6v6"/><path d="M3 9l9-7 9 7"/></svg>
+                <span>No saved designs yet.<br/>Your designs appear here once saved.</span>
+              </div>
+            )}
             {saved.map((entry) => <article className="mandir-design-card" key={entry.id}>
-              <div><strong>{entry.name}</strong><small>Created {displayDate(entry.createdAt || entry.updatedAt)} · Updated {displayDate(entry.updatedAt)}</small></div>
+              <div>
+                <strong>{entry.name}</strong>
+                <small>Created {displayDate(entry.createdAt || entry.updatedAt)} · Updated {displayDate(entry.updatedAt)}</small>
+              </div>
               <div className="mandir-design-card-actions">
                 <button type="button" onClick={() => loadDesign(entry.id)}>Open</button>
                 <button type="button" onClick={() => { setLoadedId(entry.id); setDesignName(entry.name) }}>Select</button>
                 <button type="button" onClick={() => duplicateDesign(entry)}>Duplicate</button>
                 {(entry.ownerSecret || entry.customerOwned) && <button type="button" onClick={() => shareDesign(entry)}>Share</button>}
                 {(entry.ownerSecret || entry.customerOwned) && entry.hasShare && <button type="button" onClick={() => revokeShare(entry)}>Revoke link</button>}
-                <button type="button" onClick={() => removeDesign(entry)}>Delete</button>
+                <button type="button" className="btn-danger" onClick={() => removeDesign(entry)}>Delete</button>
               </div>
               {entry.localOnly && <small>Browser-only copy · save again when Netlify storage is available</small>}
             </article>)}
@@ -373,7 +409,13 @@ export default function MandirDesigner() {
             <div id="studio-tab-panel" role="tabpanel" aria-labelledby={`studio-tab-${tab}`} className="mandir-studio-fields">{renderTab()}</div>
           </aside>}
           <div className="mandir-studio-preview-column">
-            <div className="mandir-studio-preview-heading"><span>Live 3D preview</span><span>{sharedReadOnly ? 'Read-only share' : conflicts.length ? 'Dimensional review required' : 'Provisional concept'}</span></div>
+            <div className="mandir-studio-preview-heading">
+              <span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{display:'inline',verticalAlign:'middle',marginRight:'5px'}}><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                Live 3D preview
+              </span>
+              <span>{sharedReadOnly ? 'Read-only share' : conflicts.length ? '⚠ Dimensional review required' : 'Provisional concept'}</span>
+            </div>
             {(!sharedReadOnly || sharedLoaded) && <Suspense fallback={<div className="mandir-studio-viewer-fallback" role="status">Preparing the 3D studio…</div>}><MandirViewer config={config} /></Suspense>}
             {conflicts.length > 0 && !sharedReadOnly && <div className="mandir-studio-warnings" role="status"><strong>Preview paused — resolve these design checks:</strong><ul>{conflicts.map((warning) => <li key={warning}>{warning}</li>)}</ul></div>}
             {(!sharedReadOnly || sharedLoaded) && <dl className="mandir-studio-summary">{activeConfigEntries(config).filter(([key]) => !key.startsWith('reference') && key !== 'requirements').map(([key, value]) => <div key={key}><dt>{key.replace(/([A-Z])/g, ' $1')}</dt><dd>{String(value)}</dd></div>)}</dl>}
