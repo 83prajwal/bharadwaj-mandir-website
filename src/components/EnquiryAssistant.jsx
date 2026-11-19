@@ -118,14 +118,21 @@ export default function EnquiryAssistant() {
         className="assistant-launcher"
         type="button"
         aria-expanded={open}
+        aria-label={open ? 'Close product enquiry assistant' : 'Ask our product enquiry assistant'}
         aria-controls="assistant-widget-panel"
         onClick={() => {
           if (!open) openerRef.current = document.activeElement
           setOpen((value) => !value)
         }}
       >
-        {!open && <svg className="assistant-launcher-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-3 2v-6.5a7.5 7.5 0 1 1 17-3Z" /></svg>}
-        {open ? 'Close assistant' : 'Ask us'}
+        <span className="floating-tooltip" aria-hidden="true">{open ? 'Close assistant' : 'Ask us'}</span>
+        {open ? (
+          <span className="assistant-launcher-close-icon" aria-hidden="true">×</span>
+        ) : (
+          <svg className="assistant-launcher-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path fill="currentColor" d="M12 2C6.48 2 2 6.03 2 11c0 2.87 1.5 5.42 3.84 7.07-.15.8-.62 2.33-1.63 3.32-.23.23-.05.61.27.61 2.14 0 4.1-1.07 5.16-1.83.76.15 1.55.23 2.36.23 5.52 0 10-4.03 10-9s-4.48-9-10-9Zm-3.5 10c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5Zm3.5 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5Zm3.5 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5Z" />
+          </svg>
+        )}
       </button>
     </div>
   )

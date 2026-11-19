@@ -152,8 +152,10 @@ function App() {
         </div>
         <Footer />
         <CookieConsent />
-        <EnquiryAssistant />
-        <FloatingContact />
+        <div className="floating-actions-container">
+          <FloatingContact />
+          <EnquiryAssistant />
+        </div>
       </div>
     </BrowserRouter>
   )

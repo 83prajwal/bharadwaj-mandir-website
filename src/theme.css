@@ -426,15 +426,72 @@ html[data-scrolled] .site-header { background: color-mix(in srgb, var(--cream) 9
 .sort-control select { width: auto; min-height: 44px; padding: .45rem 2rem .45rem .8rem; border: 1px solid color-mix(in srgb, var(--maroon) 25%, transparent); border-radius: 5px; background-color: var(--white); color: var(--maroon); font: inherit; }
 
 /* ---------- WhatsApp and Call ---------- */
-.floating-stack { position: fixed; z-index: 45; left: max(1rem, env(safe-area-inset-left)); bottom: calc(1rem + env(safe-area-inset-bottom)); display: grid; gap: .6rem; }
-.floating-action { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; color: #fff; box-shadow: 0 10px 24px -8px rgba(43, 20, 10, .55); transition: transform .2s ease; }
-.floating-action:hover { transform: translateY(-2px); }
+.floating-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+.floating-actions-container .floating-stack {
+  position: static;
+  left: auto;
+  bottom: auto;
+  z-index: auto;
+}
+.floating-action-wrapper {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+.floating-action {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  color: #fff;
+  border: 1.5px solid color-mix(in srgb, var(--gold) 45%, transparent);
+  box-shadow: 0 10px 24px -8px rgba(43, 20, 10, .55);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.floating-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -6px rgba(43, 20, 10, .65);
+}
 .floating-whatsapp { background: #128C4B; }
-/* Phones: WhatsApp (left) and Ask us (right) share one bottom line, and the
-   footer ends above them so they never cover its text. */
+
+.floating-tooltip {
+  position: absolute;
+  right: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%) translateX(6px);
+  padding: 5px 11px;
+  background: var(--maroon-deep);
+  color: var(--ivory);
+  font-family: var(--font-body, inherit);
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .02em;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .18s ease, transform .18s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .3);
+  border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent);
+  z-index: 10;
+}
+.floating-action-wrapper:hover .floating-tooltip,
+.assistant-launcher:hover .floating-tooltip,
+.assistant-launcher:focus-visible .floating-tooltip {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
 @media (max-width: 760px) {
-  .assistant-widget { bottom: calc(1rem + env(safe-area-inset-bottom)); }
-  .site-footer { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
+  .floating-tooltip { display: none; }
+}
+@media (max-width: 760px) {
+  .site-footer { padding-bottom: calc(2rem + 80px + env(safe-area-inset-bottom)); }
 }
 .nav-whatsapp { display: inline-flex; align-items: center; justify-content: center; gap: .45rem; flex: 0 0 auto; width: 42px; height: 42px; border-radius: 50%; background: #128C4B; color: #fff; }
 .nav-whatsapp span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
