@@ -164,17 +164,6 @@
   animation: studio-float 7s ease-in-out -2s infinite;
 }
 
-.studio-public-side-note {
-  position: absolute;
-  right: 22px;
-  bottom: 106px;
-  color: var(--muted);
-  writing-mode: vertical-rl;
-  font: 600 0.65rem/1.4 var(--font-body);
-  letter-spacing: .2em;
-  opacity: 0.85;
-}
-
 .studio-public-intro {
   padding: clamp(3rem, 5vw, 4.5rem) 0;
   background: var(--white);
@@ -331,9 +320,6 @@
   }
   .studio-public-model-wrap > .mandir-view {
     height: 320px !important;
-  }
-  .studio-public-side-note {
-    display: none;
   }
   .studio-feature-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));

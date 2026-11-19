@@ -54,7 +54,6 @@ function PublicStudioPreview() {
             <p className="studio-public-model-caption">A real-time 3D study · Drag to explore</p>
           </div>
         </div>
-        <span className="studio-public-side-note" aria-hidden="true">CRAFTED IN MARBLE · DESIGNED FOR YOUR HOME</span>
       </section>
       <section className="studio-public-intro" id="studio-features" aria-labelledby="studio-features-title">
         <div className="container">
